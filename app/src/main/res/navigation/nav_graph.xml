@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.mehatronics.axle_load.fragment.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main" />
+
+    <fragment
+        android:id="@+id/dpsFragment"
+        android:name="com.mehatronics.axle_load.fragment.DPSFragment"
+        android:label="DPS"
+        tools:layout="@layout/fragment_dps" />
+
+    <fragment
+        android:id="@+id/dssFragment"
+        android:name="com.mehatronics.axle_load.fragment.DSSFragment"
+        android:label="DSS"
+        tools:layout="@layout/fragment_dss" />
+
+    <fragment
+        android:id="@+id/ddsFragment"
+        android:name="com.mehatronics.axle_load.fragment.DDSFragment"
+        android:label="DDS"
+        tools:layout="@layout/fragment_dds" />
+</navigation>
