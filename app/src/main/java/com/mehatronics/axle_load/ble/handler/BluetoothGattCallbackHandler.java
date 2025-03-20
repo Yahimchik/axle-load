@@ -25,8 +25,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final List<BluetoothGattCharacteristic> characteristicsQueue = new ArrayList<>();
     private final ConnectionStateListener connectionStateListener;
     private final List<byte[]> values = new ArrayList<>();
-    private boolean isActivityStarted = false;
     private boolean isConnected = false;
+    private boolean isReadingInProgress = false;
 
     public BluetoothGattCallbackHandler(ConnectionStateListener listener) {
         this.connectionStateListener = listener;
@@ -41,7 +41,6 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public void resetState() {
-        isActivityStarted = false;
         isConnected = false;
     }
 
@@ -85,25 +84,20 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (status == BluetoothGatt.GATT_SUCCESS) {
             byte[] data = characteristic.getValue();
-            String UUID = characteristic.getUuid().toString();
-            if (data != null && (UUID.matches(UUID_PATTERN) || UUID.equals("83940e89-e38d-4093-ba21-ce6aed75ff1c"))) {
+            if (data != null && (characteristic.getUuid().toString().matches(UUID_PATTERN) || characteristic.getUuid().toString().equals("83940e89-e38d-4093-ba21-ce6aed75ff1c"))) {
                 values.add(data);
                 Log.d("MyTag", "Read characteristic: " + Arrays.toString(data));
+                isReadingInProgress = false;
             }
         }
+        super.onCharacteristicRead(gatt, characteristic, status);
 
         readNextCharacteristic(gatt);
 
-        if (isActivityStarted) {
-            return;
-        }
-
         if (isConnected && values.size() >= 9) {
-            isActivityStarted = true;
             DeviceDetails deviceDetails = createDeviceDetailsObject();
             deviceDetailsLiveData.postValue(deviceDetails);
             Log.d("MyTag", " " + deviceDetails);
-            values.clear();
         }
     }
 
@@ -159,34 +153,26 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
     }
 
-    private BluetoothGattCharacteristic getCharacteristic(BluetoothGatt gatt, String uuid) {
-        for (BluetoothGattService service : gatt.getServices()) {
-            for (BluetoothGattCharacteristic characteristic : service.getCharacteristics()) {
-                if (characteristic.getUuid().toString().equals(uuid)) {
-                    return characteristic;
-                }
-            }
-        }
-        return null;
-    }
-
-    public void startReadingPeriodically(BluetoothGatt gatt) {
+    private void startReadingPeriodically(BluetoothGatt gatt) {
         new Thread(() -> {
             while (isConnected()) {
                 try {
-                    writeToCharacteristic(gatt);
-                    Thread.sleep(2000);
-                    BluetoothGattService service = gatt.getService(UUID.fromString("58c2f7bf-fef8-4b04-8850-a820113120ad"));
-                    BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString("83940e89-e38d-4093-ba21-ce6aed75ff1c"));
-                    if (characteristic != null) {
-                        try {
-                            gatt.readCharacteristic(characteristic);
-                            Log.d("MyTag1", "---" + Arrays.toString(characteristic.getValue()));
-                        } catch (SecurityException e) {
-                            Log.e("MyTag", "SecurityException while reading characteristic: " + e.getMessage());
+                    if (!isReadingInProgress) {
+                        isReadingInProgress = true;
+                        writeToCharacteristic(gatt);
+                        Thread.sleep(200);
+
+                        BluetoothGattService service = gatt.getService(UUID.fromString("58c2f7bf-fef8-4b04-8850-a820113120ad"));
+                        BluetoothGattCharacteristic characteristic = service.getCharacteristic(UUID.fromString("83940e89-e38d-4093-ba21-ce6aed75ff1c"));
+                        if (characteristic != null) {
+                            try {
+                                gatt.readCharacteristic(characteristic);
+                            } catch (SecurityException e) {
+                                //
+                            }
                         }
-                        Log.d("MyTag", "Reading characteristic: " + characteristic.getUuid());
                     }
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     Log.e("MyTag", "Thread interrupted: " + e.getMessage());
                 }

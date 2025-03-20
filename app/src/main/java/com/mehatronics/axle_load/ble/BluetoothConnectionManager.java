@@ -45,7 +45,7 @@ public class BluetoothConnectionManager {
         return gattCallbackHandler.getDeviceDetailsLiveData();
     }
 
-    public void clearDetails(){
+    public void clearDetails() {
         gattCallbackHandler.clearDetails();
     }
 
@@ -59,11 +59,11 @@ public class BluetoothConnectionManager {
                     applicationContext, false, gattCallbackHandler
             );
         } catch (SecurityException e) {
-            Log.e("MyTag", "SecurityException: " + e.getMessage());
+            //
         }
     }
 
-    public boolean isConnected(){
+    public boolean isConnected() {
         return gattCallbackHandler.isConnected();
     }
 
