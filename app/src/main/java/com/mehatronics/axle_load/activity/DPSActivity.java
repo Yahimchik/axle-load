@@ -15,11 +15,13 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class DPSActivity extends BaseBluetoothActivity {
     private DeviceListBinder deviceListBinder;
+    private DeviceNavigator navigator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dps);
+        navigator = new DeviceNavigator(this);
 
         initUI();
         setupObservers();
@@ -36,8 +38,8 @@ public class DPSActivity extends BaseBluetoothActivity {
         bluetoothViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
         bluetoothViewModel.getDeviceDetails().observe(this, deviceDetails -> {
             if (deviceDetails != null && bluetoothViewModel.isConnected()) {
-                if (!isDeviceDetailsFragmentVisible()) {
-                    new DeviceNavigator(this).showDeviceDetailsFragment();
+                if (!isDeviceDetailsFragmentVisible() && bluetoothViewModel.getDeviceDetails() != null) {
+                    navigator.showDeviceDetailsFragment();
                 }
             }
         });
