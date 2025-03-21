@@ -19,7 +19,9 @@ public class PermissionUseCase {
 
     public void requestPermissions(Activity activity, int requestCode) {
         ActivityCompat.requestPermissions(
-                activity, permissionService.getRequiredPermissions(), requestCode
+                activity,
+                permissionService.getRequiredPermissions(),
+                requestCode
         );
     }
 

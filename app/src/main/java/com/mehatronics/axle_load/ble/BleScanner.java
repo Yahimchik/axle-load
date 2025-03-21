@@ -15,10 +15,8 @@ import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,7 +24,6 @@ import javax.inject.Singleton;
 @Singleton
 public class BleScanner {
     private final MutableLiveData<List<Device>> scannedDevices = new MutableLiveData<>(new ArrayList<>());
-    private final Set<String> deviceAddresses = new HashSet<>();
     private BluetoothLeScanner bleScanner;
     private DeviceType deviceType;
 
@@ -42,7 +39,6 @@ public class BleScanner {
     }
 
     public void clearScannedDevices() {
-        deviceAddresses.clear();
         scannedDevices.setValue(new ArrayList<>());
     }
 
@@ -55,8 +51,9 @@ public class BleScanner {
                         .build();
 
                 bleScanner.startScan(null, settings, scanCallback);
+                Log.d("MyTag", "Start scanning...\nAvailable devices");
             } catch (SecurityException e) {
-                Log.e("BleScanner", "Start scan failed: SecurityException", e);
+                Log.e("MyTag", "Start scan failed: SecurityException", e);
             }
         }
     }
@@ -72,7 +69,6 @@ public class BleScanner {
         }
     }
 
-
     private final ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
@@ -81,14 +77,12 @@ public class BleScanner {
             }
 
             BluetoothDevice device = result.getDevice();
-            String deviceAddress = device.getAddress();
 
             if (!isDeviceTypeValid(device)) {
                 return;
             }
 
             addOrUpdateDevice(new Device(device, result));
-            deviceAddresses.add(deviceAddress);
         }
     };
 
@@ -97,7 +91,7 @@ public class BleScanner {
         boolean updated = false;
         for (int i = 0; i < currentList.size(); i++) {
             Device device = currentList.get(i);
-            if (device.getDevice().getAddress().equals(newDevice.getDevice().getAddress())) {
+            if (isDeviceExist(newDevice, device)) {
                 currentList.set(i, newDevice);
                 updated = true;
                 break;
@@ -105,8 +99,19 @@ public class BleScanner {
         }
         if (!updated) {
             currentList.add(newDevice);
+            try {
+                Log.d("MyTag", newDevice.getDevice().getName());
+            } catch (SecurityException e) {
+                Log.d("MyTag", "Security exception: " + e.getMessage());
+            }
         }
+
         scannedDevices.postValue(currentList);
+    }
+
+    private static boolean isDeviceExist(Device newDevice, Device device) {
+        return device.getDevice().getAddress()
+                .equals(newDevice.getDevice().getAddress());
     }
 
     private boolean isDeviceTypeValid(BluetoothDevice device) {

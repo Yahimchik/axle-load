@@ -59,7 +59,7 @@ public class BluetoothConnectionManager {
                     applicationContext, false, gattCallbackHandler
             );
         } catch (SecurityException e) {
-            //
+            Log.d("MyTag", "Security exception: " + e.getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class BluetoothConnectionManager {
                 bluetoothGatt = null;
                 Log.d("MyTag", "Disconnected from device");
             } catch (SecurityException e) {
-                // handle exception
+                Log.d("MyTag", "Security exception: " + e.getMessage());
             }
         }
     }

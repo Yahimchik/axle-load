@@ -1,10 +1,10 @@
 package com.mehatronics.axle_load.activity;
 
+import static com.mehatronics.axle_load.entities.enums.DeviceType.DSS;
+
 import android.os.Bundle;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.entities.enums.DeviceType;
-import com.mehatronics.axle_load.navigation.DeviceNavigator;
 import com.mehatronics.axle_load.ui.DeviceListBinder;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -32,13 +32,15 @@ public class DSSActivity extends BaseBluetoothActivity {
     private void setupObservers() {
         bluetoothViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
         bluetoothViewModel.getDeviceDetails().observe(this, deviceDetails -> {
-            if (deviceDetails != null) {
-                new DeviceNavigator(this).showDeviceDetailsFragment();
+            if (deviceDetails != null
+                    && bluetoothViewModel.isConnected()
+                    && deviceNavigator.isDeviceDetailsFragmentVisible()) {
+                deviceNavigator.showDeviceDetailsFragment();
             }
         });
     }
 
     public void setupBluetooth() {
-        bluetoothViewModel.startScan(DeviceType.DSS);
+        bluetoothViewModel.startScan(DSS);
     }
 }

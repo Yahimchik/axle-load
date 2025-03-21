@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.DeviceDetailsBinder;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
@@ -17,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class DeviceDetailsFragment extends Fragment {
     private BluetoothViewModel bluetoothViewModel;
-    private DeviceDetailsBinder binder;
+    private DeviceDetailsBinder deviceDetailsBinder;
 
     public static DeviceDetailsFragment newInstance() {
         return new DeviceDetailsFragment();
@@ -34,11 +36,11 @@ public class DeviceDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_device_details, container, false);
 
-        binder = new DeviceDetailsBinder(view);
+        deviceDetailsBinder = new DeviceDetailsBinder(view);
 
         bluetoothViewModel.getDeviceDetails().observe(getViewLifecycleOwner(), deviceDetails -> {
             if (deviceDetails != null) {
-                binder.bind(deviceDetails);
+                deviceDetailsBinder.bind(deviceDetails);
             }
         });
 
@@ -48,8 +50,12 @@ public class DeviceDetailsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        deviceDetailsBinder = null;
         bluetoothViewModel.disconnect();
         bluetoothViewModel.clearDetails();
-        binder = null;
+        if (getActivity() instanceof BaseBluetoothActivity) {
+            ((BaseBluetoothActivity) getActivity()).resetDeviceNavigatorState();
+        }
+        Log.d("MyTag", "Device details fragment is closed");
     }
 }

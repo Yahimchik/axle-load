@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.navigation;
 
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,6 +14,7 @@ import javax.inject.Inject;
 
 public class DeviceNavigator {
     private final FragmentManager fragmentManager;
+    private boolean isDeviceDetailsFragmentOpened = false;
 
     @Inject
     public DeviceNavigator(AppCompatActivity activity) {
@@ -23,7 +26,20 @@ public class DeviceNavigator {
             throw new IllegalStateException("FragmentManager is not available");
         }
 
-        replaceFragment(DeviceDetailsFragment.newInstance());
+        if (!isDeviceDetailsFragmentOpened) {
+            replaceFragment(DeviceDetailsFragment.newInstance());
+            isDeviceDetailsFragmentOpened = true;
+            Log.d("MyTag", "Device details fragment is opened");
+        }
+    }
+
+    public void resetState() {
+        isDeviceDetailsFragmentOpened = false;
+    }
+
+    public boolean isDeviceDetailsFragmentVisible() {
+        Fragment fragment = fragmentManager.findFragmentById(R.id.nav_host_fragment);
+        return !(fragment instanceof DeviceDetailsFragment);
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -36,8 +52,10 @@ public class DeviceNavigator {
                 R.anim.fragment_pop_out
         );
 
+        fragmentManager.popBackStack(DeviceDetailsFragment.class.getSimpleName(),
+                FragmentManager.POP_BACK_STACK_INCLUSIVE);
         transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(DeviceDetailsFragment.class.getSimpleName());
         transaction.commit();
     }
 }
