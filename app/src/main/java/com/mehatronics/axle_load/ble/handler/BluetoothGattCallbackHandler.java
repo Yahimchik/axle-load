@@ -1,16 +1,16 @@
 package com.mehatronics.axle_load.ble.handler;
 
+import static com.mehatronics.axle_load.entities.enums.CharacteristicType.PRESSURE;
+import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToBattery;
+import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToDate;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
+import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.USER_SERVICE_DPS;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
-import static com.mehatronics.axle_load.entities.enums.CharacteristicType.PRESSURE;
-import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToDate;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -30,31 +30,24 @@ import java.util.Queue;
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
     private final Queue<BluetoothGattCharacteristic> characteristicsQueue = new LinkedList<>();
-    private final ConnectionStateListener connectionStateListener;
     private final List<byte[]> values = new LinkedList<>();
     private boolean isReadingAllCharacteristics = false;
     private boolean isConnected = false;
     private int size;
-
-    public BluetoothGattCallbackHandler(ConnectionStateListener listener) {
-        this.connectionStateListener = listener;
-    }
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         if (isStatusOk(newState, BluetoothGatt.STATE_CONNECTED)) {
             Log.d("MyTag", "Connected to device");
             values.clear();
+            isConnected = true;
             try {
                 gatt.discoverServices();
             } catch (SecurityException e) {
                 Log.e("MyTag", "SecurityException: " + e.getMessage());
             }
-            connectionStateListener.onConnected();
-            isConnected = true;
         } else if (isStatusOk(newState, BluetoothGatt.STATE_DISCONNECTED)) {
             Log.d("MyTag", "Disconnected from device");
-            connectionStateListener.onDisconnected();
             isConnected = false;
             values.clear();
             deviceDetailsLiveData.setValue(null);
@@ -78,8 +71,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             } else {
                 if (isConnected && values.size() >= 9) {
                     size = values.size() - 1;
-                    DeviceDetails deviceDetails = createDeviceDetailsObject();
-                    deviceDetailsLiveData.postValue(deviceDetails);
+                    deviceDetailsLiveData.postValue(createDeviceDetailsObject());
                 }
                 writeAndRead(gatt);
             }

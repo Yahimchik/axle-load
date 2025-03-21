@@ -21,7 +21,7 @@ public class ByteUtils {
         if (bytes.length == 7) {
             return createDeviceDate(bytes[3], bytes[2], getYearFromTwoBytes(bytes));
         } else if (bytes.length >= 3) {
-            return createDeviceDate(bytes[2], bytes[1], bytes[1]);
+            return createDeviceDate(bytes[2], bytes[1], bytes[0]);
         }
         return new DeviceDate.Builder().build();
     }

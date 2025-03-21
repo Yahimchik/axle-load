@@ -28,9 +28,9 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         bluetoothViewModel.clearScannedDevices();
-        bluetoothViewModel.disconnect();
         bluetoothViewModel.stopScan();
         bluetoothViewModel.clearDetails();
+        bluetoothViewModel.disconnect();
     }
 
     public void resetDeviceNavigatorState() {

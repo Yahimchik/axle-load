@@ -51,8 +51,8 @@ public class DeviceDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         deviceDetailsBinder = null;
-        bluetoothViewModel.disconnect();
         bluetoothViewModel.clearDetails();
+        bluetoothViewModel.disconnect();
         if (getActivity() instanceof BaseBluetoothActivity) {
             ((BaseBluetoothActivity) getActivity()).resetDeviceNavigatorState();
         }
