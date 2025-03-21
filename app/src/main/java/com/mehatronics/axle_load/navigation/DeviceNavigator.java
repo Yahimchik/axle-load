@@ -37,7 +37,7 @@ public class DeviceNavigator {
         isDeviceDetailsFragmentOpened = false;
     }
 
-    public boolean isDeviceDetailsFragmentVisible() {
+    public boolean isNotDeviceDetailsFragmentVisible() {
         Fragment fragment = fragmentManager.findFragmentById(R.id.nav_host_fragment);
         return !(fragment instanceof DeviceDetailsFragment);
     }
