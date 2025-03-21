@@ -33,9 +33,8 @@ public class DSSActivity extends BaseBluetoothActivity {
         bluetoothViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
         bluetoothViewModel.getDeviceDetails().observe(this, deviceDetails -> {
             if (deviceDetails != null
-                    && bluetoothViewModel.isConnected()
-                    && deviceNavigator.isFragmentNotVisible()) {
-                deviceNavigator.showDeviceDetailsFragment();
+                    && bluetoothViewModel.isConnected() && deviceNavigator.isFragmentNotVisible()) {
+                deviceNavigator.showFragment();
             }
         });
     }
