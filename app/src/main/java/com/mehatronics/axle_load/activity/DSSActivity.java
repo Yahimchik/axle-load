@@ -34,7 +34,7 @@ public class DSSActivity extends BaseBluetoothActivity {
         bluetoothViewModel.getDeviceDetails().observe(this, deviceDetails -> {
             if (deviceDetails != null
                     && bluetoothViewModel.isConnected()
-                    && deviceNavigator.isNotDeviceDetailsFragmentVisible()) {
+                    && deviceNavigator.isFragmentNotVisible()) {
                 deviceNavigator.showDeviceDetailsFragment();
             }
         });
