@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DDSActivity">
+    tools:context=".activity.impl.DDSActivity">
 
     <TextView
         android:id="@+id/ddsTextView"

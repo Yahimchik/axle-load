@@ -21,10 +21,6 @@ public class DeviceDetailsFragment extends Fragment {
     private BluetoothViewModel bluetoothViewModel;
     private DeviceDetailsBinder deviceDetailsBinder;
 
-    public static DeviceDetailsFragment newInstance() {
-        return new DeviceDetailsFragment();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

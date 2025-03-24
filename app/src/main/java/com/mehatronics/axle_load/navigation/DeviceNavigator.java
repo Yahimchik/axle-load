@@ -27,7 +27,7 @@ public class DeviceNavigator {
         }
 
         if (!isDeviceDetailsFragmentOpened) {
-            replaceFragment(DeviceDetailsFragment.newInstance());
+            replaceFragment(new DeviceDetailsFragment());
             isDeviceDetailsFragmentOpened = true;
             Log.d("MyTag", "Device details fragment is opened");
         }

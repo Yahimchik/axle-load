@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.Queue;
 
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
+    private final MutableLiveData<Boolean> isConnectedLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
     private final Queue<BluetoothGattCharacteristic> characteristicsQueue = new LinkedList<>();
     private final List<byte[]> values = new LinkedList<>();
     private boolean isReadingAllCharacteristics = false;
     private boolean isConnected = false;
-    private int size;
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -43,6 +43,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             isConnected = true;
             try {
                 gatt.discoverServices();
+                isConnectedLiveData.postValue(true);
             } catch (SecurityException e) {
                 Log.e("MyTag", "SecurityException: " + e.getMessage());
             }
@@ -50,7 +51,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             Log.d("MyTag", "Disconnected from device");
             isConnected = false;
             values.clear();
-            deviceDetailsLiveData.setValue(null);
+            isConnectedLiveData.postValue(false);
         }
     }
 
@@ -70,8 +71,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
                 readNextCharacteristic(gatt);
             } else {
                 if (isConnected && values.size() >= 9) {
-                    size = values.size() - 1;
-                    deviceDetailsLiveData.postValue(createDeviceDetailsObject());
+                    deviceDetailsLiveData.postValue(createDeviceDetailsObject(values.size() - 1));
                 }
                 writeAndRead(gatt);
             }
@@ -96,6 +96,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
     }
 
+    public LiveData<Boolean> isConnectedLiveData() {
+        return isConnectedLiveData;
+    }
+
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return deviceDetailsLiveData;
     }
@@ -106,10 +110,6 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
     public void resetState() {
         isConnected = false;
-    }
-
-    public boolean isConnected() {
-        return isConnected;
     }
 
     private boolean isStatusOk(int actual, int expected) {
@@ -165,7 +165,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
     }
 
-    private DeviceDetails createDeviceDetailsObject() {
+    private DeviceDetails createDeviceDetailsObject(int size) {
         if (values.size() < 8) {
             return null;
         }

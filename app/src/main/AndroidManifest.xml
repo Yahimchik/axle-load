@@ -34,9 +34,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.DDSActivity" />
-        <activity android:name=".activity.DSSActivity" />
-        <activity android:name=".activity.DPSActivity" />
+        <activity android:name=".activity.impl.DDSActivity" />
+        <activity android:name=".activity.impl.DSSActivity" />
+        <activity android:name=".activity.impl.DPSActivity" />
     </application>
 
 </manifest>

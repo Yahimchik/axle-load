@@ -23,6 +23,10 @@ public class BluetoothViewModel extends ViewModel {
         this.bluetoothRepository = bluetoothRepository;
     }
 
+    public LiveData<Boolean> isConnectedLiveData() {
+        return bluetoothRepository.isConnectedLiveData();
+    }
+
     public LiveData<List<Device>> getScannedDevices() {
         return bluetoothRepository.getScannedDevices();
     }
@@ -53,10 +57,6 @@ public class BluetoothViewModel extends ViewModel {
 
     public void clearDetails() {
         bluetoothRepository.clearDetails();
-    }
-
-    public boolean isConnected() {
-        return bluetoothRepository.isConnected();
     }
 }
 

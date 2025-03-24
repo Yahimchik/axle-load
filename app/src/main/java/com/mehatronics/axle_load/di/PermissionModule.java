@@ -1,4 +1,4 @@
-package com.mehatronics.axle_load.configuration;
+package com.mehatronics.axle_load.di;
 
 import android.content.Context;
 

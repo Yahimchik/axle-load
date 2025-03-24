@@ -1,10 +1,10 @@
-package com.mehatronics.axle_load.configuration;
+package com.mehatronics.axle_load.di;
 
 import android.app.Activity;
 
-import com.mehatronics.axle_load.activity.DDSActivity;
-import com.mehatronics.axle_load.activity.DPSActivity;
-import com.mehatronics.axle_load.activity.DSSActivity;
+import com.mehatronics.axle_load.activity.impl.DDSActivity;
+import com.mehatronics.axle_load.activity.impl.DPSActivity;
+import com.mehatronics.axle_load.activity.impl.DSSActivity;
 import com.mehatronics.axle_load.navigation.ActivityNavigator;
 
 import dagger.Module;

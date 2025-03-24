@@ -28,6 +28,10 @@ public class BluetoothRepository {
         return bleScanner.getScannedDevices();
     }
 
+    public LiveData<Boolean> isConnectedLiveData(){
+        return bluetoothConnectionManager.isConnectedLiveData();
+    }
+
     public void clearScannedDevices() {
         bleScanner.clearScannedDevices();
     }
@@ -54,9 +58,5 @@ public class BluetoothRepository {
 
     public void clearDetails() {
         bluetoothConnectionManager.clearDetails();
-    }
-
-    public boolean isConnected() {
-        return bluetoothConnectionManager.isConnected();
     }
 }

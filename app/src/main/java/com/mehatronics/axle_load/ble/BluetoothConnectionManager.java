@@ -50,8 +50,8 @@ public class BluetoothConnectionManager {
         }
     }
 
-    public boolean isConnected() {
-        return gattCallbackHandler.isConnected();
+    public LiveData<Boolean> isConnectedLiveData() {
+        return gattCallbackHandler.isConnectedLiveData();
     }
 
     public void disconnect() {
