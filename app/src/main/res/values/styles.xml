@@ -16,4 +16,13 @@
         <item name="android:stateListAnimator">@animator/button_click_animation</item>
     </style>
 
+    <style name="AxleButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+
+
 </resources>

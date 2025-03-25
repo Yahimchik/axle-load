@@ -5,11 +5,14 @@ import static com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH
 import static java.lang.Boolean.TRUE;
 
 import android.app.Activity;
+import android.widget.Button;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.fragment.ConfigureFragment;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
 import javax.inject.Inject;
@@ -22,6 +25,19 @@ public class BluetoothHandler {
     public BluetoothHandler(BluetoothViewModel bluetoothViewModel, BaseBluetoothActivity activity) {
         this.bluetoothViewModel = bluetoothViewModel;
         this.activity = activity;
+    }
+
+    public void initConfigureButton(Button configureButton) {
+        if (configureButton != null) {
+            configureButton.setOnClickListener(v -> {
+                if (!activity.isFinishing()) {
+                    activity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.nav_host_fragment, new ConfigureFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {

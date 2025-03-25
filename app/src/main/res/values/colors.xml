@@ -14,4 +14,6 @@
     <color name="button_default">#FFFFFF</color>
     <color name="button_pressed">#FFEB3B</color>
     <color name="button_selected">#8BC34A</color>
+
+    <color name="primary">#6200EE</color>
 </resources>

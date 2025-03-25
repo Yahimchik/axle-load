@@ -21,6 +21,7 @@ public class DeviceNavigator {
         this.fragmentManager = activity.getSupportFragmentManager();
     }
 
+
     public void showFragment() {
         if (fragmentManager == null) {
             throw new IllegalStateException("FragmentManager is not available");

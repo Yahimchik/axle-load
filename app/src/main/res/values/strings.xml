@@ -1,15 +1,19 @@
 <resources>
-    <string name="app_name">axle-load</string>
+    <string name="app_name">Axle Load</string>
+
     <string name="DDS">DDS</string>
     <string name="DPS">DPS</string>
     <string name="DSS">DSS</string>
+
     <string name="choose_sensor_type">Chose Sensor Type</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="device_name">Device Name</string>
     <string name="device_mac">MAC: </string>
     <string name="device_rssi">RSSI: </string>
     <string name="device_type">Type: </string>
     <string name="device_status">Status: </string>
+
     <string name="device_manufacturer_data">Manufacturer data: </string>
     <string name="available_devices">Available devices: </string>
     <string name="manufacturer">Manufacturer: </string>
@@ -20,5 +24,13 @@
     <string name="battery">Battery: </string>
     <string name="weight">Weight: </string>
     <string name="pressure">Pressure: </string>
+
     <string name="disconnect_button">Disconnect</string>
+    <string name="configure_the_settings">Configure The Settings</string>
+
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
 </resources>

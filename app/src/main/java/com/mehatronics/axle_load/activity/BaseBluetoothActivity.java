@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.activity;
 
 import static android.R.id.content;
+import static com.mehatronics.axle_load.R.id.configureButton;
 import static dagger.hilt.android.EntryPointAccessors.fromActivity;
 
 import android.os.Bundle;
@@ -62,6 +63,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity {
     protected void initUI() {
         loadingManager.init(findViewById(content));
         deviceListBinder = new DeviceListBinder(findViewById(content), bluetoothHandler::onDeviceSelected);
+        bluetoothHandler.initConfigureButton(findViewById(configureButton));
     }
 
     protected void setupObservers() {

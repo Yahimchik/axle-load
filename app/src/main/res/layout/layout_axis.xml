@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginTop="16dp">
+
+    <!-- Ось -->
+    <TextView
+        android:id="@+id/axisTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ось"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Колесо оси -->
+    <ImageView
+        android:id="@+id/axleImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Линия, символизирующая ось -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Дополнительные элементы оси -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Состояние оси"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"/>
+</LinearLayout>
