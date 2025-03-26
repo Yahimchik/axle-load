@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.DeviceListAdapter;
-import com.mehatronics.axle_load.adapter.OnDeviceClickListener;
+import com.mehatronics.axle_load.adapter.listener.OnDeviceClickListener;
 import com.mehatronics.axle_load.entities.Device;
 
 import java.util.List;

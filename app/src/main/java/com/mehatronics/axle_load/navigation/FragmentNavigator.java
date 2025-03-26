@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.navigation;
 
 import android.util.Log;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -8,19 +9,32 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.fragment.ConfigureFragment;
 import com.mehatronics.axle_load.fragment.DeviceDetailsFragment;
 
 import javax.inject.Inject;
 
-public class DeviceNavigator {
+public class FragmentNavigator {
     private final FragmentManager fragmentManager;
     private boolean isDeviceDetailsFragmentOpened = false;
 
     @Inject
-    public DeviceNavigator(AppCompatActivity activity) {
+    public FragmentNavigator(AppCompatActivity activity) {
         this.fragmentManager = activity.getSupportFragmentManager();
     }
 
+    public void initConfigureButton(Button configureButton) {
+        if (configureButton != null) {
+            configureButton.setOnClickListener(v -> {
+                if (fragmentManager.findFragmentByTag(ConfigureFragment.class.getSimpleName()) == null) {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.nav_host_fragment, new ConfigureFragment(), ConfigureFragment.class.getSimpleName())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
+    }
 
     public void showFragment() {
         if (fragmentManager == null) {
@@ -45,18 +59,8 @@ public class DeviceNavigator {
 
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        transaction.setCustomAnimations(
-                R.anim.fragment_slide_in,
-                R.anim.fragment_slide_out,
-                R.anim.fragment_pop_in,
-                R.anim.fragment_pop_out
-        );
-
-        fragmentManager.popBackStack(DeviceDetailsFragment.class.getSimpleName(),
-                FragmentManager.POP_BACK_STACK_INCLUSIVE);
         transaction.replace(R.id.nav_host_fragment, fragment);
-        transaction.addToBackStack(DeviceDetailsFragment.class.getSimpleName());
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }

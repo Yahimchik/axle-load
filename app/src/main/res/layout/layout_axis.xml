@@ -1,39 +1,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_marginTop="16dp"
+    android:background="@drawable/background_card"
     android:gravity="center"
-    android:layout_marginTop="16dp">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Ось -->
+    <!-- Заголовок оси -->
     <TextView
         android:id="@+id/axisTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ось"
+        android:layout_marginBottom="12dp"
+        android:letterSpacing="0.5"
+        android:text="@string/axle"
+        android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        android:textStyle="bold" />
 
-    <!-- Колесо оси -->
-    <ImageView
-        android:id="@+id/axleImage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginBottom="8dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <!-- Линия, символизирующая ось -->
-    <View
-        android:layout_width="0dp"
-        android:layout_height="4dp"
-        android:background="@android:color/darker_gray"
-        android:layout_marginBottom="8dp"/>
+        <ImageView
+            android:id="@+id/axleSensorLeft"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/axle_sensor_left" />
 
-    <!-- Дополнительные элементы оси -->
-    <TextView
+        <ImageView
+            android:id="@+id/axleSensorCenter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/axle_sensor_center" />
+
+        <ImageView
+            android:id="@+id/axleSensorRight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/axes_sensor_right" />
+    </LinearLayout>
+
+    <!-- Кнопка для настройки оси -->
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Состояние оси"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"/>
+        android:layout_gravity="center"
+        android:background="@drawable/axis_background"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/settings"
+        android:textColor="@color/white" />
+
 </LinearLayout>

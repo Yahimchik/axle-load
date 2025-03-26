@@ -12,30 +12,34 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.adapter.LoadingManager;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandler;
+import com.mehatronics.axle_load.ble.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.di.LoadingManagerEntryPoint;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
-import com.mehatronics.axle_load.navigation.DeviceNavigator;
+import com.mehatronics.axle_load.navigation.FragmentNavigator;
+import com.mehatronics.axle_load.notification.NotificationManager;
 import com.mehatronics.axle_load.ui.DeviceListBinder;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public abstract class BaseBluetoothActivity extends AppCompatActivity {
+public abstract class BaseBluetoothActivity extends AppCompatActivity implements BluetoothHandlerContract {
+    private NotificationManager notificationManager;
     private BluetoothViewModel bluetoothViewModel;
-    private DeviceListBinder deviceListBinder;
+    private FragmentNavigator fragmentNavigator;
     private BluetoothHandler bluetoothHandler;
-    public DeviceNavigator deviceNavigator;
-    public LoadingManager loadingManager;
-    public boolean isAttemptingToConnect = false;
+    private DeviceListBinder deviceListBinder;
+    private LoadingManager loadingManager;
+    private boolean isAttemptingToConnect = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadingManager = fromActivity(this, LoadingManagerEntryPoint.class).getLoadingManager();
         bluetoothViewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
-        deviceNavigator = new DeviceNavigator(this);
+        fragmentNavigator = new FragmentNavigator(this);
         bluetoothHandler = new BluetoothHandler(bluetoothViewModel, this);
+        notificationManager = new NotificationManager(this);
     }
 
     @Override
@@ -55,15 +59,15 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity {
     }
 
     public void resetDeviceNavigatorState() {
-        if (deviceNavigator != null) {
-            deviceNavigator.resetState();
+        if (fragmentNavigator != null) {
+            fragmentNavigator.resetState();
         }
     }
 
     protected void initUI() {
         loadingManager.init(findViewById(content));
         deviceListBinder = new DeviceListBinder(findViewById(content), bluetoothHandler::onDeviceSelected);
-        bluetoothHandler.initConfigureButton(findViewById(configureButton));
+        initConfigureButton();
     }
 
     protected void setupObservers() {
@@ -74,5 +78,40 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity {
 
     protected void setupBluetooth(DeviceType deviceType) {
         bluetoothViewModel.startScan(deviceType);
+    }
+
+    @Override
+    public void showFragment() {
+        fragmentNavigator.showFragment();
+    }
+
+    @Override
+    public boolean isFragmentNotVisible() {
+        return fragmentNavigator.isFragmentNotVisible();
+    }
+
+    @Override
+    public void loadingManagerShowLoading(boolean isLoading) {
+        loadingManager.showLoading(isLoading);
+    }
+
+    @Override
+    public void setIsAttemptingToConnect(boolean isAttempting) {
+        isAttemptingToConnect = isAttempting;
+    }
+
+    @Override
+    public boolean isAttemptingToConnect() {
+        return isAttemptingToConnect;
+    }
+
+    @Override
+    public void showSnackBar(String message) {
+        notificationManager.showSnackBar(message);
+    }
+
+    @Override
+    public void initConfigureButton() {
+        fragmentNavigator.initConfigureButton(findViewById(configureButton));
     }
 }

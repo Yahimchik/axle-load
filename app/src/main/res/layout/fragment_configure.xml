@@ -1,70 +1,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
+    android:orientation="vertical"
     android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/blockerLayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:background="@android:color/white"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Выберите количество осей"
-        android:textSize="22sp"
-        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:layout_gravity="center_horizontal"/>
+        android:text="@string/axles_count"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_axis_1"
             style="@style/AxleButton"
-            android:text="1"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/one" />
 
         <Button
             android:id="@+id/btn_axis_2"
             style="@style/AxleButton"
-            android:text="2"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/two" />
 
         <Button
             android:id="@+id/btn_axis_3"
             style="@style/AxleButton"
-            android:text="3"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/three" />
 
         <Button
             android:id="@+id/btn_axis_4"
             style="@style/AxleButton"
-            android:text="4"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/four" />
 
         <Button
             android:id="@+id/btn_axis_5"
             style="@style/AxleButton"
-            android:text="5"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:text="@string/five" />
     </LinearLayout>
 
-    <ScrollView
+    <!-- RecyclerView occupies remaining space -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/axisContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp">
+        android:gravity="center" />
 
-        <LinearLayout
-            android:id="@+id/axisContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"/>
-    </ScrollView>
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </LinearLayout>

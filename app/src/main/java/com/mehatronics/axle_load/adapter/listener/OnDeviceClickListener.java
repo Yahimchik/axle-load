@@ -1,4 +1,4 @@
-package com.mehatronics.axle_load.adapter;
+package com.mehatronics.axle_load.adapter.listener;
 
 import com.mehatronics.axle_load.entities.Device;
 
