@@ -35,7 +35,10 @@
     <string name="five">5</string>
 
     <string name="axles_count">Choose the axles count</string>
-    <string name="settings">Settings</string>
+    <string name="reset">Reset</string>
+
+    <string name="sensor_list">Sensors list</string>
     <string name="axle">Axle</string>
 
+    <string name="choose_sensor">Choose sensor</string>
 </resources>

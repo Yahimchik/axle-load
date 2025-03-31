@@ -3,6 +3,8 @@ package com.mehatronics.axle_load.entities;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class Device implements Serializable {
@@ -20,6 +22,15 @@ public class Device implements Serializable {
 
     public ScanResult getScanResult() {
         return scanResult;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Device{" +
+                "device=" + device +
+                ", scanResult=" + scanResult +
+                '}';
     }
 }
 

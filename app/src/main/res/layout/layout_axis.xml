@@ -31,21 +31,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/axle_sensor_left" />
+            android:src="@drawable/axle_left" />
 
         <ImageView
             android:id="@+id/axleSensorCenter"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/axle_sensor_center" />
+            android:src="@drawable/axle_center" />
 
         <ImageView
             android:id="@+id/axleSensorRight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/axes_sensor_right" />
+            android:src="@drawable/axle_right" />
     </LinearLayout>
 
     <!-- Кнопка для настройки оси -->
@@ -58,7 +58,7 @@
         android:paddingTop="10dp"
         android:paddingRight="20dp"
         android:paddingBottom="10dp"
-        android:text="@string/settings"
+        android:text="@string/reset"
         android:textColor="@color/white" />
 
 </LinearLayout>
