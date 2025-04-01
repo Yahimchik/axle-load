@@ -7,7 +7,7 @@ import static com.mehatronics.axle_load.utils.ByteUtils.getDate;
 import static com.mehatronics.axle_load.utils.DateFormatUtils.convertToDateFormat;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.utils.constants.StringConstants.UNKNOWN;
 
 import com.mehatronics.axle_load.entities.enums.CharacteristicType;
@@ -33,8 +33,8 @@ public class DataUtils {
     }
 
     public static String convertBytesToValue(byte[] bytes, CharacteristicType type) {
-        if ((bytes[0] & ZERO_COMMAND) == SEVEN_COMMAND) {
-            if ((bytes[1] & ZERO_COMMAND) == SECOND_COMMAND) {
+        if ((bytes[0] & ZERO_COMMAND_BINARY) == SEVEN_COMMAND) {
+            if ((bytes[1] & ZERO_COMMAND_BINARY) == SECOND_COMMAND) {
                 if (type.equals(WEIGHT)) {
                     return String.valueOf(convertByteToValue(bytes, 7, 6));
                 }

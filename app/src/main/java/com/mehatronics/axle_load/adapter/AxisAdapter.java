@@ -76,26 +76,26 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.ViewHolder> {
         void bind(int axisIndex) {
             clearObservers();
 
-            leftObserver = image -> axleLeft.setImageResource(getDrawableForSensor(image, LEFT.name()));
-            centerObserver = image -> axleCenter.setImageResource(getDrawableForSensor(image, CENTER.name()));
-            rightObserver = image -> axisRight.setImageResource(getDrawableForSensor(image, RIGHT.name()));
+            leftObserver = image -> axleLeft.setImageResource(getDrawableForSensor(image, "left"));
+            centerObserver = image -> axleCenter.setImageResource(getDrawableForSensor(image, "center"));
+            rightObserver = image -> axisRight.setImageResource(getDrawableForSensor(image, "right"));
 
-            sensorViewModel.getSensorImage(axisIndex, LEFT.name()).observe(lifecycleOwner, leftObserver);
-            sensorViewModel.getSensorImage(axisIndex, CENTER.name()).observe(lifecycleOwner, centerObserver);
-            sensorViewModel.getSensorImage(axisIndex, RIGHT.name()).observe(lifecycleOwner, rightObserver);
+            sensorViewModel.getSensorImage(axisIndex, "left").observe(lifecycleOwner, leftObserver);
+            sensorViewModel.getSensorImage(axisIndex, "center").observe(lifecycleOwner, centerObserver);
+            sensorViewModel.getSensorImage(axisIndex, "right").observe(lifecycleOwner, rightObserver);
 
-            axleLeft.setOnClickListener(v -> openSensorSettingsFragment(v, LEFT.name(), axisIndex));
-            axleCenter.setOnClickListener(v -> openSensorSettingsFragment(v, CENTER.name(), axisIndex));
-            axisRight.setOnClickListener(v -> openSensorSettingsFragment(v, RIGHT.name(), axisIndex));
+            axleLeft.setOnClickListener(v -> openSensorSettingsFragment(v, "left", axisIndex));
+            axleCenter.setOnClickListener(v -> openSensorSettingsFragment(v, "center", axisIndex));
+            axisRight.setOnClickListener(v -> openSensorSettingsFragment(v, "right", axisIndex));
         }
 
         void clearObservers() {
             if (leftObserver != null)
-                sensorViewModel.getSensorImage(getAdapterPosition(), LEFT.name()).removeObserver(leftObserver);
+                sensorViewModel.getSensorImage(getAdapterPosition(), "left").removeObserver(leftObserver);
             if (centerObserver != null)
-                sensorViewModel.getSensorImage(getAdapterPosition(), CENTER.name()).removeObserver(centerObserver);
+                sensorViewModel.getSensorImage(getAdapterPosition(), "center").removeObserver(centerObserver);
             if (rightObserver != null)
-                sensorViewModel.getSensorImage(getAdapterPosition(), RIGHT.name()).removeObserver(rightObserver);
+                sensorViewModel.getSensorImage(getAdapterPosition(), "right").removeObserver(rightObserver);
         }
 
         private int getDrawableForSensor(String image, String position) {

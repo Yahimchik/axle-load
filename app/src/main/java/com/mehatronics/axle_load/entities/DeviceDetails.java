@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.entities;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class DeviceDetails implements Serializable {
     private final String deviceName;
@@ -15,6 +16,8 @@ public class DeviceDetails implements Serializable {
     private final String batteryLevel;
     private final String weight;
     private final String pressure;
+    private final List<CalibrationTable> table;
+    private final SensorConfig sensorConfig;
 
     private DeviceDetails(Builder builder) {
         this.deviceName = builder.deviceName;
@@ -27,6 +30,8 @@ public class DeviceDetails implements Serializable {
         this.batteryLevel = builder.batteryLevel;
         this.weight = builder.weight;
         this.pressure = builder.pressure;
+        this.table = builder.table;
+        this.sensorConfig = builder.sensorConfig;
     }
 
     public String getDeviceName() {
@@ -69,6 +74,14 @@ public class DeviceDetails implements Serializable {
         return pressure;
     }
 
+    public List<CalibrationTable> getTable() {
+        return table;
+    }
+
+    public SensorConfig getSensorConfig() {
+        return sensorConfig;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -97,6 +110,8 @@ public class DeviceDetails implements Serializable {
         private String batteryLevel;
         private String weight;
         private String pressure;
+        private List<CalibrationTable> table;
+        private SensorConfig sensorConfig;
 
         public Builder setDeviceName(String deviceName) {
             this.deviceName = deviceName;
@@ -145,6 +160,16 @@ public class DeviceDetails implements Serializable {
 
         public Builder setPressure(String pressure) {
             this.pressure = pressure;
+            return this;
+        }
+
+        public Builder setTable(List<CalibrationTable> table) {
+            this.table = table;
+            return this;
+        }
+
+        public Builder setSensorConfig(SensorConfig sensorConfig){
+            this.sensorConfig = sensorConfig;
             return this;
         }
 

@@ -2,12 +2,17 @@ package com.mehatronics.axle_load.ble.handler;
 
 import static com.mehatronics.axle_load.entities.enums.CharacteristicType.PRESSURE;
 import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToBattery;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToDate;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.USER_SERVICE_DPS;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
@@ -21,8 +26,12 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.entities.SensorConfig;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -34,6 +43,11 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final List<byte[]> values = new LinkedList<>();
     private boolean isReadingAllCharacteristics = false;
     private boolean isConnected = false;
+    private boolean isFirstCommandSent = false;
+    private boolean isSecondCommandSent = false;
+    private final List<CalibrationTable> table = new ArrayList<>();
+    private SensorConfig sensorConfig = new SensorConfig.Builder().build();
+    private final byte[] value = new byte[68];
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -51,7 +65,12 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             Log.d("MyTag", "Disconnected from device");
             isConnected = false;
             values.clear();
+            isFirstCommandSent = false;
+            isSecondCommandSent = false;
+            sensorConfig = new SensorConfig.Builder().build();
+            table.clear();
             isConnectedLiveData.postValue(false);
+            Arrays.fill(value, (byte) 0);
         }
     }
 
@@ -64,14 +83,24 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     @Override
-    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+    public void onCharacteristicRead(
+            BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (isStatusOk(status, BluetoothGatt.GATT_SUCCESS)) {
             values.add(characteristic.getValue());
             if (isReadingAllCharacteristics) {
                 readNextCharacteristic(gatt);
             } else {
+                var bytes = characteristic.getValue();
                 if (isConnected && values.size() >= 9) {
-                    deviceDetailsLiveData.postValue(createDeviceDetailsObject(values.size() - 1));
+                    if ((bytes[0] & ZERO_COMMAND_BINARY) == SEVEN_COMMAND && value[0] == SEVEN_COMMAND) {
+                        if ((bytes[1] & ZERO_COMMAND_BINARY) == FIRST_COMMAND && value[1] == FIRST_COMMAND) {
+                            sensorConfig = convertBytesToConfiguration(bytes);
+                            Log.d("MyTag", sensorConfig.toString());
+                        }
+                    }
+                    convertBytesToCalibrationTable(bytes, table);
+                    DeviceDetails deviceDetails = createDeviceDetailsObject(values.size() - 1);
+                    deviceDetailsLiveData.postValue(deviceDetails);
                 }
                 writeAndRead(gatt);
             }
@@ -79,11 +108,11 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     @Override
-    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+    public void onCharacteristicWrite(
+            BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (isStatusOk(status, BluetoothGatt.GATT_SUCCESS)) {
             if (characteristic.getUuid().equals(WRITE_CHARACTERISTIC_DPS)) {
                 BluetoothGattService service = gatt.getService(USER_SERVICE_DPS);
-
                 var readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_DPS);
                 if (readCharacteristic != null) {
                     try {
@@ -147,14 +176,22 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     private void writeAndRead(BluetoothGatt gatt) {
-        var service = gatt.getService(USER_SERVICE_DPS);
+        BluetoothGattService service = gatt.getService(USER_SERVICE_DPS);
+        BluetoothGattCharacteristic writeCharacteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
 
-        var writeCharacteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
-
-        byte[] value = new byte[68];
-
-        value[0] = SEVEN_COMMAND;
-        value[1] = SECOND_COMMAND;
+        if (!isFirstCommandSent) {
+            value[0] = FIRST_COMMAND;
+            value[1] = ZERO_COMMAND_DECIMAL;
+            isFirstCommandSent = true;
+        } else if (!isSecondCommandSent) {
+            value[0] = SEVEN_COMMAND;
+            value[1] = FIRST_COMMAND;
+            isSecondCommandSent = true;
+            Log.d("MyTag", String.valueOf(true));
+        } else {
+            value[0] = SEVEN_COMMAND;
+            value[1] = SECOND_COMMAND;
+        }
 
         writeCharacteristic.setValue(value);
 
@@ -192,6 +229,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
                 .setBatteryLevel(batteryLevel)
                 .setWeight(weight)
                 .setPressure(pressure)
+                .setTable(table)
+                .setSensorConfig(sensorConfig)
                 .build();
     }
 }
