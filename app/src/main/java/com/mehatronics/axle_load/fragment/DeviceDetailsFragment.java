@@ -40,6 +40,12 @@ public class DeviceDetailsFragment extends Fragment {
             }
         });
 
+        bluetoothViewModel.getSensorConfigureLivaData().observe(getViewLifecycleOwner(), sensorConfig -> {
+            if (sensorConfig != null){
+                deviceDetailsBinder.bindConfigure(sensorConfig);
+            }
+        });
+
         return view;
     }
 

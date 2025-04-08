@@ -1,6 +1,8 @@
 package com.mehatronics.axle_load.ui;
 
 
+import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
+
 import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,10 +19,8 @@ public class DeviceListBinder {
     private final DeviceListAdapter deviceListAdapter;
 
     public DeviceListBinder(View view, OnDeviceClickListener listener) {
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         deviceListAdapter = new DeviceListAdapter(listener);
-        recyclerView.setAdapter(deviceListAdapter);
+        initRecyclerView(view,R.id.recyclerView,deviceListAdapter);
     }
 
     public void updateDevices(List<Device> devices) {

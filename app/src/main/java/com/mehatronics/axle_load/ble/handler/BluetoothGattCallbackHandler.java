@@ -39,38 +39,28 @@ import java.util.Queue;
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final MutableLiveData<Boolean> isConnectedLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<SensorConfig> sensorConfigLiveData = new MutableLiveData<>();
     private final Queue<BluetoothGattCharacteristic> characteristicsQueue = new LinkedList<>();
+    private final List<CalibrationTable> table = new ArrayList<>();
     private final List<byte[]> values = new LinkedList<>();
     private boolean isReadingAllCharacteristics = false;
-    private boolean isConnected = false;
-    private boolean isFirstCommandSent = false;
+    private boolean areCharacteristicsReads = false;
     private boolean isSecondCommandSent = false;
-    private final List<CalibrationTable> table = new ArrayList<>();
-    private SensorConfig sensorConfig = new SensorConfig.Builder().build();
+    private boolean isFirstCommandSent = false;
+    private boolean isConnected = false;
     private final byte[] value = new byte[68];
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         if (isStatusOk(newState, BluetoothGatt.STATE_CONNECTED)) {
-            Log.d("MyTag", "Connected to device");
-            values.clear();
-            isConnected = true;
             try {
                 gatt.discoverServices();
-                isConnectedLiveData.postValue(true);
+                updateStateAfterConnect();
             } catch (SecurityException e) {
                 Log.e("MyTag", "SecurityException: " + e.getMessage());
             }
         } else if (isStatusOk(newState, BluetoothGatt.STATE_DISCONNECTED)) {
-            Log.d("MyTag", "Disconnected from device");
-            isConnected = false;
-            values.clear();
-            isFirstCommandSent = false;
-            isSecondCommandSent = false;
-            sensorConfig = new SensorConfig.Builder().build();
-            table.clear();
-            isConnectedLiveData.postValue(false);
-            Arrays.fill(value, (byte) 0);
+            resetStateAfterDisconnect();
         }
     }
 
@@ -90,19 +80,21 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             if (isReadingAllCharacteristics) {
                 readNextCharacteristic(gatt);
             } else {
-                var bytes = characteristic.getValue();
-                if (isConnected && values.size() >= 9) {
-                    if ((bytes[0] & ZERO_COMMAND_BINARY) == SEVEN_COMMAND && value[0] == SEVEN_COMMAND) {
-                        if ((bytes[1] & ZERO_COMMAND_BINARY) == FIRST_COMMAND && value[1] == FIRST_COMMAND) {
-                            sensorConfig = convertBytesToConfiguration(bytes);
-                            Log.d("MyTag", sensorConfig.toString());
-                        }
+                if (areCharacteristicsReads) {
+                    var bytes = characteristic.getValue();
+                    if (isMatchingCommand(bytes, 0, SEVEN_COMMAND)
+                            && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
+                        areCharacteristicsReads = false;
+                        sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
                     }
-                    convertBytesToCalibrationTable(bytes, table);
-                    DeviceDetails deviceDetails = createDeviceDetailsObject(values.size() - 1);
-                    deviceDetailsLiveData.postValue(deviceDetails);
+                    if (isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
+                        convertBytesToCalibrationTable(bytes, table);
+                    }
                 }
-                writeAndRead(gatt);
+                if (isConnected && values.size() >= 9) {
+                    deviceDetailsLiveData.postValue(createDeviceDetails(values.size() - 1));
+                }
+                writeToCharacteristic(gatt);
             }
         }
     }
@@ -133,12 +125,20 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         return deviceDetailsLiveData;
     }
 
+    public LiveData<SensorConfig> getSensorConfigureLivaData() {
+        return sensorConfigLiveData;
+    }
+
     public void clearDetails() {
         deviceDetailsLiveData.setValue(null);
     }
 
     public void resetState() {
         isConnected = false;
+    }
+
+    private boolean isMatchingCommand(byte[] bytes, int index, int command) {
+        return (bytes[index] & ZERO_COMMAND_BINARY) == command && value[index] == command;
     }
 
     private boolean isStatusOk(int actual, int expected) {
@@ -155,6 +155,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             }
         }
         isReadingAllCharacteristics = true;
+        areCharacteristicsReads = true;
         readNextCharacteristic(gatt);
     }
 
@@ -171,26 +172,22 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         } else {
             isReadingAllCharacteristics = false;
             Log.d("MyTag", "Finished reading all characteristics, starting periodic write-read...");
-            writeAndRead(gatt);
+            writeToCharacteristic(gatt);
         }
     }
 
-    private void writeAndRead(BluetoothGatt gatt) {
-        BluetoothGattService service = gatt.getService(USER_SERVICE_DPS);
-        BluetoothGattCharacteristic writeCharacteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
+    private void writeToCharacteristic(BluetoothGatt gatt) {
+        var service = gatt.getService(USER_SERVICE_DPS);
+        var writeCharacteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
 
         if (!isFirstCommandSent) {
-            value[0] = FIRST_COMMAND;
-            value[1] = ZERO_COMMAND_DECIMAL;
+            setCommand(FIRST_COMMAND, ZERO_COMMAND_DECIMAL);
             isFirstCommandSent = true;
         } else if (!isSecondCommandSent) {
-            value[0] = SEVEN_COMMAND;
-            value[1] = FIRST_COMMAND;
+            setCommand(SEVEN_COMMAND, FIRST_COMMAND);
             isSecondCommandSent = true;
-            Log.d("MyTag", String.valueOf(true));
         } else {
-            value[0] = SEVEN_COMMAND;
-            value[1] = SECOND_COMMAND;
+            setCommand(SEVEN_COMMAND, SECOND_COMMAND);
         }
 
         writeCharacteristic.setValue(value);
@@ -202,7 +199,12 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
     }
 
-    private DeviceDetails createDeviceDetailsObject(int size) {
+    private void setCommand(int commandFirst, int commandSecond) {
+        value[0] = (byte) commandFirst;
+        value[1] = (byte) commandSecond;
+    }
+
+    private DeviceDetails createDeviceDetails(int size) {
         if (values.size() < 8) {
             return null;
         }
@@ -230,7 +232,24 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
                 .setWeight(weight)
                 .setPressure(pressure)
                 .setTable(table)
-                .setSensorConfig(sensorConfig)
                 .build();
+    }
+
+    private void updateStateAfterConnect() {
+        Log.d("MyTag", "Connected to device");
+        values.clear();
+        isConnected = true;
+        isConnectedLiveData.postValue(true);
+    }
+
+    private void resetStateAfterDisconnect() {
+        Log.d("MyTag", "Disconnected from device");
+        isConnected = false;
+        values.clear();
+        isFirstCommandSent = false;
+        isSecondCommandSent = false;
+        table.clear();
+        isConnectedLiveData.postValue(false);
+        Arrays.fill(value, (byte) 0);
     }
 }

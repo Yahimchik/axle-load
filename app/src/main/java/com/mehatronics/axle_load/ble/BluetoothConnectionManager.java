@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import com.mehatronics.axle_load.ble.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.entities.SensorConfig;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +31,10 @@ public class BluetoothConnectionManager {
 
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return gattCallbackHandler.getDeviceDetailsLiveData();
+    }
+
+    public LiveData<SensorConfig> getSensorConfigureLivaData() {
+        return gattCallbackHandler.getSensorConfigureLivaData();
     }
 
     public void clearDetails() {

@@ -6,6 +6,7 @@ import com.mehatronics.axle_load.ble.BleScanner;
 import com.mehatronics.axle_load.ble.BluetoothConnectionManager;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.entities.SensorConfig;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
 
 import java.util.List;
@@ -46,6 +47,10 @@ public class BluetoothRepository {
 
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return bluetoothConnectionManager.getDeviceDetailsLiveData();
+    }
+
+    public LiveData<SensorConfig> getSensorConfigureLivaData(){
+        return bluetoothConnectionManager.getSensorConfigureLivaData();
     }
 
     public void connectToDevice(Device device) {

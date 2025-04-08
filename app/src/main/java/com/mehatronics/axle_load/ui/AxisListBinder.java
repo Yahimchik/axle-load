@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui;
 
+import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
+
 import android.view.View;
 import android.widget.Button;
 
@@ -20,11 +22,8 @@ public class AxisListBinder {
 
     public AxisListBinder(View view, ConfigureViewModel configureViewModel) {
         sensorViewModel = new ViewModelProvider((ViewModelStoreOwner) view.getContext()).get(SensorViewModel.class);
-        RecyclerView recyclerView = view.findViewById(R.id.axisContainer);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         axisAdapter = new AxisAdapter(0, sensorViewModel, (LifecycleOwner) view.getContext());
-        recyclerView.setAdapter(axisAdapter);
+        initRecyclerView(view,R.id.axisContainer,axisAdapter);
 
         Button btnAxis1 = view.findViewById(R.id.btn_axis_1);
         Button btnAxis2 = view.findViewById(R.id.btn_axis_2);

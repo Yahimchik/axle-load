@@ -1,7 +1,8 @@
 package com.mehatronics.axle_load.ui;
 
+import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
+
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.CalibrationTableAdapter;
 import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.entities.SensorConfig;
 
 import java.util.ArrayList;
 
@@ -20,10 +22,24 @@ public class DeviceDetailsBinder {
 
     public DeviceDetailsBinder(View view) {
         this.view = view;
-        RecyclerView recyclerView = view.findViewById(R.id.calibrationRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         adapter = new CalibrationTableAdapter(new ArrayList<>());
-        recyclerView.setAdapter(adapter);
+        initRecyclerView(view, R.id.calibrationRecyclerView, adapter);
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    public void bindConfigure(SensorConfig sensorConfig) {
+        TextView messageDeliveryPeriodTextView = view.findViewById(R.id.messageDeliveryPeriodEditText);
+        TextView measurementPeriodTextView = view.findViewById(R.id.measurementPeriodEditText);
+        TextView distanceBetweenAxlesOneTwoTextView = view.findViewById(R.id.distanceBetweenAxlesOneTwoEditText);
+        TextView distanceBetweenAxlesTwoThreeTextView = view.findViewById(R.id.distanceBetweenAxlesTwoThreeEditText);
+        TextView distanceToWheelTextView = view.findViewById(R.id.distanceToWheelEditText);
+
+        messageDeliveryPeriodTextView.setText("Message delivery period, sec " + sensorConfig.getMessageDeliveryPeriod());
+        measurementPeriodTextView.setText("Measurement period, sec " + sensorConfig.getMeasurementPeriod());
+        distanceBetweenAxlesOneTwoTextView.setText("Distance between axles 1-2, mm " + sensorConfig.getDistanceBetweenAxlesOneTwoMm());
+        distanceBetweenAxlesTwoThreeTextView.setText("Distance between axles 2-3, mm " + sensorConfig.getDistanceBetweenAxlesTwoThreeMm());
+        distanceToWheelTextView.setText("Distance to fifth wheel coupling, mm " + sensorConfig.getDistanceToWheel());
     }
 
     @SuppressLint("SetTextI18n")
@@ -35,12 +51,6 @@ public class DeviceDetailsBinder {
         TextView weightTextView = view.findViewById(R.id.weightTextView);
         TextView pressureTextView = view.findViewById(R.id.pressureTextView);
 
-        TextView messageDeliveryPeriodTextView = view.findViewById(R.id.messageDeliveryPeriodEditText);
-        TextView measurementPeriodTextView = view.findViewById(R.id.measurementPeriodEditText);
-        TextView distanceBetweenAxlesOneTwoTextView = view.findViewById(R.id.distanceBetweenAxlesOneTwoEditText);
-        TextView distanceBetweenAxlesTwoThreeTextView = view.findViewById(R.id.distanceBetweenAxlesTwoThreeEditText);
-        TextView distanceToWheelTextView = view.findViewById(R.id.distanceToWheelEditText);
-
         deviceNameTextView.setText(deviceDetails.getDeviceName());
         firmwareVersionTextView.setText("Версия ПО: " + deviceDetails.getFirmwareVersion());
         hardwareVersionTextView.setText("Версия железа: " + deviceDetails.getHardWareVersion());
@@ -48,12 +58,12 @@ public class DeviceDetailsBinder {
         weightTextView.setText("Вес: " + deviceDetails.getWeight() + " Kg");
         pressureTextView.setText("Давление: " + deviceDetails.getPressure() + " kPa");
 
-        messageDeliveryPeriodTextView.setText("Message delivery period, sec " + deviceDetails.getSensorConfig().getMessageDeliveryPeriod());
-        measurementPeriodTextView.setText("Measurement period, sec " + deviceDetails.getSensorConfig().getMeasurementPeriod());
-        distanceBetweenAxlesOneTwoTextView.setText("Distance between axles 1-2, mm " + deviceDetails.getSensorConfig().getDistanceBetweenAxlesOneTwoMm());
-        distanceBetweenAxlesTwoThreeTextView.setText("Distance between axles 2-3, mm " + deviceDetails.getSensorConfig().getDistanceBetweenAxlesTwoThreeMm());
-        distanceToWheelTextView.setText("Distance to fifth wheel coupling, mm " + deviceDetails.getSensorConfig().getDistanceToWheel());
-
         adapter.updateData(deviceDetails.getTable());
     }
+
+//    private void initRecyclerView() {
+//        RecyclerView recyclerView = view.findViewById(R.id.calibrationRecyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+//        recyclerView.setAdapter(adapter);
+//    }
 }

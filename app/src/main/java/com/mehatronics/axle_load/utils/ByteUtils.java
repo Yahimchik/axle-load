@@ -1,6 +1,9 @@
 package com.mehatronics.axle_load.utils;
 
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
 
 import android.util.Log;
 
@@ -11,36 +14,61 @@ import com.mehatronics.axle_load.entities.SensorConfig;
 import java.util.List;
 
 public class ByteUtils {
-
-    public static SensorConfig convertBytesToConfiguration(byte[] bytes) {
-        return new SensorConfig.Builder()
-                .setMessageDeliveryPeriod(extracted(bytes, 23, 0xff, 22))
-                .setMeasurementPeriod(extracted(bytes, 25, 0xff, 24))
-                .setDistanceBetweenAxlesOneTwoMm(extracted1(bytes, 27, 26))
-                .setDistanceBetweenAxlesTwoThreeMm(extracted1(bytes, 29, 28))
-                .setDistanceToWheel(extracted1(bytes, 31, 30))
-                .build();
+    private static float intToFloat(int integer) {
+        return Float.intBitsToFloat(integer);
     }
 
-    private static short extracted1(byte[] bytes, int x1, int x2) {
-        short iTempShort = 0;
-        iTempShort |= (short) (bytes[x1] & 0xff);
-        iTempShort <<= 8;
-        iTempShort |= (short) (bytes[x2] & 0xff);
-        return iTempShort;
-    }
-
-    private static int extracted(byte[] bytes, int x, int x1, int x2) {
+    private static int parseIntFromBytes(byte[] bytes, int x1, int x2) {
         int iTemp = 0;
-        iTemp |= bytes[x] & x1;
+        iTemp |= bytes[x1] & ZERO_COMMAND_BINARY;
         iTemp <<= 8;
-        iTemp |= bytes[x2] & x1;
+        iTemp |= bytes[x2] & ZERO_COMMAND_BINARY;
         return iTemp;
     }
 
+    private static int convertToDetector(byte[] bytes, int i) {
+        int detector;
+        detector = 0;
+        detector |= bytes[i * 6 + 5] & ZERO_COMMAND_BINARY;
+        detector <<= 8;
+        detector |= bytes[i * 6 + 4] & ZERO_COMMAND_BINARY;
+        return detector;
+    }
+
+    private static int convertToMultiplier(byte[] bytes, int i) {
+        int multiplier = parseIntFromBytes(bytes, i * 6 + 9, i * 6 + 8);
+        multiplier <<= 8;
+        multiplier |= bytes[i * 6 + 7] & ZERO_COMMAND_BINARY;
+        multiplier <<= 8;
+        multiplier |= bytes[i * 6 + 6] & ZERO_COMMAND_BINARY;
+        return multiplier;
+    }
+
+    public static int convertByteToValue(byte[] bytes, int first, int second) {
+        return parseIntFromBytes(bytes, first, second);
+    }
+
+    public static int convertBytesToValue(byte[] bytes, int first, int second) {
+        return (bytes[first] & ZERO_COMMAND_BINARY) * 256 + (bytes[second] & ZERO_COMMAND_BINARY);
+    }
+
+    private static int getYearFromTwoBytes(byte[] bytes) {
+        int year = bytes[1] & ZERO_COMMAND_BINARY;
+        year = year << 8;
+        return year + (bytes[0] & ZERO_COMMAND_BINARY);
+    }
+
+    private static short parseShortFromBytes(byte[] bytes, int x1, int x2) {
+        short iTempShort = 0;
+        iTempShort |= (short) (bytes[x1] & ZERO_COMMAND_BINARY);
+        iTempShort <<= 8;
+        iTempShort |= (short) (bytes[x2] & ZERO_COMMAND_BINARY);
+        return iTempShort;
+    }
+
     public static void convertBytesToCalibrationTable(byte[] bytes, List<CalibrationTable> table) {
-        if ((bytes[0] & 0xff) == 0x01) {
-            if ((bytes[1] & 0xff) == 0x00) {
+        if ((bytes[0] & ZERO_COMMAND_BINARY) == FIRST_COMMAND) {
+            if ((bytes[1] & ZERO_COMMAND_BINARY) == ZERO_COMMAND_DECIMAL) {
                 for (int i = 0; i < 9; i++) {
                     int detector = convertToDetector(bytes, i);
 
@@ -61,38 +89,17 @@ public class ByteUtils {
             }
         }
     }
-
-    private static float intToFloat(int integer) {
-        return Float.intBitsToFloat(integer);
+    
+    public static SensorConfig convertBytesToConfiguration(byte[] bytes) {
+        return new SensorConfig.Builder()
+                .setMessageDeliveryPeriod(parseIntFromBytes(bytes, 23, 22))
+                .setMeasurementPeriod(parseIntFromBytes(bytes, 25, 24))
+                .setDistanceBetweenAxlesOneTwoMm(parseShortFromBytes(bytes, 27, 26))
+                .setDistanceBetweenAxlesTwoThreeMm(parseShortFromBytes(bytes, 29, 28))
+                .setDistanceToWheel(parseShortFromBytes(bytes, 31, 30))
+                .build();
     }
-
-    private static int convertToDetector(byte[] bytes, int i) {
-        int detector;
-        detector = 0;
-        detector |= bytes[i * 6 + 5] & 0xff;
-        detector <<= 8;
-        detector |= bytes[i * 6 + 4] & 0xff;
-        return detector;
-    }
-
-    private static int convertToMultiplier(byte[] bytes, int i) {
-        int multiplier = extracted(bytes, i * 6 + 9, 0xff, i * 6 + 8);
-        multiplier <<= 8;
-        multiplier |= bytes[i * 6 + 7] & 0xff;
-        multiplier <<= 8;
-        multiplier |= bytes[i * 6 + 6] & 0xff;
-        return multiplier;
-    }
-
-    public static int convertByteToValue(byte[] bytes, int first, int second) {
-        int value = extracted(bytes, first, ZERO_COMMAND_BINARY, second);
-        return value;
-    }
-
-    public static int convertBytesToValue(byte[] bytes, int first, int second) {
-        return (bytes[first] & ZERO_COMMAND_BINARY) * 256 + (bytes[second] & ZERO_COMMAND_BINARY);
-    }
-
+    
     public static DeviceDate getDate(byte[] bytes) {
         if (bytes.length == 7) {
             return createDeviceDate(bytes[3], bytes[2], getYearFromTwoBytes(bytes));
@@ -100,12 +107,6 @@ public class ByteUtils {
             return createDeviceDate(bytes[2], bytes[1], bytes[0]);
         }
         return new DeviceDate.Builder().build();
-    }
-
-    private static int getYearFromTwoBytes(byte[] bytes) {
-        int year = bytes[1] & ZERO_COMMAND_BINARY;
-        year = year << 8;
-        return year + (bytes[0] & ZERO_COMMAND_BINARY);
     }
 
     private static DeviceDate createDeviceDate(int year, int month, int day) {

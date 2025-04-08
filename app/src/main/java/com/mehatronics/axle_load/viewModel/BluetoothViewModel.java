@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.mehatronics.axle_load.ble.repository.BluetoothRepository;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.entities.SensorConfig;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class BluetoothViewModel extends ViewModel {
 
     public LiveData<DeviceDetails> getDeviceDetails() {
         return bluetoothRepository.getDeviceDetailsLiveData();
+    }
+
+    public LiveData<SensorConfig> getSensorConfigureLivaData(){
+        return bluetoothRepository.getSensorConfigureLivaData();
     }
 
     public void connectToDevice(Device device) {
