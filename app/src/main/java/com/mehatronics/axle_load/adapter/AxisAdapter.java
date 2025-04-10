@@ -1,9 +1,5 @@
 package com.mehatronics.axle_load.adapter;
 
-import static com.mehatronics.axle_load.entities.enums.SideType.CENTER;
-import static com.mehatronics.axle_load.entities.enums.SideType.LEFT;
-import static com.mehatronics.axle_load.entities.enums.SideType.RIGHT;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;

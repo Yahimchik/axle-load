@@ -10,7 +10,7 @@
         android:id="@+id/sensorName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sensor Name"
+        android:text="@string/device_name"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@android:color/black" />
@@ -19,7 +19,7 @@
         android:id="@+id/macAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MAC Address"
+        android:text="@string/device_mac"
         android:textSize="14sp"
-        android:textColor="@android:color/darker_gray" />
+        android:textColor="@color/black" />
 </LinearLayout>

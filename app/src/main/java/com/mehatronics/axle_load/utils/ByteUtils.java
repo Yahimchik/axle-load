@@ -1,7 +1,6 @@
 package com.mehatronics.axle_load.utils;
 
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
 
@@ -18,11 +17,29 @@ public class ByteUtils {
         return Float.intBitsToFloat(integer);
     }
 
+    private static int parseIntFromByte(byte[] bytes, int x1) {
+        int iTemp = 0;
+        iTemp |= bytes[x1] & ZERO_COMMAND_BINARY;
+        return iTemp;
+    }
+
     private static int parseIntFromBytes(byte[] bytes, int x1, int x2) {
         int iTemp = 0;
         iTemp |= bytes[x1] & ZERO_COMMAND_BINARY;
         iTemp <<= 8;
         iTemp |= bytes[x2] & ZERO_COMMAND_BINARY;
+        return iTemp;
+    }
+
+    private static int parseIntFromBytes(byte[] bytes, int x) {
+        int iTemp = 0;
+        iTemp |= bytes[x] & ZERO_COMMAND_BINARY;
+        iTemp <<= 8;
+        iTemp |= bytes[x - 1] & ZERO_COMMAND_BINARY;
+        iTemp <<= 8;
+        iTemp |= bytes[x - 2] & ZERO_COMMAND_BINARY;
+        iTemp <<= 8;
+        iTemp |= bytes[x - 3] & ZERO_COMMAND_BINARY;
         return iTemp;
     }
 
@@ -89,17 +106,38 @@ public class ByteUtils {
             }
         }
     }
-    
+
+    public static String extractStringFromBytes(byte[] data, int startIndex, int length) {
+        if (data == null || data.length < startIndex + length) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            result.append((char) (data[startIndex + i] & 0xFF));
+        }
+
+        return result.toString();
+    }
+
     public static SensorConfig convertBytesToConfiguration(byte[] bytes) {
         return new SensorConfig.Builder()
+                .setFlagSystem(parseIntFromBytes(bytes, 7))
+                .setConfigSystem(parseIntFromBytes(bytes, 11))
+                .setMultiplier(Float.intBitsToFloat(parseIntFromBytes(bytes, 15)))
+                .setOffset(Float.intBitsToFloat(parseIntFromBytes(bytes, 19)))
+                .setBatteryMicrovoltsPerStep(parseIntFromBytes(bytes, 21, 20))
                 .setMessageDeliveryPeriod(parseIntFromBytes(bytes, 23, 22))
                 .setMeasurementPeriod(parseIntFromBytes(bytes, 25, 24))
                 .setDistanceBetweenAxlesOneTwoMm(parseShortFromBytes(bytes, 27, 26))
                 .setDistanceBetweenAxlesTwoThreeMm(parseShortFromBytes(bytes, 29, 28))
                 .setDistanceToWheel(parseShortFromBytes(bytes, 31, 30))
+                .setConfigType(parseIntFromByte(bytes, 32))
+                .setInstallationPoint(parseIntFromByte(bytes, 33))
+                .setStateNumber(extractStringFromBytes(bytes, 34, 10))
                 .build();
     }
-    
+
     public static DeviceDate getDate(byte[] bytes) {
         if (bytes.length == 7) {
             return createDeviceDate(bytes[3], bytes[2], getYearFromTwoBytes(bytes));

@@ -20,9 +20,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="Weight value"
             android:gravity="start"
-            android:text="Weight"
+            android:text="@string/weight"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -33,9 +32,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="Pressure value"
             android:gravity="end"
-            android:text="Pressure"
+            android:text="@string/pressure"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />

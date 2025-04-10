@@ -1,5 +1,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color">
@@ -51,62 +52,112 @@
 
                     <TextView
                         android:id="@+id/firmwareVersionTextView"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/firmware_version"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
 
                     <TextView
+                        android:id="@+id/firmwareVersionValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/firmwareVersionTextView"
+                        app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
+
+                    <TextView
                         android:id="@+id/hardwareVersionTextView"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/hardware_version"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/firmwareVersionTextView" />
 
                     <TextView
+                        android:id="@+id/hardwareVersionValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/hardwareVersionTextView"
+                        app:layout_constraintTop_toBottomOf="@id/firmwareVersionTextView" />
+
+                    <TextView
                         android:id="@+id/weightTextView"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/weight"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/hardwareVersionTextView" />
 
                     <TextView
+                        android:id="@+id/weightValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/weightTextView"
+                        app:layout_constraintTop_toBottomOf="@id/hardwareVersionTextView" />
+
+                    <TextView
                         android:id="@+id/pressureTextView"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/pressure"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/weightTextView" />
 
                     <TextView
+                        android:id="@+id/pressureValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/pressureTextView"
+                        app:layout_constraintTop_toBottomOf="@id/weightTextView" />
+
+                    <TextView
                         android:id="@+id/batteryLevelTextView"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/battery"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
+
+                    <TextView
+                        android:id="@+id/batteryLevelValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/batteryLevelTextView"
                         app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -144,7 +195,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/calibrationRecyclerView"
                         android:layout_width="0dp"
@@ -181,93 +231,175 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Configuration Settings"
-                        android:textColor="@android:color/black"
+                        android:text="@string/configuration_settings"
+                        android:textColor="#000000"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <!-- Message Delivery Period -->
+                    <TextView
+                        android:id="@+id/messageDeliveryLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/message_delivery_period"
+                        android:textSize="16sp"
+                        android:labelFor="@id/messageDeliveryPeriodEditText"
+                        app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/messageDeliveryPeriodEditText"
+                        android:layout_marginTop="12dp"
+                        android:textColor="#000000" />
+
                     <EditText
                         android:id="@+id/messageDeliveryPeriodEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Enter message delivery period"
-                        android:text="0"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
+                        android:layout_width="80dp"
+                        android:layout_height="48dp"
                         android:inputType="number"
+                        android:autofillHints="postalCode"
                         android:background="@android:drawable/edit_text"
+                        android:gravity="center"
                         android:padding="8dp"
+                        android:textColor="#000000"
+                        app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView"
+                        app:layout_constraintStart_toEndOf="@id/messageDeliveryLabel"
                         app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="12dp" />
+
+                    <!-- Measurement Period -->
+                    <TextView
+                        android:id="@+id/measurementPeriodLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/measurement_period"
+                        android:textSize="16sp"
+                        android:labelFor="@id/measurementPeriodEditText"
+                        app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView" />
+                        app:layout_constraintEnd_toStartOf="@id/measurementPeriodEditText"
+                        android:layout_marginTop="8dp"
+                        android:textColor="#000000" />
 
                     <EditText
                         android:id="@+id/measurementPeriodEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Enter measurement period"
-                        android:text="0"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
+                        android:layout_width="80dp"
+                        android:layout_height="48dp"
                         android:inputType="number"
+                        android:autofillHints="postalCode"
                         android:background="@android:drawable/edit_text"
+                        android:gravity="center"
                         android:padding="8dp"
+                        android:textColor="#000000"
+                        app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText"
+                        app:layout_constraintStart_toEndOf="@id/measurementPeriodLabel"
                         app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="8dp" />
+                    <!-- Data Transmission Mode Spinner -->
+                    <TextView
+                        android:id="@+id/configType"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/config_type"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText" />
+                        app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"
+                        android:layout_marginTop="8dp" />
+
+                    <Spinner
+                        android:id="@+id/configTypeSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:padding="8dp"
+                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText"
+                        app:layout_constraintStart_toEndOf="@id/configType"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <!-- Power Mode Spinner -->
+                    <TextView
+                        android:id="@+id/installationPoint"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/installation_point"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        app:layout_constraintTop_toBottomOf="@id/configTypeSpinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/installationPointSpinner"
+                        android:layout_marginTop="8dp" />
+
+                    <Spinner
+                        android:id="@+id/installationPointSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:padding="8dp"
+                        app:layout_constraintTop_toBottomOf="@id/configTypeSpinner"
+                        app:layout_constraintStart_toEndOf="@id/installationPoint"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <!-- Distance to Wheel EditText -->
+                    <TextView
+                        android:id="@+id/distanceToWheelLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/stateNumber"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        app:layout_constraintTop_toBottomOf="@id/installationPointSpinner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/stateNumber"
+                        android:layout_marginTop="8dp" />
 
                     <EditText
-                        android:id="@+id/distanceBetweenAxlesOneTwoEditText"
+                        android:id="@+id/stateNumber"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_marginTop="8dp"
-                        android:hint="Enter distance between axles 1-2 (mm)"
-                        android:text="0"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:inputType="number"
+                        android:autofillHints="postalCode"
                         android:background="@android:drawable/edit_text"
+                        android:gravity="center"
+                        android:hint="@string/stateNumber"
+                        android:inputType="text"
+                        android:maxLength="10"
                         android:padding="8dp"
+                        android:textAllCaps="true"
+                        android:textColor="#E41616"
+                        android:textColorHint="#757575"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
+                        app:layout_constraintTop_toBottomOf="@id/installationPointSpinner"
+                        tools:ignore="TextFields,VisualLintTextFieldSize" />
 
-                    <EditText
-                        android:id="@+id/distanceBetweenAxlesTwoThreeEditText"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Enter distance between axles 2-3 (mm)"
-                        android:text="0"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:inputType="number"
-                        android:background="@android:drawable/edit_text"
-                        android:padding="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/distanceBetweenAxlesOneTwoEditText" />
 
-                    <EditText
-                        android:id="@+id/distanceToWheelEditText"
-                        android:layout_width="0dp"
+                    <Button
+                        android:id="@+id/saveConfigurationButton"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:hint="Enter distance to wheel (mm)"
-                        android:text="0"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        android:inputType="number"
-                        android:background="@android:drawable/edit_text"
-                        android:padding="8dp"
+                        android:text="@string/save_button"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:elevation="4dp"
+                        app:cornerRadius="12dp"
+                        app:layout_constraintTop_toBottomOf="@id/stateNumber"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/distanceBetweenAxlesTwoThreeEditText" />
+                        android:layout_marginTop="16dp"
+                        />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 

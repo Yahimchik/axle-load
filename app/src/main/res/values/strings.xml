@@ -28,6 +28,7 @@
     <string name="disconnect_button">Disconnect</string>
     <string name="configure_the_settings">Configure The Settings</string>
 
+    <string name="zero">0</string>
     <string name="one">1</string>
     <string name="two">2</string>
     <string name="three">3</string>
@@ -42,4 +43,17 @@
 
     <string name="choose_sensor">Choose sensor</string>
     <string name="calibration_table">Calibration Table</string>
+
+    <string name="configuration_settings">Configuration Settings</string>
+    <string name="message_delivery_period">Message delivery period (s)</string>
+    <string name="measurement_period">Measurement period (s)</string>
+    <string name="config_type">Config Type</string>
+    <string name="installation_point">Installation Point</string>
+    <string name="stateNumber">State Number</string>
+
+    <string name="axle_center">Axle center</string>
+    <string name="axle_right">Axle right</string>
+    <string name="axle_left">Axle left</string>
+
+    <string name="save_button">SAVE</string>
 </resources>

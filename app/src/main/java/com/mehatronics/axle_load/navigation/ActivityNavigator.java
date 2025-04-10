@@ -1,10 +1,12 @@
 package com.mehatronics.axle_load.navigation;
 
+import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DDS_BTN;
+import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DPS_BTN;
+import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DSS_BTN;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.widget.Button;
-
-import com.mehatronics.axle_load.R;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,9 +41,9 @@ public class ActivityNavigator {
 
     private List<Button> searchButtons(Activity activity) {
         return Arrays.asList(
-                activity.findViewById(R.id.buttonDPS),
-                activity.findViewById(R.id.buttonDSS),
-                activity.findViewById(R.id.buttonDDS)
+                activity.findViewById(DPS_BTN),
+                activity.findViewById(DSS_BTN),
+                activity.findViewById(DDS_BTN)
         );
     }
 }

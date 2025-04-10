@@ -85,7 +85,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
                     if (isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                             && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
                         areCharacteristicsReads = false;
-                        sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
+                        SensorConfig sensorConfig = convertBytesToConfiguration(bytes);
+                        Log.d("MyTag",sensorConfig.toString());
+
+                        sensorConfigLiveData.postValue(sensorConfig);
                     }
                     if (isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
                         convertBytesToCalibrationTable(bytes, table);

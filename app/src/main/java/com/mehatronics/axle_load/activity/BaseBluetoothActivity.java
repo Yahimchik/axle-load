@@ -58,28 +58,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         bluetoothViewModel.disconnect();
     }
 
-    public void resetDeviceNavigatorState() {
-        if (fragmentNavigator != null) {
-            fragmentNavigator.resetState();
-        }
-    }
-
-    protected void initUI() {
-        loadingManager.init(findViewById(content));
-        deviceListBinder = new DeviceListBinder(findViewById(content), bluetoothHandler::onDeviceSelected);
-        initConfigureButton();
-    }
-
-    protected void setupObservers() {
-        bluetoothViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
-        bluetoothViewModel.getDeviceDetails().observe(this, bluetoothHandler::handleDeviceDetails);
-        bluetoothViewModel.isConnectedLiveData().observe(this, bluetoothHandler::handleConnectionState);
-    }
-
-    protected void setupBluetooth(DeviceType deviceType) {
-        bluetoothViewModel.startScan(deviceType);
-    }
-
     @Override
     public void showFragment() {
         fragmentNavigator.showFragment();
@@ -113,5 +91,27 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     @Override
     public void initConfigureButton() {
         fragmentNavigator.initConfigureButton(findViewById(configureButton));
+    }
+
+    public void resetDeviceNavigatorState() {
+        if (fragmentNavigator != null) {
+            fragmentNavigator.resetState();
+        }
+    }
+
+    protected void initUI() {
+        loadingManager.init(findViewById(content));
+        deviceListBinder = new DeviceListBinder(findViewById(content), bluetoothHandler::onDeviceSelected);
+        initConfigureButton();
+    }
+
+    protected void setupObservers() {
+        bluetoothViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
+        bluetoothViewModel.getDeviceDetails().observe(this, bluetoothHandler::handleDeviceDetails);
+        bluetoothViewModel.isConnectedLiveData().observe(this, bluetoothHandler::handleConnectionState);
+    }
+
+    protected void setupBluetooth(DeviceType deviceType) {
+        bluetoothViewModel.startScan(deviceType);
     }
 }

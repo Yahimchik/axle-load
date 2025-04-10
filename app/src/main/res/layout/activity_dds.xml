@@ -18,7 +18,8 @@
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="VisualLintOverlap" />
 
     <TextView
         android:id="@+id/ddsTextView"
@@ -30,7 +31,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/configureButton" />
+        app:layout_constraintTop_toBottomOf="@id/configureButton"
+        tools:ignore="VisualLintOverlap" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

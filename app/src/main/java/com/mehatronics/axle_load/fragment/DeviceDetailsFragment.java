@@ -1,16 +1,20 @@
 package com.mehatronics.axle_load.fragment;
 
+import static java.lang.Boolean.TRUE;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
+import com.mehatronics.axle_load.entities.SensorConfig;
 import com.mehatronics.axle_load.ui.DeviceDetailsBinder;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
@@ -33,7 +37,6 @@ public class DeviceDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_device_details, container, false);
 
         deviceDetailsBinder = new DeviceDetailsBinder(view);
-
         bluetoothViewModel.getDeviceDetails().observe(getViewLifecycleOwner(), deviceDetails -> {
             if (deviceDetails != null) {
                 deviceDetailsBinder.bind(deviceDetails);
@@ -41,8 +44,16 @@ public class DeviceDetailsFragment extends Fragment {
         });
 
         bluetoothViewModel.getSensorConfigureLivaData().observe(getViewLifecycleOwner(), sensorConfig -> {
-            if (sensorConfig != null){
+            if (sensorConfig != null) {
                 deviceDetailsBinder.bindConfigure(sensorConfig);
+            }
+        });
+
+        Button saveButton = view.findViewById(R.id.saveConfigurationButton);
+        saveButton.setOnClickListener(v -> {
+            SensorConfig config = bluetoothViewModel.getSensorConfigureLivaData().getValue();
+            if (config != null) {
+                Log.d("MyTag", config.toString());
             }
         });
 

@@ -7,7 +7,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Заголовок оси -->
     <TextView
         android:id="@+id/axisTitle"
         android:layout_width="wrap_content"
@@ -31,6 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:contentDescription="@string/axle_left"
             android:src="@drawable/axle_left" />
 
         <ImageView
@@ -38,6 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:contentDescription="@string/axle_center"
             android:src="@drawable/axle_center" />
 
         <ImageView
@@ -45,10 +46,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:contentDescription="@string/axle_right"
             android:src="@drawable/axle_right" />
     </LinearLayout>
 
-    <!-- Кнопка для настройки оси -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
