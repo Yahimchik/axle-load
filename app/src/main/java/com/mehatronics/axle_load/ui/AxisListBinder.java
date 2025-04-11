@@ -2,13 +2,7 @@ package com.mehatronics.axle_load.ui;
 
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLES_BTN_IDS;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLE_BTN_1;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLE_BTN_2;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLE_BTN_3;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLE_BTN_4;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLE_BTN_5;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 

@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.viewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -48,8 +50,8 @@ public class BluetoothViewModel extends ViewModel {
         return bluetoothRepository.getDeviceDetailsLiveData();
     }
 
-    public LiveData<SensorConfig> getSensorConfigureLivaData(){
-        return bluetoothRepository.getSensorConfigureLivaData();
+    public LiveData<SensorConfig> getSensorConfigure(){
+        return bluetoothRepository.getSensorConfigureLiveData();
     }
 
     public void connectToDevice(Device device) {
@@ -62,6 +64,15 @@ public class BluetoothViewModel extends ViewModel {
 
     public void clearDetails() {
         bluetoothRepository.clearDetails();
+    }
+
+    public void saveSensorConfiguration() {
+        SensorConfig config = getSensorConfigure().getValue();
+        if (config != null) {
+            bluetoothRepository.saveConfiguration();
+        } else {
+            Log.w("MyTag", "Sensor config is null");
+        }
     }
 }
 

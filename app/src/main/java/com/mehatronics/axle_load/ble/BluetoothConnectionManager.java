@@ -22,6 +22,7 @@ public class BluetoothConnectionManager {
     private BluetoothGatt bluetoothGatt;
     private final BluetoothGattCallbackHandler gattCallbackHandler;
     private final Context applicationContext;
+    private BluetoothDevice bluetoothDevice;
 
     @Inject
     public BluetoothConnectionManager(@ApplicationContext Context context) {
@@ -33,8 +34,8 @@ public class BluetoothConnectionManager {
         return gattCallbackHandler.getDeviceDetailsLiveData();
     }
 
-    public LiveData<SensorConfig> getSensorConfigureLivaData() {
-        return gattCallbackHandler.getSensorConfigureLivaData();
+    public LiveData<SensorConfig> getSensorConfigureLiveData() {
+        return gattCallbackHandler.getSensorConfigureLiveData();
     }
 
     public void clearDetails() {
@@ -45,7 +46,7 @@ public class BluetoothConnectionManager {
         disconnect();
         gattCallbackHandler.resetState();
         Log.d("MyTag", "Connecting to device...");
-        BluetoothDevice bluetoothDevice = device.getDevice();
+         bluetoothDevice = device.getDevice();
         try {
             bluetoothGatt = bluetoothDevice.connectGatt(
                     applicationContext, false, gattCallbackHandler
@@ -53,6 +54,11 @@ public class BluetoothConnectionManager {
         } catch (SecurityException e) {
             Log.d("MyTag", "Security exception: " + e.getMessage());
         }
+    }
+
+    public void saveConfiguration() {
+        gattCallbackHandler.save();
+        gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
     }
 
     public LiveData<Boolean> isConnectedLiveData() {

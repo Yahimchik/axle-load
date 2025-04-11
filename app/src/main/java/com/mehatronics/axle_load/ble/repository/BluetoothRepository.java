@@ -49,12 +49,16 @@ public class BluetoothRepository {
         return bluetoothConnectionManager.getDeviceDetailsLiveData();
     }
 
-    public LiveData<SensorConfig> getSensorConfigureLivaData(){
-        return bluetoothConnectionManager.getSensorConfigureLivaData();
+    public LiveData<SensorConfig> getSensorConfigureLiveData(){
+        return bluetoothConnectionManager.getSensorConfigureLiveData();
     }
 
     public void connectToDevice(Device device) {
         bluetoothConnectionManager.connectToDevice(device);
+    }
+
+    public void saveConfiguration(){
+        bluetoothConnectionManager.saveConfiguration();
     }
 
     public void disconnect() {

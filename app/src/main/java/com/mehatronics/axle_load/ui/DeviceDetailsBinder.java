@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,20 +36,82 @@ public class DeviceDetailsBinder {
     private final View view;
     private final CalibrationTableAdapter adapter;
 
+    private final EditText messageDeliveryPeriod;
+    private final EditText measurementPeriod;
+    private final EditText stateNumber;
+
+    private final TextView firmwareVersionTextView;
+    private final TextView hardwareVersionTextView;
+    private final TextView batteryLevelTextView;
+    private final TextView deviceNameTextView;
+    private final TextView weightTextView;
+    private final TextView pressureTextView;
+
+    private final Spinner installationPointSpinner;
+    private final Button saveButton;
+
+
     public DeviceDetailsBinder(View view) {
         this.view = view;
+
         adapter = new CalibrationTableAdapter(new ArrayList<>());
         initRecyclerView(view, R.id.calibrationRecyclerView, adapter);
+
+        messageDeliveryPeriod = view.findViewById(R.id.messageDeliveryPeriodEditText);
+        measurementPeriod = view.findViewById(R.id.measurementPeriodEditText);
+        stateNumber = view.findViewById(R.id.stateNumber);
+
+        installationPointSpinner = view.findViewById(R.id.installationPointSpinner);
+        saveButton = view.findViewById(R.id.saveConfigurationButton);
+
+        deviceNameTextView = view.findViewById(R.id.deviceNameTextView);
+        firmwareVersionTextView = view.findViewById(R.id.firmwareVersionValueTextView);
+        hardwareVersionTextView = view.findViewById(R.id.hardwareVersionValueTextView);
+
+        batteryLevelTextView = view.findViewById(R.id.batteryLevelValueTextView);
+        weightTextView = view.findViewById(R.id.weightValueTextView);
+        pressureTextView = view.findViewById(R.id.pressureValueTextView);
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void bind(DeviceDetails deviceDetails) {
+        deviceNameTextView.setText(setDeviceName(deviceDetails));
+        firmwareVersionTextView.setText(setFirmwareVersion(deviceDetails));
+        hardwareVersionTextView.setText(setHardWareVersion(deviceDetails));
+        batteryLevelTextView.setText(setBatteryLevel(deviceDetails));
+        weightTextView.setText(setWeight(deviceDetails));
+        pressureTextView.setText(setPressure(deviceDetails));
+
+        adapter.updateData(deviceDetails.getTable());
     }
 
     @SuppressLint("SetTextI18n")
     public void bindConfigure(SensorConfig sensorConfig) {
-        EditText messageDeliveryPeriod = view.findViewById(R.id.messageDeliveryPeriodEditText);
-        EditText measurementPeriod = view.findViewById(R.id.measurementPeriodEditText);
-        EditText stateNumber = view.findViewById(R.id.stateNumber);
+        setUpInstallationPoint(sensorConfig);
+        populateSensorFields(sensorConfig);
+        attachSensorListeners(sensorConfig);
+        Log.d("MyTag", "Installation point: " + sensorConfig.getInstallationPoint());
+    }
 
-        Spinner installationPointSpinner = view.findViewById(R.id.installationPointSpinner);
+    public void setupSaveButton(View.OnClickListener listener) {
+        saveButton.setOnClickListener(listener);
+    }
 
+    private void populateSensorFields(SensorConfig sensorConfig) {
+        messageDeliveryPeriod.setText(setMessageDeliveryPeriod(sensorConfig));
+        measurementPeriod.setText(setMeasurementPeriod(sensorConfig));
+        stateNumber.setText(setStateNumber(sensorConfig));
+    }
+
+    private void attachSensorListeners(SensorConfig sensorConfig) {
+        messageDeliveryPeriod.addTextChangedListener(createWatcher(value
+                -> sensorConfig.setMessageDeliveryPeriod(toInt(value))));
+        measurementPeriod.addTextChangedListener(createWatcher(value
+                -> sensorConfig.setMeasurementPeriod(toInt(value))));
+        stateNumber.addTextChangedListener(createWatcher(sensorConfig::setStateNumber));
+    }
+
+    private void setUpInstallationPoint(SensorConfig sensorConfig) {
         List<String> pointOptions = new ArrayList<>();
         for (int i = 1; i <= 8; i++) {
             pointOptions.add(getInstallationPointDescription(i));
@@ -75,20 +138,6 @@ public class DeviceDetailsBinder {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-        messageDeliveryPeriod.setText(setMessageDeliveryPeriod(sensorConfig));
-        measurementPeriod.setText(setMeasurementPeriod(sensorConfig));
-        stateNumber.setText(setStateNumber(sensorConfig));
-
-        Log.d("MyTag", "Installation point: " + sensorConfig.getInstallationPoint());
-
-        messageDeliveryPeriod.addTextChangedListener(createWatcher(value ->
-                sensorConfig.setMessageDeliveryPeriod(toInt(value))));
-
-        measurementPeriod.addTextChangedListener(createWatcher(value ->
-                sensorConfig.setMeasurementPeriod(toInt(value))));
-
-        stateNumber.addTextChangedListener(createWatcher(sensorConfig::setStateNumber));
     }
 
     private int toInt(String value) {
@@ -120,24 +169,5 @@ public class DeviceDetailsBinder {
                 onChanged.accept(s.toString());
             }
         };
-    }
-
-    @SuppressLint("SetTextI18n")
-    public void bind(DeviceDetails deviceDetails) {
-        TextView deviceNameTextView = view.findViewById(R.id.deviceNameTextView);
-        TextView firmwareVersionTextView = view.findViewById(R.id.firmwareVersionValueTextView);
-        TextView hardwareVersionTextView = view.findViewById(R.id.hardwareVersionValueTextView);
-        TextView batteryLevelTextView = view.findViewById(R.id.batteryLevelValueTextView);
-        TextView weightTextView = view.findViewById(R.id.weightValueTextView);
-        TextView pressureTextView = view.findViewById(R.id.pressureValueTextView);
-
-        deviceNameTextView.setText(setDeviceName(deviceDetails));
-        firmwareVersionTextView.setText(setFirmwareVersion(deviceDetails));
-        hardwareVersionTextView.setText(setHardWareVersion(deviceDetails));
-        batteryLevelTextView.setText(setBatteryLevel(deviceDetails));
-        weightTextView.setText(setWeight(deviceDetails));
-        pressureTextView.setText(setPressure(deviceDetails));
-
-        adapter.updateData(deviceDetails.getTable());
     }
 }
