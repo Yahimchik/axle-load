@@ -78,6 +78,7 @@ public class DeviceDetailsBinder {
         deviceNameTextView.setText(setDeviceName(deviceDetails));
         firmwareVersionTextView.setText(setFirmwareVersion(deviceDetails));
         hardwareVersionTextView.setText(setHardWareVersion(deviceDetails));
+
         batteryLevelTextView.setText(setBatteryLevel(deviceDetails));
         weightTextView.setText(setWeight(deviceDetails));
         pressureTextView.setText(setPressure(deviceDetails));
@@ -90,7 +91,6 @@ public class DeviceDetailsBinder {
         setUpInstallationPoint(sensorConfig);
         populateSensorFields(sensorConfig);
         attachSensorListeners(sensorConfig);
-        Log.d("MyTag", "Installation point: " + sensorConfig.getInstallationPoint());
     }
 
     public void setupSaveButton(View.OnClickListener listener) {
@@ -113,7 +113,7 @@ public class DeviceDetailsBinder {
 
     private void setUpInstallationPoint(SensorConfig sensorConfig) {
         List<String> pointOptions = new ArrayList<>();
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 6; i++) {
             pointOptions.add(getInstallationPointDescription(i));
         }
 

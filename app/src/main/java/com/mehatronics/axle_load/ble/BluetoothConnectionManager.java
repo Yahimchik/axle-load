@@ -22,7 +22,6 @@ public class BluetoothConnectionManager {
     private BluetoothGatt bluetoothGatt;
     private final BluetoothGattCallbackHandler gattCallbackHandler;
     private final Context applicationContext;
-    private BluetoothDevice bluetoothDevice;
 
     @Inject
     public BluetoothConnectionManager(@ApplicationContext Context context) {
@@ -46,7 +45,7 @@ public class BluetoothConnectionManager {
         disconnect();
         gattCallbackHandler.resetState();
         Log.d("MyTag", "Connecting to device...");
-         bluetoothDevice = device.getDevice();
+        BluetoothDevice bluetoothDevice = device.getDevice();
         try {
             bluetoothGatt = bluetoothDevice.connectGatt(
                     applicationContext, false, gattCallbackHandler
@@ -57,7 +56,7 @@ public class BluetoothConnectionManager {
     }
 
     public void saveConfiguration() {
-        gattCallbackHandler.save();
+        gattCallbackHandler.setConfigurationSaved();
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
     }
 

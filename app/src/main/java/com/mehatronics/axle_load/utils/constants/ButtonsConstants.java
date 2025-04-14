@@ -7,7 +7,7 @@ public class ButtonsConstants {
     public static int DSS_BTN = R.id.buttonDSS;
     public static int DDS_BTN = R.id.buttonDDS;
     public static int AXLE_BTN_1 = R.id.btn_axis_1;
-    public static int AXLE_BTN_2 = R.id.btn_axis_1;
+    public static int AXLE_BTN_2 = R.id.btn_axis_2;
     public static int AXLE_BTN_3 = R.id.btn_axis_3;
     public static int AXLE_BTN_4 = R.id.btn_axis_4;
     public static int AXLE_BTN_5 = R.id.btn_axis_5;

@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.ui;
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.AXLES_BTN_IDS;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,10 +28,11 @@ public class AxisListBinder {
     }
 
     private void bindAxisButtons(View view, ConfigureViewModel configureViewModel) {
-        for (Integer btn : AXLES_BTN_IDS) {
-            Button button = view.findViewById(btn);
-            final int axisNumber = btn + 1;
-            button.setOnClickListener(v -> configureViewModel.setNumberOfAxes(axisNumber));
+        for (int i = 0; i < AXLES_BTN_IDS.length; ++i) {
+            Button button = view.findViewById(AXLES_BTN_IDS[i]);
+            final int num = i + 1;
+            button.setOnClickListener(v -> configureViewModel.setNumberOfAxes(num));
+            Log.d("MyTag", String.valueOf(num));
         }
     }
 

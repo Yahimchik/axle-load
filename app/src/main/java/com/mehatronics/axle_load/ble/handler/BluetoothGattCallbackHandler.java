@@ -1,19 +1,12 @@
 package com.mehatronics.axle_load.ble.handler;
 
-import static com.mehatronics.axle_load.entities.enums.CharacteristicType.PRESSURE;
-import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
-import static com.mehatronics.axle_load.utils.ByteUtils.stringToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToFourBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToTwoBytes;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToBattery;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToDate;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
+import static com.mehatronics.axle_load.utils.ByteUtils.stringToBytes;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVENTY_SEVEN;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
@@ -31,10 +24,14 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mehatronics.axle_load.ble.executor.GattCommandExecutor;
+import com.mehatronics.axle_load.ble.manager.GattConnectionManager;
+import com.mehatronics.axle_load.ble.parser.GattDataParser;
+import com.mehatronics.axle_load.command.CommandStateHandler;
+import com.mehatronics.axle_load.command.factory.impl.DefaultCommandStateFactory;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
-import com.mehatronics.axle_load.entities.enums.CommandState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +40,6 @@ import java.util.List;
 import java.util.Queue;
 
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
-    private final MutableLiveData<Boolean> isConnectedLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<SensorConfig> sensorConfigLiveData = new MutableLiveData<>();
     private final Queue<BluetoothGattCharacteristic> characteristicsQueue = new LinkedList<>();
@@ -54,18 +50,26 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private boolean isConfigurationSaved = false;
     private boolean isConnected = false;
     private final byte[] value = new byte[68];
-    private CommandState commandState = CommandState.FIRST;
+    private CommandStateHandler commandStateHandler;
+    private final GattDataParser gattDataParser;
+    private final GattConnectionManager connectionManager;
+    private GattCommandExecutor executor;
+
+    public BluetoothGattCallbackHandler() {
+        var commandStateFactory = new DefaultCommandStateFactory();
+        this.commandStateHandler = commandStateFactory.createInitialState();
+        this.gattDataParser = new GattDataParser();
+        this.connectionManager = new GattConnectionManager();
+        this.executor = new GattCommandExecutor(commandStateHandler, this);
+    }
 
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         if (isStatusOk(newState, BluetoothGatt.STATE_CONNECTED)) {
-            try {
-                gatt.discoverServices();
-                updateStateAfterConnect();
-            } catch (SecurityException e) {
-                Log.e("MyTag", "SecurityException: " + e.getMessage());
-            }
+            connectionManager.onConnected(gatt);
+            updateStateAfterConnect();
         } else if (isStatusOk(newState, BluetoothGatt.STATE_DISCONNECTED)) {
+            connectionManager.onDisconnected();
             resetStateAfterDisconnect();
         }
     }
@@ -91,17 +95,14 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
                     if (isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                             && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
                         areCharacteristicsReads = false;
-                        SensorConfig sensorConfig = convertBytesToConfiguration(bytes);
-                        Log.d("MyTag", sensorConfig.toString());
-
-                        sensorConfigLiveData.postValue(sensorConfig);
+                        sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
                     }
                     if (isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
                         convertBytesToCalibrationTable(bytes, table);
                     }
                 }
                 if (isConnected && values.size() >= 9) {
-                    deviceDetailsLiveData.postValue(createDeviceDetails(values.size() - 1));
+                    deviceDetailsLiveData.postValue(gattDataParser.parseDeviceDetails(values, table));
                 }
                 writeToCharacteristic(gatt);
             }
@@ -127,7 +128,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public LiveData<Boolean> isConnectedLiveData() {
-        return isConnectedLiveData;
+        return connectionManager.getConnectionStatus();
     }
 
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
@@ -146,36 +147,17 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         isConnected = false;
     }
 
-    public void save() {
+    public void setConfigurationSaved() {
         isConfigurationSaved = true;
     }
 
-    // При попытке повторно сохранить значение
-    // configType может установить значение
-    // равное 8, необходимо это исправить
-    public void saveConfiguration(BluetoothGatt gatt) {
-        if (Boolean.FALSE.equals(isConnectedLiveData.getValue())) {
-            try {
-                gatt.connect();
-                Log.d("MyTag", "Connecting");
-            } catch (SecurityException e) {
-                //
-            }
-        }
-        isConfigurationSaved = true;
-
-        SensorConfig sensorConfig = sensorConfigLiveData.getValue();
-        if (sensorConfig == null) {
-            return;
-        }
-
-        setConfigureSettings(sensorConfig);
-
-        sensorConfigLiveData.postValue(sensorConfig);
-        isConfigurationSaved = false;
+    public boolean isConfigurationSaved() {
+        return isConfigurationSaved;
     }
 
     public void writeToCharacteristic(BluetoothGatt gatt) {
+        Arrays.fill(value, (byte) 0);
+
         var service = gatt.getService(USER_SERVICE_DPS);
         var writeCharacteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
 
@@ -187,6 +169,17 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         } catch (SecurityException e) {
             Log.d("MyTag", "Security exception: " + e.getMessage());
         }
+    }
+
+    public void saveConfiguration() {
+        var sensorConfig = sensorConfigLiveData.getValue();
+        if (sensorConfig == null) {
+            return;
+        }
+
+        setConfigureSettings(sensorConfig);
+
+        isConfigurationSaved = false;
     }
 
     private boolean isMatchingCommand(byte[] bytes, int index, int command) {
@@ -229,73 +222,24 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     private void determineAndSetCommand(BluetoothGatt gatt) {
-        switch (commandState) {
-            case FIRST:
-                setCommand(FIRST_COMMAND, ZERO_COMMAND_DECIMAL);
-                commandState = CommandState.SECOND;
-                Log.d("MyTag", "First command sent");
-                break;
-
-            case SECOND:
-                setCommand(SEVEN_COMMAND, FIRST_COMMAND);
-                commandState = isConfigurationSaved ? CommandState.CONFIGURE : CommandState.FINAL;
-                Log.d("MyTag","Second command sent");
-                break;
-
-            case CONFIGURE:
-                saveConfiguration(gatt);
-                Log.d("MyTag", "Configuration sent");
-                break;
-
-            case FINAL:
-                setCommand(SEVEN_COMMAND, SECOND_COMMAND);
-                break;
-        }
+        commandStateHandler.handle(gatt, this);
     }
 
-    private void setCommand(int commandFirst, int commandSecond) {
+    public void setCommand(int commandFirst, int commandSecond) {
         value[0] = (byte) commandFirst;
         value[1] = (byte) commandSecond;
         value[2] = ZERO_COMMAND_DECIMAL;
         value[3] = ZERO_COMMAND_DECIMAL;
     }
 
-    private DeviceDetails createDeviceDetails(int size) {
-        if (values.size() < 8) {
-            return null;
-        }
-
-        String deviceName = convertBytesToString(values.get(2));
-        String dateManufacture = convertBytesToDate(values.get(3));
-        String manufacturer = convertBytesToString(values.get(4));
-        String modelType = convertBytesToString(values.get(5));
-        String serialNumber = convertBytesToString(values.get(6));
-        String firmwareVersion = convertBytesToString(values.get(7));
-        String hardwareVersion = convertBytesToString(values.get(8));
-        String batteryLevel = convertBytesToBattery(values.get(9));
-        String weight = convertBytesToValue(values.get(size), WEIGHT);
-        String pressure = convertBytesToValue(values.get(size), PRESSURE);
-
-        return new DeviceDetails.Builder()
-                .setDeviceName(deviceName)
-                .setDateManufacturer(dateManufacture)
-                .setManufacturer(manufacturer)
-                .setModelType(modelType)
-                .setSerialNumber(serialNumber)
-                .setFirmwareVersion(firmwareVersion)
-                .setHardWareVersion(hardwareVersion)
-                .setBatteryLevel(batteryLevel)
-                .setWeight(weight)
-                .setPressure(pressure)
-                .setTable(table)
-                .build();
+    public void setCommandState(CommandStateHandler newState) {
+        this.commandStateHandler = newState;
     }
 
     private void updateStateAfterConnect() {
         Log.d("MyTag", "Connected to device");
         values.clear();
         isConnected = true;
-        isConnectedLiveData.postValue(true);
     }
 
     private void resetStateAfterDisconnect() {
@@ -303,13 +247,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         isConnected = false;
         values.clear();
         table.clear();
-        isConnectedLiveData.postValue(false);
         Arrays.fill(value, (byte) 0);
     }
 
     private void setConfigureSettings(SensorConfig sensorConfig) {
-        Arrays.fill(value, (byte) 0);
-
         setCommand(SEVENTY_SEVEN, FIRST_COMMAND);
 
         intToFourBytes(value, sensorConfig.getConfigSystem(), 4);
@@ -325,7 +266,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         intToTwoBytes(value, sensorConfig.getDistanceToWheel(), 26);
 
         intToBytes(value, sensorConfig.getConfigType(), 28);
-        intToBytes(value, sensorConfig.getConfigType(), 29);
+        intToBytes(value, sensorConfig.getInstallationPoint(), 29);
 
         stringToBytes(value, sensorConfig.getStateNumber());
     }
