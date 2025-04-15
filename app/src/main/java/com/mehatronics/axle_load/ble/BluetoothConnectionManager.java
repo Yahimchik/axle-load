@@ -56,7 +56,7 @@ public class BluetoothConnectionManager {
     }
 
     public void saveConfiguration() {
-        gattCallbackHandler.setConfigurationSaved();
+        gattCallbackHandler.setConfigurationSaved(true);
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
     }
 

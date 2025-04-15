@@ -11,7 +11,7 @@ import com.mehatronics.axle_load.command.CommandStateHandler;
 /**
  * Финальное состояние "FINAL" в паттерне "Состояние" (State),
  * устанавливающее последнюю команду для BLE-устройства.
- *
+ * <p>
  * Если требуется отправка конфигурации, состояние переходит к {@link ConfigureCommandState}.
  */
 public class FinalCommandState implements CommandStateHandler {

@@ -1,5 +1,8 @@
 package com.mehatronics.axle_load.command.impl;
 
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVENTY_SEVEN;
+
 import android.bluetooth.BluetoothGatt;
 import android.util.Log;
 
@@ -26,6 +29,7 @@ public class ConfigureCommandState implements CommandStateHandler {
      */
     @Override
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
+        handler.setCommand(SEVENTY_SEVEN, FIRST_COMMAND);
         handler.saveConfiguration();
         Log.d("MyTag", "Configuration sent");
 

@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class GattConnectionManager {
-
     private final MutableLiveData<Boolean> isConnectedLiveData = new MutableLiveData<>(false);
 
     public LiveData<Boolean> getConnectionStatus() {
