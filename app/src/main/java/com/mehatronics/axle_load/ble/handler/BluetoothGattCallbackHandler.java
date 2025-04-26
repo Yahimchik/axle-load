@@ -1,7 +1,5 @@
 package com.mehatronics.axle_load.ble.handler;
 
-import static com.mehatronics.axle_load.utils.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
-import static com.mehatronics.axle_load.utils.constants.UuidConstants.USER_SERVICE_DPS;
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
 
 import android.bluetooth.BluetoothGatt;
@@ -12,11 +10,13 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.ble.manager.GattConnectionManager;
+import com.mehatronics.axle_load.ble.parser.GattDataParser;
 import com.mehatronics.axle_load.ble.processor.GattReadProcessor;
 import com.mehatronics.axle_load.ble.processor.GattWriteProcessor;
-import com.mehatronics.axle_load.ble.parser.GattDataParser;
 import com.mehatronics.axle_load.command.CommandStateHandler;
 import com.mehatronics.axle_load.command.factory.impl.DefaultCommandStateFactory;
+import com.mehatronics.axle_load.command.impl.FirstAuthorisationCommandState;
+import com.mehatronics.axle_load.command.impl.FirstCommandState;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
 
@@ -91,6 +91,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public void resetState() {
+        setCommandState(new FirstAuthorisationCommandState());
         gattReadProcessor.updateState(false);
     }
 
@@ -117,16 +118,16 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         gattReadProcessor.setConfigurationSaved(false);
     }
 
-    private boolean isStatusOk(int actual, int expected) {
-        return actual == expected;
-    }
-
     public void setCommand(int commandFirst, int commandSecond) {
         writeProcessor.setCommand(commandFirst, commandSecond);
     }
 
     public void setCommandState(CommandStateHandler newState) {
         this.stateHandler = newState;
+    }
+
+    private boolean isStatusOk(int actual, int expected) {
+        return actual == expected;
     }
 
     private void updateStateAfterConnect() {

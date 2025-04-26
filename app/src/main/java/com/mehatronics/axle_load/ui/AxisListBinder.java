@@ -32,7 +32,6 @@ public class AxisListBinder {
             Button button = view.findViewById(AXLES_BTN_IDS[i]);
             final int num = i + 1;
             button.setOnClickListener(v -> configureViewModel.setNumberOfAxes(num));
-            Log.d("MyTag", String.valueOf(num));
         }
     }
 

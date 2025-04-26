@@ -37,6 +37,10 @@
         <activity android:name=".activity.impl.DDSActivity" />
         <activity android:name=".activity.impl.DSSActivity" />
         <activity android:name=".activity.impl.DPSActivity" />
+
+        <meta-data
+            android:name="androidx.hilt.work.HiltWorkerFactory"
+            android:value="androidx.hilt.work.HiltWorkerFactory" />
     </application>
 
 </manifest>

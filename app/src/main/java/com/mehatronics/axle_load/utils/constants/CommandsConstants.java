@@ -6,5 +6,7 @@ public class CommandsConstants {
     public static final int FIRST_COMMAND = 0x01;
     public static final int SECOND_COMMAND = 0x02;
     public static final int SEVEN_COMMAND = 0x07;
-    public static final int SEVENTY_SEVEN = 0x77;
+    public static final int SEVENTY_SEVEN_COMMAND = 0x77;
+    public static final int FIFTY_COMMAND = 0x50;
+
 }

@@ -21,6 +21,7 @@ import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -54,6 +55,9 @@ public class GattReadProcessor {
     public void handleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         byte[] bytes = characteristic.getValue();
         values.add(bytes);
+
+        Log.d("MyTag", characteristic.getUuid() + " " + Arrays.toString(bytes));
+
         if (isReadingAll) {
             readNext(gatt);
             return;
@@ -75,7 +79,7 @@ public class GattReadProcessor {
         }
     }
 
-    public void readNextAfterWrite(BluetoothGatt gatt){
+    public void readNextAfterWrite(BluetoothGatt gatt) {
         var service = gatt.getService(USER_SERVICE_DPS);
         var readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_DPS);
         if (readCharacteristic != null) {

@@ -10,13 +10,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.adapter.LoadingManager;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandler;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.di.LoadingManagerEntryPoint;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
 import com.mehatronics.axle_load.navigation.FragmentNavigator;
-import com.mehatronics.axle_load.notification.NotificationManager;
 import com.mehatronics.axle_load.ui.DeviceListBinder;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
@@ -24,7 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public abstract class BaseBluetoothActivity extends AppCompatActivity implements BluetoothHandlerContract {
-    private NotificationManager notificationManager;
     private BluetoothViewModel bluetoothViewModel;
     private FragmentNavigator fragmentNavigator;
     private BluetoothHandler bluetoothHandler;
@@ -39,7 +38,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         bluetoothViewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
         fragmentNavigator = new FragmentNavigator(this);
         bluetoothHandler = new BluetoothHandler(bluetoothViewModel, this);
-        notificationManager = new NotificationManager(this);
     }
 
     @Override
@@ -85,7 +83,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
 
     @Override
     public void showSnackBar(String message) {
-        notificationManager.showSnackBar(message);
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

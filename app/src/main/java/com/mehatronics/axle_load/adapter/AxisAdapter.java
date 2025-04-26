@@ -58,14 +58,15 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView axisTitle;
-        private final ImageView axleLeft, axleCenter, axisRight;
-        private Observer<String> leftObserver, centerObserver, rightObserver;
+        private final ImageView axleLeft;
+        private final ImageView axisRight;
+        private Observer<String> leftObserver;
+        private Observer<String> rightObserver;
 
         public ViewHolder(View itemView) {
             super(itemView);
             axisTitle = itemView.findViewById(R.id.axisTitle);
             axleLeft = itemView.findViewById(R.id.axleSensorLeft);
-            axleCenter = itemView.findViewById(R.id.axleSensorCenter);
             axisRight = itemView.findViewById(R.id.axleSensorRight);
         }
 
@@ -73,23 +74,18 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.ViewHolder> {
             clearObservers();
 
             leftObserver = image -> axleLeft.setImageResource(getDrawableForSensor(image, "left"));
-            centerObserver = image -> axleCenter.setImageResource(getDrawableForSensor(image, "center"));
             rightObserver = image -> axisRight.setImageResource(getDrawableForSensor(image, "right"));
 
             sensorViewModel.getSensorImage(axisIndex, "left").observe(lifecycleOwner, leftObserver);
-            sensorViewModel.getSensorImage(axisIndex, "center").observe(lifecycleOwner, centerObserver);
             sensorViewModel.getSensorImage(axisIndex, "right").observe(lifecycleOwner, rightObserver);
 
             axleLeft.setOnClickListener(v -> openSensorSettingsFragment(v, "left", axisIndex));
-            axleCenter.setOnClickListener(v -> openSensorSettingsFragment(v, "center", axisIndex));
             axisRight.setOnClickListener(v -> openSensorSettingsFragment(v, "right", axisIndex));
         }
 
         void clearObservers() {
             if (leftObserver != null)
                 sensorViewModel.getSensorImage(getAdapterPosition(), "left").removeObserver(leftObserver);
-            if (centerObserver != null)
-                sensorViewModel.getSensorImage(getAdapterPosition(), "center").removeObserver(centerObserver);
             if (rightObserver != null)
                 sensorViewModel.getSensorImage(getAdapterPosition(), "right").removeObserver(rightObserver);
         }
@@ -98,12 +94,10 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.ViewHolder> {
             switch (position) {
                 case "left":
                     return "axle_sensor_left".equals(image) ? R.drawable.axle_sensor_left : R.drawable.axle_left;
-                case "center":
-                    return "axle_sensor_center".equals(image) ? R.drawable.axle_sensor_center : R.drawable.axle_center;
                 case "right":
                     return "axle_sensor_right".equals(image) ? R.drawable.axle_sensor_right : R.drawable.axle_right;
                 default:
-                    return R.drawable.axle_left;
+                    return 0;
             }
         }
     }

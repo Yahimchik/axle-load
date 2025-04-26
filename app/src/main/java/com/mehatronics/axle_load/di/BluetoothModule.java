@@ -5,9 +5,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 
 import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
-import com.mehatronics.axle_load.ble.BluetoothConnectionManager;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandler;
-import com.mehatronics.axle_load.notification.NotificationManager;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
 import javax.inject.Singleton;

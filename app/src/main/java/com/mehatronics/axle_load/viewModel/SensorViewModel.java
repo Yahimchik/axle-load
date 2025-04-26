@@ -1,15 +1,71 @@
 package com.mehatronics.axle_load.viewModel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mehatronics.axle_load.entities.Device;
+import com.mehatronics.axle_load.notification.SnackBarCallback;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
 public class SensorViewModel extends ViewModel {
-    private final List<MutableLiveData<String>> leftImages = new ArrayList<>();
+    private final MutableLiveData<List<Device>> processedDevicesLiveData = new MutableLiveData<>();
     private final List<MutableLiveData<String>> centerImages = new ArrayList<>();
     private final List<MutableLiveData<String>> rightImages = new ArrayList<>();
+    private final List<MutableLiveData<String>> leftImages = new ArrayList<>();
+    private final Map<String, Device> processedDevices = new HashMap<>();
+    private final Set<String> selectedMacs = new HashSet<>();
+    private SnackBarCallback snackBarCallback;
+
+    @Inject
+    public SensorViewModel() {
+    }
+
+    public void setSnackBarCallback(SnackBarCallback snackBarCallback) {
+        this.snackBarCallback = snackBarCallback;
+    }
+
+    public void updateScannedDevices(List<Device> newDevices) {
+        for (Device device : newDevices) {
+            String mac = device.getDevice().getAddress();
+            Device existing = processedDevices.get(mac);
+            if (existing == null) {
+                if (isMacSelected(mac)) {
+                    device.setSelected(true);
+                }
+                processedDevices.put(mac, device);
+            } else if (isMacSelected(mac)) {
+                existing.setSelected(true);
+            }
+        }
+        processedDevicesLiveData.setValue(new ArrayList<>(processedDevices.values()));
+    }
+
+    public LiveData<List<Device>> getScannedDevicesLiveData() {
+        return processedDevicesLiveData;
+    }
+
+    public void markMacAsSelected(String mac) {
+        try {
+            snackBarCallback.showSnackBar(
+                    "Selected: " + Objects.requireNonNull(processedDevices.get(mac)).getDevice().getName());
+        } catch (SecurityException e) {
+            //
+        }
+        selectedMacs.add(mac);
+    }
 
     public MutableLiveData<String> getSensorImage(int axis, String position) {
         switch (position) {
@@ -34,6 +90,10 @@ public class SensorViewModel extends ViewModel {
         adjustListSize(rightImages, newCount, "axle_right");
     }
 
+    private boolean isMacSelected(String mac) {
+        return selectedMacs.contains(mac);
+    }
+
     private MutableLiveData<String> getOrCreateImage(List<MutableLiveData<String>> list, int axis, String defaultValue) {
         while (list.size() <= axis) {
             list.add(new MutableLiveData<>(defaultValue));
@@ -42,11 +102,16 @@ public class SensorViewModel extends ViewModel {
     }
 
     private void adjustListSize(List<MutableLiveData<String>> list, int newSize, String defaultValue) {
-        while (list.size() < newSize) {
-            list.add(new MutableLiveData<>(defaultValue));
-        }
-        while (list.size() > newSize) {
-            list.remove(list.size() - 1);
+        int currentSize = list.size();
+        if (currentSize == newSize) return;
+
+        if (currentSize < newSize) {
+            for (int i = currentSize; i < newSize; i++) {
+                list.add(new MutableLiveData<>(defaultValue));
+            }
+        } else {
+            list.subList(newSize, currentSize).clear();
         }
     }
+
 }

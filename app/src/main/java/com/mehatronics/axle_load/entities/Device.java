@@ -10,10 +10,19 @@ import java.io.Serializable;
 public class Device implements Serializable {
     private final BluetoothDevice device;
     private final ScanResult scanResult;
+    private boolean isSelected;
 
     public Device(BluetoothDevice device, ScanResult scanResult) {
         this.device = device;
         this.scanResult = scanResult;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public BluetoothDevice getDevice() {
@@ -31,6 +40,19 @@ public class Device implements Serializable {
                 "device=" + device +
                 ", scanResult=" + scanResult +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Device device = (Device) obj;
+        return getDevice().getAddress().equals(device.getDevice().getAddress());
+    }
+
+    @Override
+    public int hashCode() {
+        return getDevice().getAddress().hashCode();
     }
 }
 
