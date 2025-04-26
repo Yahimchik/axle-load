@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.inject.Inject;
+
 public class GattReadProcessor {
     private final Queue<BluetoothGattCharacteristic> characteristicsQueue = new LinkedList<>();
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
@@ -37,6 +39,11 @@ public class GattReadProcessor {
     private boolean areReadsComplete = false;
     private boolean isReadingAll = false;
     private boolean isConnected = false;
+
+    @Inject
+    public GattReadProcessor(){
+
+    }
 
     public void readAllCharacteristics(BluetoothGatt gatt) {
         characteristicsQueue.clear();
@@ -55,8 +62,6 @@ public class GattReadProcessor {
     public void handleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         byte[] bytes = characteristic.getValue();
         values.add(bytes);
-
-        Log.d("MyTag", characteristic.getUuid() + " " + Arrays.toString(bytes));
 
         if (isReadingAll) {
             readNext(gatt);
@@ -85,6 +90,7 @@ public class GattReadProcessor {
         if (readCharacteristic != null) {
             try {
                 gatt.readCharacteristic(readCharacteristic);
+                Log.d("MyTag", Arrays.toString(readCharacteristic.getValue()));
             } catch (SecurityException e) {
                 Log.d("MyTag", "Security exception: " + e.getMessage());
             }

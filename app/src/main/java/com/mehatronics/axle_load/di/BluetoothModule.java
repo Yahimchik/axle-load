@@ -6,6 +6,12 @@ import android.content.Context;
 
 import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandler;
+import com.mehatronics.axle_load.ble.manager.GattConnectionManager;
+import com.mehatronics.axle_load.ble.parser.GattDataParser;
+import com.mehatronics.axle_load.ble.processor.GattReadProcessor;
+import com.mehatronics.axle_load.ble.processor.GattWriteProcessor;
+import com.mehatronics.axle_load.state.CommandStateHandler;
+import com.mehatronics.axle_load.state.factory.impl.DefaultCommandStateFactory;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
 import javax.inject.Singleton;
@@ -24,6 +30,11 @@ public class BluetoothModule {
     public BluetoothAdapter provideBluetoothAdapter(@ApplicationContext Context context) {
         BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         return bluetoothManager != null ? bluetoothManager.getAdapter() : BluetoothAdapter.getDefaultAdapter();
+    }
+
+    @Provides
+    public CommandStateHandler provideCommandStateHandler() {
+        return new DefaultCommandStateFactory().createInitialState();
     }
 
     @Provides

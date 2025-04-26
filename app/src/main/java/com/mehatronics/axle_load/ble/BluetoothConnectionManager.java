@@ -19,14 +19,14 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
 
 @Singleton
 public class BluetoothConnectionManager {
+    @Inject
+    protected BluetoothGattCallbackHandler gattCallbackHandler;
     private BluetoothGatt bluetoothGatt;
-    private final BluetoothGattCallbackHandler gattCallbackHandler;
     private final Context applicationContext;
 
     @Inject
     public BluetoothConnectionManager(@ApplicationContext Context context) {
         this.applicationContext = context;
-        gattCallbackHandler = new BluetoothGattCallbackHandler();
     }
 
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {

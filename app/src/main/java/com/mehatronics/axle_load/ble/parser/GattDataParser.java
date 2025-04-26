@@ -17,7 +17,14 @@ import com.mehatronics.axle_load.entities.SensorConfig;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class GattDataParser {
+
+    @Inject
+    public GattDataParser() {
+    }
+
     public DeviceDetails parseDeviceDetails(List<byte[]> values, List<CalibrationTable> table) {
         if (values.size() < 9) return null;
 

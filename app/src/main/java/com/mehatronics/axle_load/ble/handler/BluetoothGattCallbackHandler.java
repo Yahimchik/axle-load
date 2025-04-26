@@ -13,12 +13,12 @@ import com.mehatronics.axle_load.ble.manager.GattConnectionManager;
 import com.mehatronics.axle_load.ble.parser.GattDataParser;
 import com.mehatronics.axle_load.ble.processor.GattReadProcessor;
 import com.mehatronics.axle_load.ble.processor.GattWriteProcessor;
-import com.mehatronics.axle_load.command.CommandStateHandler;
-import com.mehatronics.axle_load.command.factory.impl.DefaultCommandStateFactory;
-import com.mehatronics.axle_load.command.impl.FirstAuthorisationCommandState;
-import com.mehatronics.axle_load.command.impl.FirstCommandState;
+import com.mehatronics.axle_load.state.CommandStateHandler;
+import com.mehatronics.axle_load.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
+
+import javax.inject.Inject;
 
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final GattConnectionManager connectionManager;
@@ -27,13 +27,19 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final GattDataParser gattDataParser;
     private CommandStateHandler stateHandler;
 
-    public BluetoothGattCallbackHandler() {
-        var commandStateFactory = new DefaultCommandStateFactory();
-        this.gattDataParser = new GattDataParser();
-        this.stateHandler = commandStateFactory.createInitialState();
-        this.connectionManager = new GattConnectionManager();
-        this.writeProcessor = new GattWriteProcessor();
-        this.gattReadProcessor = new GattReadProcessor();
+    @Inject
+    public BluetoothGattCallbackHandler(
+            GattConnectionManager connectionManager,
+            GattReadProcessor gattReadProcessor,
+            GattWriteProcessor writeProcessor,
+            GattDataParser gattDataParser,
+            CommandStateHandler stateHandler
+    ) {
+        this.connectionManager = connectionManager;
+        this.gattReadProcessor = gattReadProcessor;
+        this.writeProcessor = writeProcessor;
+        this.gattDataParser = gattDataParser;
+        this.stateHandler = stateHandler;
     }
 
     @Override
@@ -91,7 +97,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public void resetState() {
-        setCommandState(new FirstAuthorisationCommandState());
+        setCommandState(new FirstAuthCommandState());
         gattReadProcessor.updateState(false);
     }
 
