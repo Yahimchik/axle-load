@@ -36,12 +36,13 @@ public class GattReadProcessor {
     private final List<CalibrationTable> table = new ArrayList<>();
     private final List<byte[]> values = new ArrayList<>();
     private boolean isConfigurationSaved = false;
-    private boolean areReadsComplete = false;
+    private boolean isRieadingConfigComplete = false;
+    private boolean isReadingTableComplete = false;
     private boolean isReadingAll = false;
     private boolean isConnected = false;
 
     @Inject
-    public GattReadProcessor(){
+    public GattReadProcessor() {
 
     }
 
@@ -55,7 +56,8 @@ public class GattReadProcessor {
             }
         }
         isReadingAll = true;
-        areReadsComplete = true;
+        isRieadingConfigComplete = true;
+        isReadingTableComplete = true;
         readNext(gatt);
     }
 
@@ -68,13 +70,16 @@ public class GattReadProcessor {
             return;
         }
 
-        if (areReadsComplete) {
-            if (isMatchingCommand(bytes, 0, SEVEN_COMMAND) && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
-                areReadsComplete = false;
+        if (isRieadingConfigComplete) {
+            if (isMatchingCommand(bytes, 0, SEVEN_COMMAND)
+                    && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
+                isRieadingConfigComplete = false;
                 sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
             }
-
+        }
+        if (isReadingTableComplete) {
             if (isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
+                isReadingTableComplete = false;
                 convertBytesToCalibrationTable(bytes, table);
             }
         }
@@ -90,7 +95,7 @@ public class GattReadProcessor {
         if (readCharacteristic != null) {
             try {
                 gatt.readCharacteristic(readCharacteristic);
-                Log.d("MyTag", Arrays.toString(readCharacteristic.getValue()));
+//                Log.d("MyTag", Arrays.toString(readCharacteristic.getValue()));
             } catch (SecurityException e) {
                 Log.d("MyTag", "Security exception: " + e.getMessage());
             }

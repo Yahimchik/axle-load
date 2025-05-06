@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.CalibrationTableAdapter;
+import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
 
@@ -83,7 +84,28 @@ public class DeviceDetailsBinder {
         weightTextView.setText(setWeight(deviceDetails));
         pressureTextView.setText(setPressure(deviceDetails));
 
-        adapter.updateData(deviceDetails.getTable());
+        List<CalibrationTable> originalTable = deviceDetails.getTable();
+        List<CalibrationTable> extendedTable = new ArrayList<>(originalTable);
+
+        if (originalTable.size() >= 2) {
+            CalibrationTable first = originalTable.get(0);
+            CalibrationTable last = originalTable.get(originalTable.size() - 1);
+            float currentPressure;
+            if (deviceDetails.getPressure().equals("UNKNOWN")) {
+                currentPressure = 10F;
+            }else{
+                currentPressure = Float.parseFloat(deviceDetails.getPressure()); // текущее давление
+            }
+
+            int detectorValue = (int) (currentPressure * 10);
+
+            float multiplier = 10f / (last.getDetector() - first.getDetector());
+
+            CalibrationTable virtualPoint = new CalibrationTable(detectorValue, multiplier);
+            extendedTable.add(virtualPoint);
+        }
+
+        adapter.updateData(extendedTable);
     }
 
     @SuppressLint("SetTextI18n")

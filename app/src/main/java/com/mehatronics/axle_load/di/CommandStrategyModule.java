@@ -2,6 +2,7 @@ package com.mehatronics.axle_load.di;
 
 import com.mehatronics.axle_load.ble.strategy.CommandStrategy;
 import com.mehatronics.axle_load.ble.strategy.impl.FirstAuthStrategy;
+import com.mehatronics.axle_load.ble.strategy.impl.NineAuthStrategy;
 import com.mehatronics.axle_load.ble.strategy.impl.SecondAuthStrategy;
 
 import dagger.Module;
@@ -26,6 +27,13 @@ public class CommandStrategyModule {
     @IntoMap
     @StringKey("80-2")
     public CommandStrategy provideSecondFiftyCommandStrategy(SecondAuthStrategy strategy) {
+        return strategy;
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey("80-9")
+    public CommandStrategy provideNineFiftyCommandStrategy(NineAuthStrategy strategy) {
         return strategy;
     }
 }

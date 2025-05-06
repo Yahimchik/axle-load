@@ -49,8 +49,11 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CalibrationTable table = calibrationPoints.get(position);
-        holder.weightTextView.setText(String.format("%d Kg", table.getDetector()));
-        holder.pressureTextView.setText(String.format("%.2f kPa", table.getMultiplier()));
+        holder.weightTextView.setText(String.format("%d ", table.getDetector()));
+        holder.pressureTextView.setText(String.format("%.3f ",
+                (calibrationPoints.getLast().getDetector()
+                        - calibrationPoints.getFirst().getDetector())
+                        * table.getMultiplier()));
     }
 
     @Override

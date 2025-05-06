@@ -56,4 +56,9 @@
     <string name="axle_left">Axle left</string>
 
     <string name="save_button">SAVE</string>
+    <string name="reset_password">RESET PASSWORD</string>
+    <string name="set_new_password">SET NEW PASSWORD</string>
+    <string name="add">ADD POINT</string>
+
+
 </resources>

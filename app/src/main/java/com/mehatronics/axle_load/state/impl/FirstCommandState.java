@@ -27,7 +27,7 @@ public class FirstCommandState implements CommandStateHandler {
     @Override
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
         handler.setCommand(FIRST_COMMAND, ZERO_COMMAND_DECIMAL);
-        handler.setCommandState(new SecondCommandState());
         Log.d("MyTag", "First command sent");
+        handler.setCommandState(new SecondCommandState());
     }
 }

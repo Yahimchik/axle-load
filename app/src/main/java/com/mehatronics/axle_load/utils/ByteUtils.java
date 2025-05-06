@@ -96,7 +96,7 @@ public class ByteUtils {
                     int multiplier = convertToMultiplier(bytes, i);
                     float tableEnd = intToFloat(multiplier);
 
-                    Log.d("MyTag", String.valueOf(new CalibrationTable(detector, tableEnd)));
+//                    Log.d("MyTag", String.valueOf(new CalibrationTable(detector, tableEnd)));
                     // TODO: необходимо вставить проверку полноты прочитанных данных
                     table.add(new CalibrationTable(detector, Float.intBitsToFloat(multiplier)));
                     if (tableEnd == 1000000.0F) break;

@@ -13,7 +13,7 @@ public class CommandAfterAuth implements CommandStateHandler {
     @Override
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
         handler.setCommand(SEVEN_COMMAND, FIRST_COMMAND);
-        handler.setCommandState(new FinalCommandState());
         Log.d("MyTag", "Command after auth is sent");
+        handler.setCommandState(new PasswordCommandState());
     }
 }

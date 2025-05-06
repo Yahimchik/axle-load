@@ -13,7 +13,7 @@ public class SecondAuthCommandState implements CommandStateHandler {
     @Override
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
         handler.setCommand(FIFTY_COMMAND, SECOND_COMMAND);
-        handler.setCommandState(new CommandAfterAuth());
         Log.d("MyTag", "Second authorisation command is sent");
+        handler.setCommandState(new CommandAfterAuth());
     }
 }

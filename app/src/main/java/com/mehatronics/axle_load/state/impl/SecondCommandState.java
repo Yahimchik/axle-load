@@ -12,7 +12,7 @@ import com.mehatronics.axle_load.state.CommandStateHandler;
 /**
  * Состояние "SECOND" в паттерне "Состояние" (State),
  * отправляющее вторую управляющую команду BLE-устройству.
- *
+ * <p>
  * В зависимости от необходимости сохранения конфигурации переходит
  * либо в {@link ConfigureCommandState}, либо в {@link FinalCommandState}.
  */
@@ -30,11 +30,11 @@ public class SecondCommandState implements CommandStateHandler {
     @Override
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
         handler.setCommand(SEVEN_COMMAND, FIRST_COMMAND);
+        Log.d("MyTag", "Second command sent");
         if (handler.isConfigurationSaved()) {
             handler.setCommandState(new ConfigureCommandState());
         } else {
             handler.setCommandState(new FinalCommandState());
         }
-        Log.d("MyTag", "Second command sent");
     }
 }
