@@ -41,6 +41,9 @@
         <meta-data
             android:name="androidx.hilt.work.HiltWorkerFactory"
             android:value="androidx.hilt.work.HiltWorkerFactory" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

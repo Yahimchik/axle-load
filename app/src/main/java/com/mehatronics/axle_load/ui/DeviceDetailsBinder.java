@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.ui;
 
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.ZERO;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setBatteryLevel;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setDeviceName;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setFirmwareVersion;
@@ -51,6 +52,7 @@ public class DeviceDetailsBinder {
     private final Spinner installationPointSpinner;
     private final Button saveButton;
 
+    boolean isTableInitialized = false;
 
     public DeviceDetailsBinder(View view) {
         this.view = view;
@@ -87,25 +89,37 @@ public class DeviceDetailsBinder {
         List<CalibrationTable> originalTable = deviceDetails.getTable();
         List<CalibrationTable> extendedTable = new ArrayList<>(originalTable);
 
+        isTableInitialized = adapter.getItemCount() > 0;
         if (originalTable.size() >= 2) {
             CalibrationTable first = originalTable.get(0);
             CalibrationTable last = originalTable.get(originalTable.size() - 1);
-            float currentPressure;
-            if (deviceDetails.getPressure().equals("UNKNOWN")) {
-                currentPressure = 10F;
-            }else{
-                currentPressure = Float.parseFloat(deviceDetails.getPressure()); // текущее давление
-            }
+
+            float currentPressure = deviceDetails.getPressure().equals(ZERO)
+                    ? 0f
+                    : Float.parseFloat(deviceDetails.getPressure());
 
             int detectorValue = (int) (currentPressure * 10);
-
             float multiplier = 10f / (last.getDetector() - first.getDetector());
-
             CalibrationTable virtualPoint = new CalibrationTable(detectorValue, multiplier);
-            extendedTable.add(virtualPoint);
-        }
 
-        adapter.updateData(extendedTable);
+            boolean isTableInitialized = adapter.getItemCount() > 0;
+
+            if (!isTableInitialized) {
+                // Первый раз — создаем список и вставляем виртуальную точку
+                if (extendedTable.size() > 2) {
+                    CalibrationTable beforeLast = extendedTable.get(extendedTable.size() - 2);
+                    CalibrationTable lastPoint = extendedTable.get(extendedTable.size() - 1);
+                    if (lastPoint.getMultiplier() == beforeLast.getMultiplier()) {
+                        extendedTable.remove(extendedTable.size() - 1);
+                    }
+                }
+                extendedTable.add(extendedTable.size() - 1, virtualPoint);
+                adapter.updateData(extendedTable);
+            } else {
+                // После — обновляем только предпоследний элемент
+                adapter.updateVirtualPoint(virtualPoint);
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")

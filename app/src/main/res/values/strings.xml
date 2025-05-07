@@ -55,10 +55,17 @@
     <string name="axle_right">Axle right</string>
     <string name="axle_left">Axle left</string>
 
-    <string name="save_button">SAVE</string>
+    <string name="save_button">SAVE TO SENSOR</string>
+    <string name="save_to_file">SAVE TO FILE</string>
+    <string name="read_from_sensor">READ FROM SENSOR</string>
+    <string name="read_from_file">READ FROM FILE</string>
+
+
     <string name="reset_password">RESET PASSWORD</string>
     <string name="set_new_password">SET NEW PASSWORD</string>
     <string name="add">ADD POINT</string>
+    <string name="delete">DELETE</string>
+
 
 
 </resources>

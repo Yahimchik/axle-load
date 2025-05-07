@@ -12,19 +12,19 @@ import androidx.lifecycle.ViewModelProvider;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.DeviceDetailsBinder;
-import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
+import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class DeviceDetailsFragment extends Fragment {
-    private BluetoothViewModel bluetoothView;
+    private DeviceViewModel deviceViewModel;
     private DeviceDetailsBinder detailsBinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bluetoothView = new ViewModelProvider(requireActivity()).get(BluetoothViewModel.class);
+        deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
     @Override
@@ -32,10 +32,10 @@ public class DeviceDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_device_details, container, false);
 
         detailsBinder = new DeviceDetailsBinder(view);
-        bluetoothView.getDeviceDetails().observe(getViewLifecycleOwner(), detailsBinder::bind);
-        bluetoothView.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
+        deviceViewModel.getDeviceDetails().observe(getViewLifecycleOwner(), detailsBinder::bind);
+        deviceViewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
 
-        detailsBinder.setupSaveButton(v -> bluetoothView.saveSensorConfiguration());
+        detailsBinder.setupSaveButton(v -> deviceViewModel.saveSensorConfiguration());
 
         return view;
     }
@@ -44,8 +44,8 @@ public class DeviceDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         detailsBinder = null;
-        bluetoothView.clearDetails();
-        bluetoothView.disconnect();
+        deviceViewModel.clearDetails();
+        deviceViewModel.disconnect();
         if (getActivity() instanceof BaseBluetoothActivity) {
             ((BaseBluetoothActivity) getActivity()).resetDeviceNavigatorState();
         }

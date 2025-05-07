@@ -20,6 +20,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="@string/sensor_list"
+        android:fontFamily="@font/roboto_bold"
         android:textSize="22sp"
         android:textStyle="bold" />
 

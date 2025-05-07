@@ -31,4 +31,7 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <style name="CustomFontStyle">
+        <item name="android:fontFamily">@font/roboto_bold</item>
+    </style>
 </resources>
