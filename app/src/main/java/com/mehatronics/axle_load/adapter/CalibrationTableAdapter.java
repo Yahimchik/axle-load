@@ -66,6 +66,7 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(v -> {
                 calibrationPoints.remove(actualIndex);
+                Log.d("MyTag", String.valueOf(calibrationPoints));
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
             });
@@ -81,10 +82,13 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
                         table.getDetector(),
                         table.getMultiplier());
 
-                calibrationPoints.add(calibrationPoints.size() - 1, newCalibration); // вставка перед последним
+                if (!calibrationPoints.contains(newCalibration)) {
+                    calibrationPoints.add(calibrationPoints.size() - 1, newCalibration);
+                } // вставка перед последним
+                Log.d("MyTag", String.valueOf(calibrationPoints));
                 notifyItemInserted(position + 1);
                 notifyItemChanged(position); // чтобы скрыть кнопку add у предыдущего
-                updateVirtualPoint(newCalibration);
+//                updateVirtualPoint(newCalibration);
             });
         } else {
             holder.addButton.setVisibility(View.INVISIBLE);
@@ -100,7 +104,7 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
         if (oldItem.getDetector() != virtualPoint.getDetector()
                 || oldItem.getMultiplier() != virtualPoint.getMultiplier()) {
             calibrationPoints.set(lastPos, virtualPoint);
-            notifyItemChanged(lastPos);
+            notifyItemChanged(lastPos - 1);
         }
     }
 

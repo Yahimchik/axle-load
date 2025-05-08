@@ -118,7 +118,6 @@ public class DeviceDetailsBinder {
                 extendedTable.add(extendedTable.size() - 1, virtualPoint);
                 adapter.updateData(extendedTable);
             } else {
-                // После — обновляем только предпоследний элемент
                 adapter.updateVirtualPoint(virtualPoint);
             }
         }
