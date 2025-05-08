@@ -22,28 +22,18 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
     private final List<CalibrationTable> calibrationPoints;
 
     public CalibrationTableAdapter(List<CalibrationTable> calibrationPoints) {
-        if (calibrationPoints.size() > 2) {
-            this.calibrationPoints = new ArrayList<>(calibrationPoints.subList(1, calibrationPoints.size() - 1));
-        } else {
-            this.calibrationPoints = new ArrayList<>(calibrationPoints);
-        }
+        this.calibrationPoints = new ArrayList<>(calibrationPoints);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<CalibrationTable> newCalibrationPoints) {
-        List<CalibrationTable> filteredList;
-        if (newCalibrationPoints.size() > 2) {
-            filteredList = new ArrayList<>(newCalibrationPoints.subList(1, newCalibrationPoints.size() - 1));
-        } else {
-            filteredList = new ArrayList<>(newCalibrationPoints);
-        }
-
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
-                new CalibrationDiffCallback(this.calibrationPoints, filteredList)
+                new CalibrationDiffCallback(this.calibrationPoints, newCalibrationPoints)
         );
 
         this.calibrationPoints.clear();
-        this.calibrationPoints.addAll(filteredList);
+        this.calibrationPoints.addAll(newCalibrationPoints);
+        Log.d("MyTag", String.valueOf(newCalibrationPoints));
 
         diffResult.dispatchUpdatesTo(this);
     }
@@ -57,36 +47,43 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
         return new ViewHolder(view);
     }
 
+    @Override
+    public int getItemCount() {
+        return calibrationPoints.size() - 2;
+    }
+
     @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CalibrationTable table = calibrationPoints.get(position);
+        int actualIndex = position + 1; // пропускаем первый элемент
+        CalibrationTable table = calibrationPoints.get(actualIndex);
+
         holder.weightTextView.setText(String.format("%d ", table.getDetector()));
         holder.pressureTextView.setText(String.format("%.3f ", table.getMultiplier()));
 
-        if (position != calibrationPoints.size() - 1) {
+        // Показывать кнопку "удалить" для всех кроме последнего отображаемого
+        if (actualIndex < calibrationPoints.size() - 2) {
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(v -> {
-                calibrationPoints.remove(position);
+                calibrationPoints.remove(actualIndex);
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, calibrationPoints.size());
+                notifyItemRangeChanged(position, getItemCount());
             });
         } else {
             holder.deleteButton.setVisibility(View.INVISIBLE);
         }
 
-        if (position == calibrationPoints.size() - 1) {
+        // Показывать кнопку "добавить" только на последнем отображаемом элементе
+        if (actualIndex == calibrationPoints.size() - 2) {
             holder.addButton.setVisibility(View.VISIBLE);
             holder.addButton.setOnClickListener(v -> {
-                CalibrationTable newCalibration = new CalibrationTable(table.getDetector(), 0);
+                CalibrationTable newCalibration = new CalibrationTable(
+                        table.getDetector(),
+                        table.getMultiplier());
 
-                Log.d("MyTag", newCalibration.toString());
-                calibrationPoints.add(newCalibration);
-
-                int newLastIndex = calibrationPoints.size() - 1;
-                notifyItemInserted(newLastIndex);
-                notifyItemChanged(newLastIndex - 1);
-
+                calibrationPoints.add(calibrationPoints.size() - 1, newCalibration); // вставка перед последним
+                notifyItemInserted(position + 1);
+                notifyItemChanged(position); // чтобы скрыть кнопку add у предыдущего
                 updateVirtualPoint(newCalibration);
             });
         } else {
@@ -94,11 +91,10 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
         }
     }
 
-
     public void updateVirtualPoint(CalibrationTable virtualPoint) {
         if (calibrationPoints.isEmpty()) return;
 
-        int lastPos = calibrationPoints.size() - 1;
+        int lastPos = calibrationPoints.size() - 2;
         CalibrationTable oldItem = calibrationPoints.get(lastPos);
 
         if (oldItem.getDetector() != virtualPoint.getDetector()
@@ -106,11 +102,6 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
             calibrationPoints.set(lastPos, virtualPoint);
             notifyItemChanged(lastPos);
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return calibrationPoints.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

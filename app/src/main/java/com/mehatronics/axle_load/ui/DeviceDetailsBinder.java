@@ -1,6 +1,9 @@
 package com.mehatronics.axle_load.ui;
 
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.AXLE;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.LEFT;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.RIGHT;
 import static com.mehatronics.axle_load.utils.constants.StringConstants.ZERO;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setBatteryLevel;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setDeviceName;
@@ -15,7 +18,6 @@ import static com.mehatronics.axle_load.utils.format.SensorConfigFormat.setState
 import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -92,14 +94,14 @@ public class DeviceDetailsBinder {
         isTableInitialized = adapter.getItemCount() > 0;
         if (originalTable.size() >= 2) {
             CalibrationTable first = originalTable.get(0);
-            CalibrationTable last = originalTable.get(originalTable.size() - 1);
+            CalibrationTable last = originalTable.get(originalTable.size() - 2);
 
             float currentPressure = deviceDetails.getPressure().equals(ZERO)
                     ? 0f
                     : Float.parseFloat(deviceDetails.getPressure());
 
             int detectorValue = (int) (currentPressure * 10);
-            float multiplier = 10f / (last.getDetector() - first.getDetector());
+            float multiplier = last.getMultiplier();
             CalibrationTable virtualPoint = new CalibrationTable(detectorValue, multiplier);
 
             boolean isTableInitialized = adapter.getItemCount() > 0;
@@ -186,8 +188,8 @@ public class DeviceDetailsBinder {
 
     private String getInstallationPointDescription(int installationPoint) {
         int axle = (installationPoint - 1) / 2 + 1;
-        String position = (installationPoint - 1) % 2 == 0 ? "Лево" : "Право";
-        return "Ось " + axle + " — " + position;
+        String position = (installationPoint - 1) % 2 == 0 ? LEFT : RIGHT;
+        return AXLE + " " + axle + " — " + position;
     }
 
     private TextWatcher createWatcher(Consumer<String> onChanged) {
