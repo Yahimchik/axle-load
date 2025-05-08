@@ -20,6 +20,7 @@ import java.util.List;
 
 public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTableAdapter.ViewHolder> {
     private final List<CalibrationTable> calibrationPoints;
+    private  List<CalibrationTable> fullPoints;
 
     public CalibrationTableAdapter(List<CalibrationTable> calibrationPoints) {
         this.calibrationPoints = new ArrayList<>(calibrationPoints);
@@ -57,7 +58,9 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int actualIndex = position + 1; // пропускаем первый элемент
         CalibrationTable table = calibrationPoints.get(actualIndex);
-
+        fullPoints = new ArrayList<>();
+        fullPoints.addAll(calibrationPoints);
+        fullPoints.remove(fullPoints.size() - 2);
         holder.weightTextView.setText(String.format("%d ", table.getDetector()));
         holder.pressureTextView.setText(String.format("%.3f ", table.getMultiplier()));
 
@@ -66,7 +69,9 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(v -> {
                 calibrationPoints.remove(actualIndex);
-                Log.d("MyTag", String.valueOf(calibrationPoints));
+                fullPoints.remove(actualIndex);
+//                Log.d("MyTag", String.valueOf(calibrationPoints));
+                Log.d("MyTag", String.valueOf(fullPoints));
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
             });
@@ -82,13 +87,16 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
                         table.getDetector(),
                         table.getMultiplier());
 
-                if (!calibrationPoints.contains(newCalibration)) {
-                    calibrationPoints.add(calibrationPoints.size() - 1, newCalibration);
-                } // вставка перед последним
-                Log.d("MyTag", String.valueOf(calibrationPoints));
+
+//                calibrationPoints.remove(calibrationPoints.size() - 2);
+                calibrationPoints.add(calibrationPoints.size() - 1, newCalibration);
+                fullPoints.add(fullPoints.size() - 1, newCalibration);
+//                Log.d("MyTag", String.valueOf(calibrationPoints));
+                Log.d("MyTag", String.valueOf(fullPoints));
                 notifyItemInserted(position + 1);
                 notifyItemChanged(position); // чтобы скрыть кнопку add у предыдущего
 //                updateVirtualPoint(newCalibration);
+
             });
         } else {
             holder.addButton.setVisibility(View.INVISIBLE);

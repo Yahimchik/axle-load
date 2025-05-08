@@ -108,13 +108,7 @@ public class DeviceDetailsBinder {
 
             if (!isTableInitialized) {
                 // Первый раз — создаем список и вставляем виртуальную точку
-                if (extendedTable.size() > 2) {
-                    CalibrationTable beforeLast = extendedTable.get(extendedTable.size() - 2);
-                    CalibrationTable lastPoint = extendedTable.get(extendedTable.size() - 1);
-                    if (lastPoint.getMultiplier() == beforeLast.getMultiplier()) {
-                        extendedTable.remove(extendedTable.size() - 1);
-                    }
-                }
+
                 extendedTable.add(extendedTable.size() - 1, virtualPoint);
                 adapter.updateData(extendedTable);
             } else {
