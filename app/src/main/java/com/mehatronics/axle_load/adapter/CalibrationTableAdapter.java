@@ -18,10 +18,13 @@ import com.mehatronics.axle_load.entities.CalibrationTable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTableAdapter.ViewHolder> {
     private final List<CalibrationTable> calibrationPoints = new ArrayList<>();
     private  List<CalibrationTable> fullPoints;
 
+    @Inject
     public CalibrationTableAdapter() {
     }
 

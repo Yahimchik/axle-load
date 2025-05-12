@@ -57,8 +57,16 @@ public class SensorConfig {
         this.messageDeliveryPeriod = messageDeliveryPeriod;
     }
 
+    public void setMessageDeliveryPeriod(String messageDeliveryPeriod) {
+        this.messageDeliveryPeriod = toInt(messageDeliveryPeriod);
+    }
+
     public void setMeasurementPeriod(int measurementPeriod) {
         this.measurementPeriod = measurementPeriod;
+    }
+
+    public void setMeasurementPeriod(String measurementPeriod) {
+        this.measurementPeriod = toInt(measurementPeriod);
     }
 
     public void setDistanceBetweenAxlesOneTwoMm(int distanceBetweenAxlesOneTwoMm) {
@@ -240,6 +248,14 @@ public class SensorConfig {
 
         public SensorConfig build() {
             return new SensorConfig(this);
+        }
+    }
+
+    private int toInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 }
