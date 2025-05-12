@@ -19,11 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTableAdapter.ViewHolder> {
-    private final List<CalibrationTable> calibrationPoints;
+    private final List<CalibrationTable> calibrationPoints = new ArrayList<>();
     private  List<CalibrationTable> fullPoints;
 
-    public CalibrationTableAdapter(List<CalibrationTable> calibrationPoints) {
-        this.calibrationPoints = new ArrayList<>(calibrationPoints);
+    public CalibrationTableAdapter() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -34,7 +33,6 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
 
         this.calibrationPoints.clear();
         this.calibrationPoints.addAll(newCalibrationPoints);
-        Log.d("MyTag", String.valueOf(newCalibrationPoints));
 
         diffResult.dispatchUpdatesTo(this);
     }
@@ -64,13 +62,11 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
         holder.weightTextView.setText(String.format("%d ", table.getDetector()));
         holder.pressureTextView.setText(String.format("%.3f ", table.getMultiplier()));
 
-        // Показывать кнопку "удалить" для всех кроме последнего отображаемого
         if (actualIndex < calibrationPoints.size() - 2) {
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(v -> {
                 calibrationPoints.remove(actualIndex);
                 fullPoints.remove(actualIndex);
-//                Log.d("MyTag", String.valueOf(calibrationPoints));
                 Log.d("MyTag", String.valueOf(fullPoints));
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, getItemCount());
@@ -79,7 +75,6 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
             holder.deleteButton.setVisibility(View.INVISIBLE);
         }
 
-        // Показывать кнопку "добавить" только на последнем отображаемом элементе
         if (actualIndex == calibrationPoints.size() - 2) {
             holder.addButton.setVisibility(View.VISIBLE);
             holder.addButton.setOnClickListener(v -> {
@@ -88,15 +83,11 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
                         table.getMultiplier());
 
 
-//                calibrationPoints.remove(calibrationPoints.size() - 2);
                 calibrationPoints.add(calibrationPoints.size() - 1, newCalibration);
                 fullPoints.add(fullPoints.size() - 1, newCalibration);
-//                Log.d("MyTag", String.valueOf(calibrationPoints));
                 Log.d("MyTag", String.valueOf(fullPoints));
                 notifyItemInserted(position + 1);
                 notifyItemChanged(position); // чтобы скрыть кнопку add у предыдущего
-//                updateVirtualPoint(newCalibration);
-
             });
         } else {
             holder.addButton.setVisibility(View.INVISIBLE);

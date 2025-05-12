@@ -21,13 +21,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.CalibrationTableAdapter;
+import com.mehatronics.axle_load.databinding.FragmentDeviceDetailsBinding;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
@@ -37,84 +34,55 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class DeviceDetailsBinder {
-    private final View view;
+    private final FragmentDeviceDetailsBinding binding;
     private final CalibrationTableAdapter adapter;
 
-    private final EditText messageDeliveryPeriod;
-    private final EditText measurementPeriod;
-    private final EditText stateNumber;
-
-    private final TextView firmwareVersionTextView;
-    private final TextView hardwareVersionTextView;
-    private final TextView batteryLevelTextView;
-    private final TextView deviceNameTextView;
-    private final TextView weightTextView;
-    private final TextView pressureTextView;
-
-    private final Spinner installationPointSpinner;
-    private final Button saveButton;
-
-    boolean isTableInitialized = false;
-
     public DeviceDetailsBinder(View view) {
-        this.view = view;
-
-        adapter = new CalibrationTableAdapter(new ArrayList<>());
+        binding = FragmentDeviceDetailsBinding.bind(view); // Binding the views
+        adapter = new CalibrationTableAdapter();
         initRecyclerView(view, R.id.calibrationRecyclerView, adapter);
-
-        messageDeliveryPeriod = view.findViewById(R.id.messageDeliveryPeriodEditText);
-        measurementPeriod = view.findViewById(R.id.measurementPeriodEditText);
-        stateNumber = view.findViewById(R.id.stateNumber);
-
-        installationPointSpinner = view.findViewById(R.id.installationPointSpinner);
-        saveButton = view.findViewById(R.id.saveConfigurationButton);
-
-        deviceNameTextView = view.findViewById(R.id.deviceNameTextView);
-        firmwareVersionTextView = view.findViewById(R.id.firmwareVersionValueTextView);
-        hardwareVersionTextView = view.findViewById(R.id.hardwareVersionValueTextView);
-
-        batteryLevelTextView = view.findViewById(R.id.batteryLevelValueTextView);
-        weightTextView = view.findViewById(R.id.weightValueTextView);
-        pressureTextView = view.findViewById(R.id.pressureValueTextView);
     }
 
     @SuppressLint("SetTextI18n")
     public void bind(DeviceDetails deviceDetails) {
-        deviceNameTextView.setText(setDeviceName(deviceDetails));
-        firmwareVersionTextView.setText(setFirmwareVersion(deviceDetails));
-        hardwareVersionTextView.setText(setHardWareVersion(deviceDetails));
+        bindDeviceFields(deviceDetails);
+        createCalibrationTable(deviceDetails);
+    }
 
-        batteryLevelTextView.setText(setBatteryLevel(deviceDetails));
-        weightTextView.setText(setWeight(deviceDetails));
-        pressureTextView.setText(setPressure(deviceDetails));
-
+    private void createCalibrationTable(DeviceDetails deviceDetails) {
         List<CalibrationTable> originalTable = deviceDetails.getTable();
         List<CalibrationTable> extendedTable = new ArrayList<>(originalTable);
 
-        isTableInitialized = adapter.getItemCount() > 0;
+        boolean isTableInitialized = adapter.getItemCount() > 0;
         if (originalTable.size() >= 2) {
-            CalibrationTable first = originalTable.get(0);
             CalibrationTable last = originalTable.get(originalTable.size() - 2);
 
-            float currentPressure = deviceDetails.getPressure().equals(ZERO)
-                    ? 0f
-                    : Float.parseFloat(deviceDetails.getPressure());
+            float currentPressure = parsePressure(deviceDetails.getPressure());
 
             int detectorValue = (int) (currentPressure * 10);
             float multiplier = last.getMultiplier();
             CalibrationTable virtualPoint = new CalibrationTable(detectorValue, multiplier);
 
-            boolean isTableInitialized = adapter.getItemCount() > 0;
-
             if (!isTableInitialized) {
-                // Первый раз — создаем список и вставляем виртуальную точку
-
                 extendedTable.add(extendedTable.size() - 1, virtualPoint);
                 adapter.updateData(extendedTable);
             } else {
                 adapter.updateVirtualPoint(virtualPoint);
             }
         }
+    }
+
+    private float parsePressure(String pressure) {
+        return ZERO.equals(pressure) ? 0f : Float.parseFloat(pressure);
+    }
+
+    private void bindDeviceFields(DeviceDetails deviceDetails) {
+        binding.deviceNameTextView.setText(setDeviceName(deviceDetails));
+        binding.firmwareVersionValueTextView.setText(setFirmwareVersion(deviceDetails));
+        binding.hardwareVersionValueTextView.setText(setHardWareVersion(deviceDetails));
+        binding.batteryLevelValueTextView.setText(setBatteryLevel(deviceDetails));
+        binding.weightValueTextView.setText(setWeight(deviceDetails));
+        binding.pressureValueTextView.setText(setPressure(deviceDetails));
     }
 
     @SuppressLint("SetTextI18n")
@@ -125,21 +93,21 @@ public class DeviceDetailsBinder {
     }
 
     public void setupSaveButton(View.OnClickListener listener) {
-        saveButton.setOnClickListener(listener);
+        binding.saveConfigurationButton.setOnClickListener(listener);
     }
 
     private void populateSensorFields(SensorConfig sensorConfig) {
-        messageDeliveryPeriod.setText(setMessageDeliveryPeriod(sensorConfig));
-        measurementPeriod.setText(setMeasurementPeriod(sensorConfig));
-        stateNumber.setText(setStateNumber(sensorConfig));
+        binding.messageDeliveryPeriodEditText.setText(setMessageDeliveryPeriod(sensorConfig));
+        binding.measurementPeriodEditText.setText(setMeasurementPeriod(sensorConfig));
+        binding.stateNumber.setText(setStateNumber(sensorConfig));
     }
 
     private void attachSensorListeners(SensorConfig sensorConfig) {
-        messageDeliveryPeriod.addTextChangedListener(createWatcher(value
+        binding.messageDeliveryPeriodEditText.addTextChangedListener(createWatcher(value
                 -> sensorConfig.setMessageDeliveryPeriod(toInt(value))));
-        measurementPeriod.addTextChangedListener(createWatcher(value
+        binding.measurementPeriodEditText.addTextChangedListener(createWatcher(value
                 -> sensorConfig.setMeasurementPeriod(toInt(value))));
-        stateNumber.addTextChangedListener(createWatcher(sensorConfig::setStateNumber));
+        binding.stateNumber.addTextChangedListener(createWatcher(sensorConfig::setStateNumber));
     }
 
     private void setUpInstallationPoint(SensorConfig sensorConfig) {
@@ -148,18 +116,16 @@ public class DeviceDetailsBinder {
             pointOptions.add(getInstallationPointDescription(i));
         }
 
-        ArrayAdapter<String> pointAdapter = new ArrayAdapter<>(
-                view.getContext(), android.R.layout.simple_spinner_item, pointOptions
-        );
+        ArrayAdapter<String> pointAdapter = new ArrayAdapter<>(binding.getRoot().getContext(), android.R.layout.simple_spinner_item, pointOptions);
         pointAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        installationPointSpinner.setAdapter(pointAdapter);
+        binding.installationPointSpinner.setAdapter(pointAdapter);
 
         int installationPoint = sensorConfig.getInstallationPoint();
         String description = getInstallationPointDescription(installationPoint);
         int spinnerPosition = pointAdapter.getPosition(description);
-        installationPointSpinner.setSelection(spinnerPosition);
+        binding.installationPointSpinner.setSelection(spinnerPosition);
 
-        installationPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.installationPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 sensorConfig.setInstallationPoint(position + 1);

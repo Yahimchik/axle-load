@@ -1,7 +1,6 @@
 package com.mehatronics.axle_load.utils.constants;
 
 public class StringConstants {
-    public static final String UUID_PATTERN = ".*2a\\d{2}.*";
     public static final String LEFT = "LEFT";
     public static final String RIGHT = "RIGHT";
     public static final String AXLE = "AXLE";
