@@ -40,7 +40,6 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
         diffResult.dispatchUpdatesTo(this);
     }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.adapter;
 
-import static com.mehatronics.axle_load.utils.constants.StringConstants.AXLE;
+import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

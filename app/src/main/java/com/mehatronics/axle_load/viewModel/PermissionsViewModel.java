@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mehatronics.axle_load.permissions.usecase.PermissionUseCase;
+import com.mehatronics.axle_load.security.permissions.usecase.PermissionUseCase;
 
 import javax.inject.Inject;
 

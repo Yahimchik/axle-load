@@ -2,11 +2,11 @@ package com.mehatronics.axle_load.ble.processor;
 
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.utils.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
-import static com.mehatronics.axle_load.utils.constants.UuidConstants.USER_SERVICE_DPS;
+import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -21,7 +21,6 @@ import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;

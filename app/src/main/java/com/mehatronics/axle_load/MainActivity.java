@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.navigation.ActivityNavigator;
-import com.mehatronics.axle_load.permissions.observer.PermissionObserver;
-import com.mehatronics.axle_load.permissions.usecase.PermissionUseCase;
+import com.mehatronics.axle_load.security.permissions.observer.PermissionObserver;
+import com.mehatronics.axle_load.security.permissions.usecase.PermissionUseCase;
 import com.mehatronics.axle_load.viewModel.PermissionsViewModel;
 
 import javax.inject.Inject;

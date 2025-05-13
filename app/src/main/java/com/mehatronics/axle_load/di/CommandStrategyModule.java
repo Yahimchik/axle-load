@@ -1,9 +1,9 @@
 package com.mehatronics.axle_load.di;
 
-import com.mehatronics.axle_load.ble.strategy.CommandStrategy;
-import com.mehatronics.axle_load.ble.strategy.impl.FirstAuthStrategy;
-import com.mehatronics.axle_load.ble.strategy.impl.NineAuthStrategy;
-import com.mehatronics.axle_load.ble.strategy.impl.SecondAuthStrategy;
+import com.mehatronics.axle_load.security.password_strategy.CommandStrategy;
+import com.mehatronics.axle_load.security.password_strategy.impl.FirstAuthStrategy;
+import com.mehatronics.axle_load.security.password_strategy.impl.NineAuthStrategy;
+import com.mehatronics.axle_load.security.password_strategy.impl.SecondAuthStrategy;
 
 import dagger.Module;
 import dagger.Provides;

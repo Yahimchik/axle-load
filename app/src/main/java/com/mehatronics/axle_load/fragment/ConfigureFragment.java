@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.ui.AxisListBinder;
+import com.mehatronics.axle_load.ui.binder.AxisListBinder;
 import com.mehatronics.axle_load.viewModel.ConfigureViewModel;
 
 public class ConfigureFragment extends Fragment {

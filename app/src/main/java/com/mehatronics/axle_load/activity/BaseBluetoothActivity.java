@@ -17,7 +17,7 @@ import com.mehatronics.axle_load.ble.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.di.LoadingManagerEntryPoint;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
 import com.mehatronics.axle_load.navigation.FragmentNavigator;
-import com.mehatronics.axle_load.ui.DeviceListBinder;
+import com.mehatronics.axle_load.ui.binder.DeviceListBinder;
 import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;

@@ -1,12 +1,12 @@
 package com.mehatronics.axle_load.ble.processor;
 
-import static com.mehatronics.axle_load.utils.constants.UuidConstants.USER_SERVICE_DPS;
-import static com.mehatronics.axle_load.utils.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
 
 import android.bluetooth.BluetoothGatt;
 import android.util.Log;
 
-import com.mehatronics.axle_load.ble.strategy.CommandStrategy;
+import com.mehatronics.axle_load.security.password_strategy.CommandStrategy;
 
 import java.util.Arrays;
 import java.util.Map;

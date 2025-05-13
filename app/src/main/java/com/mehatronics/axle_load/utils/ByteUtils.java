@@ -1,10 +1,8 @@
 package com.mehatronics.axle_load.utils;
 
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
-
-import android.util.Log;
+import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
 
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDate;

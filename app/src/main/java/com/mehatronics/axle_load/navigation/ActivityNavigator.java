@@ -1,8 +1,8 @@
 package com.mehatronics.axle_load.navigation;
 
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DDS_BTN;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DPS_BTN;
-import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DSS_BTN;
+import static com.mehatronics.axle_load.constants.ButtonsConstants.DDS_BTN;
+import static com.mehatronics.axle_load.constants.ButtonsConstants.DPS_BTN;
+import static com.mehatronics.axle_load.constants.ButtonsConstants.DSS_BTN;
 
 import android.app.Activity;
 import android.content.Intent;

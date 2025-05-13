@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
-import com.mehatronics.axle_load.activity.impl.DDSActivity;
-import com.mehatronics.axle_load.activity.impl.DPSActivity;
-import com.mehatronics.axle_load.activity.impl.DSSActivity;
+import com.mehatronics.axle_load.activity.ext.DDSActivity;
+import com.mehatronics.axle_load.activity.ext.DPSActivity;
+import com.mehatronics.axle_load.activity.ext.DSSActivity;
 import com.mehatronics.axle_load.navigation.ActivityNavigator;
 
 import dagger.Module;

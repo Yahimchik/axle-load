@@ -1,7 +1,7 @@
 package com.mehatronics.axle_load.state.impl;
 
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
 
 import android.bluetooth.BluetoothGatt;
 

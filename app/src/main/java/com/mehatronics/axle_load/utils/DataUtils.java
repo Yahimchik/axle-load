@@ -5,11 +5,11 @@ import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT
 import static com.mehatronics.axle_load.utils.ByteUtils.convertByteToValue;
 import static com.mehatronics.axle_load.utils.ByteUtils.getDate;
 import static com.mehatronics.axle_load.utils.DateFormatUtils.convertToDateFormat;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.utils.constants.StringConstants.UNKNOWN;
-import static com.mehatronics.axle_load.utils.constants.StringConstants.ZERO;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
+import static com.mehatronics.axle_load.constants.StringConstants.ZERO;
 
 import com.mehatronics.axle_load.entities.enums.CharacteristicType;
 
