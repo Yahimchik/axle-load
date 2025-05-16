@@ -14,6 +14,7 @@
         android:layout_marginBottom="12dp"
         android:letterSpacing="0.5"
         android:text="@string/axle"
+        android:fontFamily="@font/roboto_bold"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -60,6 +61,7 @@
         android:paddingRight="20dp"
         android:paddingBottom="10dp"
         android:text="@string/reset"
+        android:fontFamily="@font/roboto_bold"
         android:textColor="@color/white" />
 
 </LinearLayout>

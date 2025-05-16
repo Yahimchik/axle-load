@@ -16,7 +16,7 @@
             android:paddingBottom="16dp">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+                android:id="@+id/mainInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -38,11 +38,12 @@
                         android:id="@+id/deviceNameTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:text="@string/device_name"
                         android:textColor="@android:color/black"
                         android:textSize="24sp"
                         android:textStyle="bold"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textAlignment="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -55,6 +56,7 @@
                         android:text="@string/firmware_version"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
 
@@ -66,6 +68,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toEndOf="@id/firmwareVersionTextView"
                         app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
 
@@ -77,6 +80,7 @@
                         android:text="@string/hardware_version"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/firmwareVersionTextView" />
 
@@ -88,6 +92,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toEndOf="@id/hardwareVersionTextView"
                         app:layout_constraintTop_toBottomOf="@id/firmwareVersionTextView" />
 
@@ -99,6 +104,7 @@
                         android:text="@string/weight"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/hardwareVersionTextView" />
 
@@ -110,6 +116,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toEndOf="@id/weightTextView"
                         app:layout_constraintTop_toBottomOf="@id/hardwareVersionTextView" />
 
@@ -121,6 +128,7 @@
                         android:text="@string/pressure"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/weightTextView" />
 
@@ -132,6 +140,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toEndOf="@id/pressureTextView"
                         app:layout_constraintTop_toBottomOf="@id/weightTextView" />
 
@@ -143,6 +152,7 @@
                         android:text="@string/battery"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
 
@@ -154,6 +164,7 @@
                         android:layout_marginTop="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintStart_toEndOf="@id/batteryLevelTextView"
                         app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
 
@@ -163,9 +174,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="@string/reset_password"
-                        app:layout_constraintTop_toBottomOf="@id/batteryLevelValueTextView"
+                        android:fontFamily="@font/roboto_bold"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/batteryLevelValueTextView" />
 
                     <Button
                         android:id="@+id/setNewPasswordButton"
@@ -173,63 +185,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/set_new_password"
-                        app:layout_constraintTop_toBottomOf="@id/resetPasswordButton"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/calibrationCardView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cardView">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="24dp">
-
-                    <TextView
-                        android:id="@+id/calibrationTitleTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/calibration_table"
-                        android:textColor="@android:color/black"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/calibrationRecyclerView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationTitleTextView" />
-
-                    <Button
-                        android:id="@+id/addCalibrationButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/add"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/resetPasswordButton" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -246,7 +205,7 @@
                 app:cardElevation="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calibrationCardView">
+                app:layout_constraintTop_toBottomOf="@id/mainInfo">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -262,6 +221,7 @@
                         android:textColor="#000000"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -277,6 +237,7 @@
                         android:text="@string/message_delivery_period"
                         android:textColor="#000000"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/messageDeliveryPeriodEditText"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView" />
@@ -292,6 +253,7 @@
                         android:inputType="number"
                         android:padding="8dp"
                         android:textColor="#000000"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/messageDeliveryLabel"
                         app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView" />
@@ -306,6 +268,7 @@
                         android:labelFor="@id/measurementPeriodEditText"
                         android:text="@string/measurement_period"
                         android:textColor="#000000"
+                        android:fontFamily="@font/roboto_bold"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/measurementPeriodEditText"
                         app:layout_constraintStart_toStartOf="parent"
@@ -322,6 +285,7 @@
                         android:inputType="number"
                         android:padding="8dp"
                         android:textColor="#000000"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/measurementPeriodLabel"
                         app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText" />
@@ -335,6 +299,7 @@
                         android:text="@string/config_type"
                         android:textColor="#000000"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
@@ -346,6 +311,7 @@
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
                         android:padding="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/configType"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
@@ -361,6 +327,7 @@
                         android:text="@string/installation_point"
                         android:textColor="#000000"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/installationPointSpinner"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/configTypeSpinner" />
@@ -372,6 +339,7 @@
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
                         android:padding="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/installationPoint"
                         app:layout_constraintTop_toBottomOf="@id/configTypeSpinner" />
@@ -386,6 +354,7 @@
                         android:text="@string/stateNumber"
                         android:textColor="#000000"
                         android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/stateNumber"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/installationPointSpinner" />
@@ -399,6 +368,7 @@
                         android:background="@android:drawable/edit_text"
                         android:gravity="center"
                         android:hint="@string/stateNumber"
+                        android:fontFamily="@font/roboto_bold"
                         android:inputType="text"
                         android:maxLength="10"
                         android:padding="8dp"
@@ -423,6 +393,8 @@
                         android:paddingStart="24dp"
                         android:paddingEnd="24dp"
                         android:text="@string/save_button"
+                        android:fontFamily="@font/roboto_bold"
+                        style="@style/Widget.MaterialComponents.Button"
                         android:textAllCaps="false"
                         android:textColor="@android:color/white"
                         app:cornerRadius="12dp"
@@ -433,6 +405,132 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/calibrationTableCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/configurationCardView">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/calibrationTitleTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/calibration_table"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/roboto_bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/calibrationRecyclerView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/calibrationTitleTextView" />
+
+                    <!-- Row 1 -->
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guidelineStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintGuide_begin="16dp"
+                        android:orientation="vertical" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guidelineEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintGuide_end="16dp"
+                        android:orientation="vertical" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/addCalibrationButton"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/save_button"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textAllCaps="false"
+                        style="@style/Widget.MaterialComponents.Button"
+                        app:cornerRadius="12dp"
+                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintEnd_toStartOf="@id/readFromSensorButton"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        android:layout_marginEnd="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/readFromSensorButton"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:minHeight="48dp"
+                        android:text="@string/read_from_sensor"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textAllCaps="false"
+                        app:cornerRadius="12dp"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toEndOf="@id/addCalibrationButton"
+                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
+                        tools:ignore="TextSizeCheck" />
+
+                    <!-- Row 2 (аналогично): -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/saveToFileButton"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/save_to_file"
+                        android:textAllCaps="false"
+                        style="@style/Widget.MaterialComponents.Button"
+                        app:cornerRadius="12dp"
+                        android:fontFamily="@font/roboto_bold"
+                        app:layout_constraintTop_toBottomOf="@id/addCalibrationButton"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintEnd_toStartOf="@id/readFromFileButton"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/readFromFileButton"
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/read_from_file"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textAllCaps="false"
+                        style="@style/Widget.MaterialComponents.Button"
+                        app:cornerRadius="12dp"
+                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton"
+                        app:layout_constraintStart_toEndOf="@id/saveToFileButton"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="8dp" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

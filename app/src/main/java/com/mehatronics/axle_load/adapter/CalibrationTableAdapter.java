@@ -12,28 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTableAdapter.ViewHolder> {
-    private final List<CalibrationTable> calibrationPoints;
-
-    public CalibrationTableAdapter(List<CalibrationTable> calibrationPoints) {
-        if (calibrationPoints.size() > 2) {
-            this.calibrationPoints = calibrationPoints.subList(1, calibrationPoints.size() - 1);
-        } else {
-            this.calibrationPoints = calibrationPoints;
-        }
-    }
+    private final List<CalibrationTable> calibrationPoints = new ArrayList<>();
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<CalibrationTable> newCalibrationPoints) {
-        if (newCalibrationPoints.size() > 2) {
-            calibrationPoints.clear();
-            calibrationPoints.addAll(newCalibrationPoints.subList(1, newCalibrationPoints.size() - 1));
-        } else {
-            calibrationPoints.clear();
-            calibrationPoints.addAll(newCalibrationPoints);
-        }
+        calibrationPoints.clear();
+        calibrationPoints.addAll(newCalibrationPoints);
         notifyDataSetChanged();
     }
 
@@ -50,10 +38,7 @@ public class CalibrationTableAdapter extends RecyclerView.Adapter<CalibrationTab
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CalibrationTable table = calibrationPoints.get(position);
         holder.weightTextView.setText(String.format("%d ", table.getDetector()));
-        holder.pressureTextView.setText(String.format("%.3f ",
-                (calibrationPoints.getLast().getDetector()
-                        - calibrationPoints.getFirst().getDetector())
-                        * table.getMultiplier()));
+        holder.pressureTextView.setText(String.format("%.3f ", table.getMultiplier()));
     }
 
     @Override

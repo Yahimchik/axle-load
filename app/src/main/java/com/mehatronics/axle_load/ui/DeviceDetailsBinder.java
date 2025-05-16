@@ -14,7 +14,6 @@ import static com.mehatronics.axle_load.utils.format.SensorConfigFormat.setState
 import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,7 +54,7 @@ public class DeviceDetailsBinder {
     public DeviceDetailsBinder(View view) {
         this.view = view;
 
-        adapter = new CalibrationTableAdapter(new ArrayList<>());
+        adapter = new CalibrationTableAdapter();
         initRecyclerView(view, R.id.calibrationRecyclerView, adapter);
 
         messageDeliveryPeriod = view.findViewById(R.id.messageDeliveryPeriodEditText);
@@ -93,7 +92,7 @@ public class DeviceDetailsBinder {
             float currentPressure;
             if (deviceDetails.getPressure().equals("UNKNOWN")) {
                 currentPressure = 10F;
-            }else{
+            } else {
                 currentPressure = Float.parseFloat(deviceDetails.getPressure()); // текущее давление
             }
 
