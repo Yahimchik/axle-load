@@ -2,6 +2,8 @@ package com.mehatronics.axle_load.entities;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public class CalibrationTable {
 
     private int detector;
@@ -35,5 +37,19 @@ public class CalibrationTable {
                 "detector=" + detector +
                 ", multiplier=" + multiplier +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CalibrationTable)) return false;
+        CalibrationTable that = (CalibrationTable) o;
+        return detector == that.detector &&
+                Float.compare(that.multiplier, multiplier) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(detector, multiplier);
     }
 }

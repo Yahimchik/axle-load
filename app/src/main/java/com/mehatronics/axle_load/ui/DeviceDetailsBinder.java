@@ -2,14 +2,19 @@ package com.mehatronics.axle_load.ui;
 
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 
+import android.util.Log;
 import android.view.View;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.TableAdapter;
-import com.mehatronics.axle_load.adapter.SensorInfoAdapter;
-import com.mehatronics.axle_load.adapter.SensorConfigAdapter;
+import com.mehatronics.axle_load.adapter.sensor.SensorConfigAdapter;
+import com.mehatronics.axle_load.adapter.sensor.SensorInfoAdapter;
+import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
+
+import java.util.Collections;
+import java.util.List;
 
 public class DeviceDetailsBinder {
     private final SensorConfigAdapter sensorConfigAdapter;
@@ -28,8 +33,14 @@ public class DeviceDetailsBinder {
         sensorInfoAdapter.bind(deviceDetails);
     }
 
-    public void bindtable(DeviceDetails deviceDetails) {
-        tableAdapter.updateData(deviceDetails.getTable());
+    public void bindTable(List<CalibrationTable> table) {
+        if (table == null || table.size() < 3) {
+            tableAdapter.updateData(Collections.emptyList());
+            return;
+        }
+        List<CalibrationTable> displayedList = table.subList(1, table.size() - 1);
+
+        tableAdapter.updateData(displayedList);
     }
 
     public void bindConfigure(SensorConfig sensorConfig) {

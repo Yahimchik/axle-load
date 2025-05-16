@@ -43,7 +43,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
     @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        var table = calibrationPoints.get(position + 1);
+        var table = calibrationPoints.get(position);
         holder.weightTextView.setText(String.format("%d ", table.getDetector()));
         holder.pressureTextView.setText(String.format("%.3f ", table.getMultiplier()));
         holder.addButton.setOnClickListener(v -> Log.d("MyTag", "Hello"));
@@ -51,7 +51,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return calibrationPoints.size() - 2;
+        return calibrationPoints.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

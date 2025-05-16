@@ -27,7 +27,6 @@ public class CalibrationDiffUtil extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        // Уникальный идентификатор — например, детектор
         return oldList.get(oldItemPosition).getDetector() == newList.get(newItemPosition).getDetector();
     }
 
@@ -35,6 +34,8 @@ public class CalibrationDiffUtil extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         CalibrationTable oldItem = oldList.get(oldItemPosition);
         CalibrationTable newItem = newList.get(newItemPosition);
-        return oldItem.getMultiplier() == newItem.getMultiplier();
+        return oldItem.getDetector() == newItem.getDetector()
+                && oldItem.getMultiplier() == newItem.getMultiplier();
     }
 }
+

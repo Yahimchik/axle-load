@@ -11,9 +11,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.activity.BaseBluetoothActivity;
+import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.SensorConfig;
 import com.mehatronics.axle_load.ui.DeviceDetailsBinder;
 import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
+
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -33,8 +36,12 @@ public class DeviceDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_device_details, container, false);
 
         detailsBinder = new DeviceDetailsBinder(view);
-        bluetoothView.getDeviceDetails().observe(getViewLifecycleOwner(), detailsBinder::bindInfo);
-        bluetoothView.getDeviceDetails().observe(getViewLifecycleOwner(), detailsBinder::bindtable);
+        bluetoothView.getDeviceDetails().observe(getViewLifecycleOwner(), deviceDetails -> {
+            detailsBinder.bindInfo(deviceDetails);
+            List<CalibrationTable> extendedTable = bluetoothView.getExtendedCalibrationTableWithVirtualPoint(deviceDetails);
+            bluetoothView.updateCalibrationTable(extendedTable);
+        });
+        bluetoothView.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         bluetoothView.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
 
         detailsBinder.setupSaveButton(v -> {

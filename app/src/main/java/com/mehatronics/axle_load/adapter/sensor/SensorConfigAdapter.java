@@ -1,4 +1,4 @@
-package com.mehatronics.axle_load.adapter;
+package com.mehatronics.axle_load.adapter.sensor;
 
 import static com.mehatronics.axle_load.utils.constants.StringConstants.AXLE;
 import static com.mehatronics.axle_load.utils.constants.StringConstants.LEFT;
@@ -122,7 +122,6 @@ public class SensorConfigAdapter {
         });
 
         isSpinnerInitialized = true;
-        // Если было отложенное обновление, применим его сейчас
         if (pendingSpinnerSelection != null) {
             updateSpinnerSelectionIfNeeded(pendingSpinnerSelection);
             pendingSpinnerSelection = null;

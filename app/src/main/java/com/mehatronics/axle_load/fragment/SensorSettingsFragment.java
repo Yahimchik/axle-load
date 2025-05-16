@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.mehatronics.axle_load.adapter.SensorAdapter;
+import com.mehatronics.axle_load.adapter.sensor.SensorAdapter;
 import com.mehatronics.axle_load.databinding.FragmentSensorSettingsBinding;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.notification.SnackBarCallback;

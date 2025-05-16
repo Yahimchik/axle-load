@@ -10,5 +10,6 @@ public class RecyclerViewInitializer {
         RecyclerView recyclerView = view.findViewById(id);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(null);
     }
 }

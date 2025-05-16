@@ -1,4 +1,4 @@
-package com.mehatronics.axle_load.adapter;
+package com.mehatronics.axle_load.adapter.sensor;
 
 import android.util.Log;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.mehatronics.axle_load.adapter;
+package com.mehatronics.axle_load.adapter.sensor;
 
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setBatteryLevel;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setDeviceName;
