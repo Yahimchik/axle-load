@@ -53,7 +53,7 @@
 
             <!-- Delete icon button -->
             <ImageButton
-                android:id="@+id/actionButton"
+                android:id="@+id/deleteButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
@@ -67,7 +67,7 @@
 
             <!-- Add icon button -->
             <ImageButton
-                android:id="@+id/actionAddButton"
+                android:id="@+id/addButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"

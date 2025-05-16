@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.adapter;
 
+import static com.mehatronics.axle_load.utils.constants.StringConstants.AXLE;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -47,7 +49,7 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.ViewHolder> {
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.axisTitle.setText("Ось " + (position + 1));
+        holder.axisTitle.setText(AXLE + " " + (position + 1));
         holder.bind(position);
     }
 

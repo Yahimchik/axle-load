@@ -9,6 +9,7 @@ import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.utils.constants.StringConstants.UNKNOWN;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.ZERO;
 
 import com.mehatronics.axle_load.entities.enums.CharacteristicType;
 
@@ -22,7 +23,7 @@ public class DataUtils {
         if (bytes != null && bytes.length <= 3) {
             return String.valueOf(bytes[0]);
         }
-        return UNKNOWN;
+        return ZERO;
     }
 
     public static String convertBytesToDate(byte[] bytes) {
@@ -44,7 +45,7 @@ public class DataUtils {
                 }
             }
         }
-        return UNKNOWN;
+        return ZERO;
     }
 }
 

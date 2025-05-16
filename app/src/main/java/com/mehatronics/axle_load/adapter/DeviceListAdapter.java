@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.listener.OnDeviceClickListener;
 import com.mehatronics.axle_load.entities.Device;
+import com.mehatronics.axle_load.utils.diffUtil.DeviceDiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,12 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         this.onDeviceClickListener = onDeviceClickListener;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     public void setDevices(List<Device> newDevices) {
-        this.devices = newDevices;
-        notifyDataSetChanged();
+        DeviceDiffUtil diffCallback = new DeviceDiffUtil(this.devices, newDevices);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.devices = new ArrayList<>(newDevices);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull

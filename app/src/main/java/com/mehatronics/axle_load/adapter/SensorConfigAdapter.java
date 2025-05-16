@@ -1,0 +1,176 @@
+package com.mehatronics.axle_load.adapter;
+
+import static com.mehatronics.axle_load.utils.constants.StringConstants.AXLE;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.LEFT;
+import static com.mehatronics.axle_load.utils.constants.StringConstants.RIGHT;
+import static com.mehatronics.axle_load.utils.format.SensorConfigFormat.setMeasurementPeriod;
+import static com.mehatronics.axle_load.utils.format.SensorConfigFormat.setMessageDeliveryPeriod;
+import static com.mehatronics.axle_load.utils.format.SensorConfigFormat.setStateNumber;
+
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.entities.SensorConfig;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+public class SensorConfigAdapter {
+    private final EditText messageDeliveryPeriod;
+    private final EditText measurementPeriod;
+    private final EditText stateNumber;
+    private final Spinner installationPointSpinner;
+    private final Button saveButton;
+
+    private boolean isSpinnerListenerActive = false;
+    private boolean isSpinnerInitialized = false;
+    private Integer pendingSpinnerSelection = null;
+
+    private final CachedValues cache = new CachedValues();
+
+    private static class CachedValues {
+        String messageDeliveryPeriod;
+        String measurementPeriod;
+        String stateNumber;
+        int installationPoint = -1;
+    }
+
+    public SensorConfigAdapter(View view) {
+        messageDeliveryPeriod = view.findViewById(R.id.messageDeliveryPeriodEditText);
+        measurementPeriod = view.findViewById(R.id.measurementPeriodEditText);
+        stateNumber = view.findViewById(R.id.stateNumber);
+        installationPointSpinner = view.findViewById(R.id.installationPointSpinner);
+        saveButton = view.findViewById(R.id.saveConfigurationButton);
+
+        initSpinner();
+
+        addWatcher(
+                messageDeliveryPeriod,
+                val -> {
+                },
+                () -> cache.messageDeliveryPeriod,
+                val -> cache.messageDeliveryPeriod = val
+        );
+        addWatcher(
+                measurementPeriod,
+                val -> {
+                },
+                () -> cache.measurementPeriod,
+                val -> cache.measurementPeriod = val
+        );
+        addWatcher(
+                stateNumber,
+                val -> {
+                },
+                () -> cache.stateNumber,
+                val -> cache.stateNumber = val
+        );
+    }
+
+    private void addWatcher(EditText editText, Consumer<String> onChange, Supplier<String> cacheGetter, Consumer<String> cacheSetter) {
+        editText.addTextChangedListener(new TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            public void afterTextChanged(Editable s) {
+                String newValue = s.toString();
+                if (!newValue.equals(cacheGetter.get())) {
+                    cacheSetter.accept(newValue);
+                    onChange.accept(newValue);
+                }
+            }
+        });
+    }
+
+    private void initSpinner() {
+        List<String> pointOptions = new ArrayList<>();
+        for (int i = 1; i <= 6; i++) {
+            pointOptions.add(getInstallationPointDescription(i));
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                installationPointSpinner.getContext(),
+                android.R.layout.simple_spinner_item,
+                pointOptions
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        installationPointSpinner.setAdapter(adapter);
+
+        installationPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isSpinnerListenerActive && (position + 1 != cache.installationPoint)) {
+                    cache.installationPoint = position + 1;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        isSpinnerInitialized = true;
+        // Если было отложенное обновление, применим его сейчас
+        if (pendingSpinnerSelection != null) {
+            updateSpinnerSelectionIfNeeded(pendingSpinnerSelection);
+            pendingSpinnerSelection = null;
+        }
+    }
+
+    public void bind(SensorConfig config) {
+        bindField(messageDeliveryPeriod, setMessageDeliveryPeriod(config), val -> cache.messageDeliveryPeriod = val);
+        bindField(measurementPeriod, setMeasurementPeriod(config), val -> cache.measurementPeriod = val);
+        bindField(stateNumber, setStateNumber(config), val -> cache.stateNumber = val);
+        updateSpinnerSelectionIfNeeded(config.getInstallationPoint());
+    }
+
+    private void bindField(EditText field, String newValue, Consumer<String> cacheSetter) {
+        if (!newValue.equals(field.getText().toString())) {
+            field.setText(newValue);
+            cacheSetter.accept(newValue);
+        }
+    }
+
+    private void updateSpinnerSelectionIfNeeded(int newPoint) {
+        if (!isSpinnerInitialized) {
+            pendingSpinnerSelection = newPoint;
+            return;
+        }
+
+        if (newPoint != cache.installationPoint) {
+            isSpinnerListenerActive = false;
+            installationPointSpinner.setSelection(newPoint - 1);
+            cache.installationPoint = newPoint;
+        }
+        isSpinnerListenerActive = true;
+    }
+
+    public void updateConfig(SensorConfig config) {
+        config.setMessageDeliveryPeriod(Integer.parseInt(cache.messageDeliveryPeriod));
+        config.setMeasurementPeriod(Integer.parseInt(cache.measurementPeriod));
+        config.setStateNumber(cache.stateNumber);
+        config.setInstallationPoint(cache.installationPoint);
+    }
+
+    public void setSaveClickListener(View.OnClickListener listener) {
+        saveButton.setOnClickListener(listener);
+    }
+
+    private String getInstallationPointDescription(int installationPoint) {
+        int axle = (installationPoint - 1) / 2 + 1;
+        String position = (installationPoint - 1) % 2 == 0 ? LEFT : RIGHT;
+        return AXLE + " " + axle + " — " + position;
+    }
+}
