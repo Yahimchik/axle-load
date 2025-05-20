@@ -1,6 +1,5 @@
 package com.mehatronics.axle_load.adapter;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,27 +8,27 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.adapter.listener.OnAddCalibrationPointListener;
+import com.mehatronics.axle_load.adapter.listener.OnDeleteCalibrationPointListener;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
-public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
-    private final List<CalibrationTable> calibrationPoints = new ArrayList<>();
+public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.ViewHolder> {
 
-    public void updateData(List<CalibrationTable> newCalibrationPoints) {
-        CalibrationDiffUtil diffCallback = new CalibrationDiffUtil(this.calibrationPoints, newCalibrationPoints);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+    private final OnDeleteCalibrationPointListener onDeleteListener;
+    private final OnAddCalibrationPointListener onAddListener;
 
-        this.calibrationPoints.clear();
-        this.calibrationPoints.addAll(newCalibrationPoints);
-
-        diffResult.dispatchUpdatesTo(this);
+    public TableAdapter(OnAddCalibrationPointListener onAddListener,
+                        OnDeleteCalibrationPointListener onDeleteListener) {
+        super(new CalibrationDiffUtil());
+        this.onAddListener = onAddListener;
+        this.onDeleteListener = onDeleteListener;
     }
 
     @NonNull
@@ -40,18 +39,46 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
         return new ViewHolder(view);
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        var table = calibrationPoints.get(position);
-        holder.weightTextView.setText(String.format("%d ", table.getDetector()));
-        holder.pressureTextView.setText(String.format("%.3f ", table.getMultiplier()));
-        holder.addButton.setOnClickListener(v -> Log.d("MyTag", "Hello"));
+        CalibrationTable table = getItem(position);
+
+        if (position == 0 || position == getItemCount() - 1) {
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+            return;
+        } else {
+            holder.itemView.setVisibility(View.VISIBLE);
+        }
+
+        holder.weightTextView.setText(getFormat(table.getDetector()));
+        holder.pressureTextView.setText(getFormat(table.getMultiplier()));
+
+        if (table.isLast()) {
+            holder.addButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setVisibility(View.INVISIBLE);
+
+            holder.addButton.setOnClickListener(v -> {
+                CalibrationTable point = new CalibrationTable(
+                        table.getDetector(),
+                        table.getMultiplier()
+                );
+                onAddListener.onAdd(point);
+            });
+        } else {
+            holder.addButton.setVisibility(View.INVISIBLE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
+
+            holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(position));
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return calibrationPoints.size();
+    private String getFormat(float value) {
+        return String.format(Locale.getDefault(), "%.3f ", value);
+    }
+
+    private String getFormat(int value) {
+        return String.format(Locale.getDefault(), "%d ", value);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

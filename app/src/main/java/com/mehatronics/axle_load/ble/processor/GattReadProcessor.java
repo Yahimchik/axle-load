@@ -95,7 +95,6 @@ public class GattReadProcessor {
         if (readCharacteristic != null) {
             try {
                 gatt.readCharacteristic(readCharacteristic);
-//                Log.d("MyTag", Arrays.toString(readCharacteristic.getValue()));
             } catch (SecurityException e) {
                 Log.d("MyTag", "Security exception: " + e.getMessage());
             }

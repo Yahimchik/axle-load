@@ -11,8 +11,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SensorInfoAdapter {
@@ -60,11 +63,25 @@ public class SensorInfoAdapter {
                 val -> cachedPressure = val);
     }
 
+    public boolean hasDetectorChanged(List<CalibrationTable> o, List<CalibrationTable> n) {
+        if (n.size() < 2) return false;
+
+        int index = n.size() - 2;
+        if (index >= o.size()) return true;
+
+        CalibrationTable newItem = n.get(index);
+        CalibrationTable oldItem = o.get(index);
+
+        return !Objects.equals(newItem.getDetector(), oldItem.getDetector());
+    }
+
     private void updateTextIfChanged(TextView view, String newValue, String cachedValue, Consumer<String> cacheSetter) {
         if (!newValue.equals(cachedValue)) {
             view.setText(newValue);
             cacheSetter.accept(newValue);
         }
     }
+
+
 }
 

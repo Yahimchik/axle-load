@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.ui;
 
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
+import static com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
 import android.util.Log;
 import android.view.View;
@@ -12,8 +13,10 @@ import com.mehatronics.axle_load.adapter.sensor.SensorInfoAdapter;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
+import com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil;
+import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceDetailsBinder {
@@ -21,10 +24,10 @@ public class DeviceDetailsBinder {
     private final SensorInfoAdapter sensorInfoAdapter;
     private final TableAdapter tableAdapter;
 
-    public DeviceDetailsBinder(View view) {
+    public DeviceDetailsBinder(View view, BluetoothViewModel vm) {
         sensorConfigAdapter = new SensorConfigAdapter(view);
         sensorInfoAdapter = new SensorInfoAdapter(view);
-        tableAdapter = new TableAdapter();
+        tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
 
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
     }
@@ -34,13 +37,9 @@ public class DeviceDetailsBinder {
     }
 
     public void bindTable(List<CalibrationTable> table) {
-        if (table == null || table.size() < 3) {
-            tableAdapter.updateData(Collections.emptyList());
-            return;
+        if (hasTableChanged(tableAdapter.getCurrentList(), table)) {
+            tableAdapter.submitList(new ArrayList<>(table));
         }
-        List<CalibrationTable> displayedList = table.subList(1, table.size() - 1);
-
-        tableAdapter.updateData(displayedList);
     }
 
     public void bindConfigure(SensorConfig sensorConfig) {

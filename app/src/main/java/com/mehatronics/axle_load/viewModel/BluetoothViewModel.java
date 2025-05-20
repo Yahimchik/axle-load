@@ -24,6 +24,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class BluetoothViewModel extends ViewModel {
     private final MutableLiveData<List<CalibrationTable>> calibrationTableLiveData = new MutableLiveData<>();
     private final BluetoothRepository bluetoothRepository;
+    private List<CalibrationTable> originalPoints;
+
 
     @Inject
     public BluetoothViewModel(BluetoothRepository bluetoothRepository) {
@@ -83,60 +85,50 @@ public class BluetoothViewModel extends ViewModel {
         return calibrationTableLiveData;
     }
 
-    public void updateCalibrationTable(List<CalibrationTable> table) {
-        calibrationTableLiveData.setValue(table);
+    public void updateVirtualPoint(DeviceDetails deviceDetails) {
+        originalPoints = deviceDetails.getTable();
+        aupdateVirtualPoint(deviceDetails);
     }
 
-    public List<CalibrationTable> getExtendedCalibrationTableWithVirtualPoint(DeviceDetails deviceDetails) {
-        List<CalibrationTable> originalTable = deviceDetails.getTable();
-        if (originalTable == null || originalTable.size() < 2) {
-            return originalTable;
+    public void deletePoint(int position) {
+        if (originalPoints != null && position >= 0 && position < originalPoints.size()) {
+            originalPoints.remove(position);
+            updateTable(new ArrayList<>(originalPoints));
         }
+    }
 
-        List<CalibrationTable> extendedTable = new ArrayList<>(originalTable);
+    public void addPoint(CalibrationTable newPoint) {
+        if (originalPoints == null) return;
+        originalPoints.add(originalPoints.size() - 1, newPoint);
+        updateTable(new ArrayList<>(originalPoints));
+    }
 
+    private void aupdateVirtualPoint(DeviceDetails deviceDetails) {
+        List<CalibrationTable> displayed = new ArrayList<>(originalPoints);
         try {
-            float currentPressure = parsePressure(deviceDetails.getPressure());
-
-            CalibrationTable first = originalTable.get(0);
-            CalibrationTable last = originalTable.get(originalTable.size() - 1);
-
-            int detectorValue = (int) (currentPressure * 10);
-            float multiplier = 10f / (last.getDetector() - first.getDetector());
-
-            CalibrationTable virtualPoint = new CalibrationTable(detectorValue, multiplier);
-
-            extendedTable.add(extendedTable.size() - 1, virtualPoint);
-
+            if (!displayed.isEmpty()) {
+                var virtual = new CalibrationTable(
+                        (int) (parsePressure(deviceDetails.getPressure()) * 10),
+                        0,
+                        true
+                );
+                displayed.add(displayed.size() - 1, virtual);
+            }
+            calibrationTableLiveData.setValue(displayed);
         } catch (NumberFormatException e) {
             Log.w("MyTag", "Invalid pressure format: " + deviceDetails.getPressure());
         }
-
-        return extendedTable;
     }
 
-    public void deleteCalibrationPoint(int position) {
-        List<CalibrationTable> currentTable = calibrationTableLiveData.getValue();
-        if (currentTable != null && position >= 0 && position < currentTable.size()) {
-            currentTable.remove(position);
-            calibrationTableLiveData.setValue(new ArrayList<>(currentTable));
-        }
-    }
-
-    public void addCalibrationPoint(int position, CalibrationTable newPoint) {
-        List<CalibrationTable> currentTable = calibrationTableLiveData.getValue();
-        if (currentTable != null && position >= 0 && position <= currentTable.size()) {
-            currentTable.add(position, newPoint);
-            calibrationTableLiveData.setValue(new ArrayList<>(currentTable));
-        }
+    private void updateTable(List<CalibrationTable> table) {
+        calibrationTableLiveData.setValue(new ArrayList<>(table));
     }
 
     private float parsePressure(String pressure) {
         if (pressure == null || pressure.equalsIgnoreCase("0")) {
-            return 0f; // дефолтное давление
+            return 0f;
         }
         return Float.parseFloat(pressure);
     }
-
 }
 
