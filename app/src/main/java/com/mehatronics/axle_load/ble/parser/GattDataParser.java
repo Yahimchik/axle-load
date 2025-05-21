@@ -36,8 +36,8 @@ public class GattDataParser {
         String firmwareVersion = convertBytesToString(values.get(7));
         String hardwareVersion = convertBytesToString(values.get(8));
         String batteryLevel = convertBytesToBattery(values.get(9));
-        String weight = convertBytesToValue(values.get(values.size() - 1), WEIGHT);
-        String pressure = convertBytesToValue(values.get(values.size() - 1), PRESSURE);
+        String weight = convertBytesToValue(values.get(10), WEIGHT);
+        String pressure = convertBytesToValue(values.get(10), PRESSURE);
 
         return new DeviceDetails.Builder()
                 .setDeviceName(deviceName)

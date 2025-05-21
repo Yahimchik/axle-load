@@ -3,7 +3,6 @@ package com.mehatronics.axle_load.ui;
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 import static com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
-import android.util.Log;
 import android.view.View;
 
 import com.mehatronics.axle_load.R;
@@ -13,8 +12,7 @@ import com.mehatronics.axle_load.adapter.sensor.SensorInfoAdapter;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
-import com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil;
-import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
+import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ public class DeviceDetailsBinder {
     private final SensorInfoAdapter sensorInfoAdapter;
     private final TableAdapter tableAdapter;
 
-    public DeviceDetailsBinder(View view, BluetoothViewModel vm) {
+    public DeviceDetailsBinder(View view, DeviceViewModel vm) {
         sensorConfigAdapter = new SensorConfigAdapter(view);
         sensorInfoAdapter = new SensorInfoAdapter(view);
         tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
@@ -38,7 +36,10 @@ public class DeviceDetailsBinder {
 
     public void bindTable(List<CalibrationTable> table) {
         if (hasTableChanged(tableAdapter.getCurrentList(), table)) {
-            tableAdapter.submitList(new ArrayList<>(table));
+            if (table.size() > 2) {
+                List<CalibrationTable> filteredList = table.subList(1, table.size() - 1);
+                tableAdapter.submitList(new ArrayList<>(filteredList));
+            }
         }
     }
 
@@ -48,6 +49,10 @@ public class DeviceDetailsBinder {
 
     public void setupSaveButton(View.OnClickListener listener) {
         sensorConfigAdapter.setSaveClickListener(listener);
+    }
+
+    public void setupReadFromSensorButton(View.OnClickListener listener) {
+        sensorInfoAdapter.setReadFromSensorButtonClickListener(listener);
     }
 
     public void updateSensorConfig(SensorConfig config) {

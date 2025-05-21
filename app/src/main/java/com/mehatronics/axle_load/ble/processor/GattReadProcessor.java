@@ -63,7 +63,12 @@ public class GattReadProcessor {
 
     public void handleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         byte[] bytes = characteristic.getValue();
-        values.add(bytes);
+
+        if (values.size() < 11) {
+            values.add(bytes);
+        } else if (!Arrays.equals(values.get(values.size() - 1), bytes)) {
+            values.set(values.size() - 1, bytes);
+        }
 
         if (isReadingAll) {
             readNext(gatt);
@@ -84,9 +89,14 @@ public class GattReadProcessor {
             }
         }
 
-        if (isConnected && values.size() >= 9) {
+        if (isConnected && values.size() > 8) {
             deviceDetailsLiveData.postValue(gattDataParser.parseDeviceDetails(values, table));
         }
+    }
+
+    public void rereadCalibrationTable() {
+        isReadingTableComplete = true;
+        table.clear();
     }
 
     public void readNextAfterWrite(BluetoothGatt gatt) {
@@ -103,6 +113,10 @@ public class GattReadProcessor {
 
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return deviceDetailsLiveData;
+    }
+
+    public void setDeviceDetailsLiveData(DeviceDetails details) {
+        deviceDetailsLiveData.setValue(details);
     }
 
     public LiveData<SensorConfig> getSensorConfigureLiveData() {

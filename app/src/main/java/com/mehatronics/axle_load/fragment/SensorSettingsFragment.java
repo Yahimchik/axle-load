@@ -16,7 +16,7 @@ import com.mehatronics.axle_load.adapter.sensor.SensorAdapter;
 import com.mehatronics.axle_load.databinding.FragmentSensorSettingsBinding;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.notification.SnackBarCallback;
-import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
+import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 import com.mehatronics.axle_load.viewModel.SensorViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -24,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class SensorSettingsFragment extends Fragment implements SnackBarCallback {
     private FragmentSensorSettingsBinding binding;
-    private BluetoothViewModel bluetoothViewModel;
+    private DeviceViewModel deviceViewModel;
     private SensorViewModel sensorViewModel;
     private SensorAdapter sensorAdapter;
     private String sensorPosition;
@@ -39,7 +39,7 @@ public class SensorSettingsFragment extends Fragment implements SnackBarCallback
         }
         sensorViewModel = new ViewModelProvider(requireActivity()).get(SensorViewModel.class);
         sensorViewModel.setSnackBarCallback(this);
-        bluetoothViewModel = new ViewModelProvider(requireActivity()).get(BluetoothViewModel.class);
+        deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SensorSettingsFragment extends Fragment implements SnackBarCallback
         sensorAdapter = new SensorAdapter(this::onSensorSelected);
         binding.sensorRecyclerView.setAdapter(sensorAdapter);
 
-        bluetoothViewModel.getScannedDevices().observe(getViewLifecycleOwner(), devices
+        deviceViewModel.getScannedDevices().observe(getViewLifecycleOwner(), devices
                 -> sensorViewModel.updateScannedDevices(devices));
 
         sensorViewModel.getScannedDevicesLiveData().observe(getViewLifecycleOwner(), processedDevices

@@ -17,6 +17,7 @@ import com.mehatronics.axle_load.state.CommandStateHandler;
 import com.mehatronics.axle_load.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
+import com.mehatronics.axle_load.state.impl.FirstCommandState;
 
 import javax.inject.Inject;
 
@@ -88,6 +89,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         return gattReadProcessor.getDeviceDetailsLiveData();
     }
 
+    public void setDeviceDetailsLiveData(DeviceDetails details) {
+        gattReadProcessor.setDeviceDetailsLiveData(details);
+    }
+
     public LiveData<SensorConfig> getSensorConfigureLiveData() {
         return gattReadProcessor.getSensorConfigureLiveData();
     }
@@ -113,6 +118,11 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         writeProcessor.clearBuffer();
         stateHandler.handle(gatt, this);
         writeProcessor.write(gatt);
+    }
+
+    public void rereadCalibrationTable() {
+        setCommandState(new FirstCommandState());
+        gattReadProcessor.rereadCalibrationTable();
     }
 
     public void saveConfiguration() {

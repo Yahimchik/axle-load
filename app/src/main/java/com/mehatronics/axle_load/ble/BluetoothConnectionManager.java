@@ -33,6 +33,10 @@ public class BluetoothConnectionManager {
         return gattCallbackHandler.getDeviceDetailsLiveData();
     }
 
+    public void setDeviceDetailsLiveData(DeviceDetails details) {
+        gattCallbackHandler.setDeviceDetailsLiveData(details);
+    }
+
     public LiveData<SensorConfig> getSensorConfigureLiveData() {
         return gattCallbackHandler.getSensorConfigureLiveData();
     }
@@ -58,6 +62,10 @@ public class BluetoothConnectionManager {
     public void saveConfiguration() {
         gattCallbackHandler.setConfigurationSaved(true);
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
+    }
+
+    public void rereadCalibrationTable() {
+        gattCallbackHandler.rereadCalibrationTable();
     }
 
     public LiveData<Boolean> isConnectedLiveData() {

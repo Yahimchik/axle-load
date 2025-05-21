@@ -1,6 +1,8 @@
 package com.mehatronics.axle_load.adapter.listener;
 
+import com.mehatronics.axle_load.entities.CalibrationTable;
+
 @FunctionalInterface
 public interface OnDeleteCalibrationPointListener {
-    void onDelete(int position);
+    void onDelete(CalibrationTable point);
 }

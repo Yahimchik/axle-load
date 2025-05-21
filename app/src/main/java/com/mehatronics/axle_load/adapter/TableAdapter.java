@@ -1,6 +1,5 @@
 package com.mehatronics.axle_load.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,14 +42,6 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CalibrationTable table = getItem(position);
 
-        if (position == 0 || position == getItemCount() - 1) {
-            holder.itemView.setVisibility(View.GONE);
-            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-            return;
-        } else {
-            holder.itemView.setVisibility(View.VISIBLE);
-        }
-
         holder.weightTextView.setText(getFormat(table.getDetector()));
         holder.pressureTextView.setText(getFormat(table.getMultiplier()));
 
@@ -59,17 +50,14 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
             holder.deleteButton.setVisibility(View.INVISIBLE);
 
             holder.addButton.setOnClickListener(v -> {
-                CalibrationTable point = new CalibrationTable(
-                        table.getDetector(),
-                        table.getMultiplier()
-                );
+                var point = new CalibrationTable(table.getDetector(), table.getMultiplier());
                 onAddListener.onAdd(point);
             });
         } else {
             holder.addButton.setVisibility(View.INVISIBLE);
             holder.deleteButton.setVisibility(View.VISIBLE);
 
-            holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(position));
+            holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(table));
         }
     }
 

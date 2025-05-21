@@ -4,23 +4,23 @@ import static java.lang.Boolean.TRUE;
 
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
-import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
+import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
 
 public class BluetoothHandler {
-    private final BluetoothViewModel bluetoothViewModel;
+    private final DeviceViewModel deviceViewModel;
     private final BluetoothHandlerContract activity;
 
     @Inject
-    public BluetoothHandler(BluetoothViewModel bluetoothViewModel, BluetoothHandlerContract activity) {
-        this.bluetoothViewModel = bluetoothViewModel;
+    public BluetoothHandler(DeviceViewModel deviceViewModel, BluetoothHandlerContract activity) {
+        this.deviceViewModel = deviceViewModel;
         this.activity = activity;
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
         activity.loadingManagerShowLoading(false);
-        if (deviceDetails != null && TRUE.equals(bluetoothViewModel.isConnectedLiveData().getValue())) {
+        if (deviceDetails != null && TRUE.equals(deviceViewModel.isConnectedLiveData().getValue())) {
             if (activity.isFragmentNotVisible()) {
                 activity.showFragment();
             }
@@ -42,6 +42,6 @@ public class BluetoothHandler {
     public void onDeviceSelected(Device device) {
         activity.loadingManagerShowLoading(true);
         activity.setIsAttemptingToConnect(true);
-        bluetoothViewModel.connectToDevice(device);
+        deviceViewModel.connectToDevice(device);
     }
 }

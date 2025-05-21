@@ -30,9 +30,7 @@ public class CalibrationDiffUtil extends DiffUtil.ItemCallback<CalibrationTable>
 
     @Override
     public boolean areContentsTheSame(@NonNull CalibrationTable o, @NonNull CalibrationTable n) {
-        return o.getDetector() == n.getDetector()
-                && o.getMultiplier() == n.getMultiplier()
-                && o.isLast() == n.isLast();
+        return o.equals(n);
     }
 }
 

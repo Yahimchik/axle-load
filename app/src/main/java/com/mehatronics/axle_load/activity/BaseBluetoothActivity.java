@@ -18,13 +18,13 @@ import com.mehatronics.axle_load.di.LoadingManagerEntryPoint;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
 import com.mehatronics.axle_load.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.DeviceListBinder;
-import com.mehatronics.axle_load.viewModel.BluetoothViewModel;
+import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public abstract class BaseBluetoothActivity extends AppCompatActivity implements BluetoothHandlerContract {
-    private BluetoothViewModel bluetoothViewModel;
+    private DeviceViewModel deviceViewModel;
     private FragmentNavigator fragmentNavigator;
     private BluetoothHandler bluetoothHandler;
     private DeviceListBinder deviceListBinder;
@@ -35,9 +35,9 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadingManager = fromActivity(this, LoadingManagerEntryPoint.class).getLoadingManager();
-        bluetoothViewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
+        deviceViewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
         fragmentNavigator = new FragmentNavigator(this);
-        bluetoothHandler = new BluetoothHandler(bluetoothViewModel, this);
+        bluetoothHandler = new BluetoothHandler(deviceViewModel, this);
     }
 
     @Override
@@ -50,10 +50,10 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bluetoothViewModel.clearScannedDevices();
-        bluetoothViewModel.stopScan();
-        bluetoothViewModel.clearDetails();
-        bluetoothViewModel.disconnect();
+        deviceViewModel.clearScannedDevices();
+        deviceViewModel.stopScan();
+        deviceViewModel.clearDetails();
+        deviceViewModel.disconnect();
     }
 
     @Override
@@ -104,12 +104,12 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     }
 
     protected void setupObservers() {
-        bluetoothViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
-        bluetoothViewModel.getDeviceDetails().observe(this, bluetoothHandler::handleDeviceDetails);
-        bluetoothViewModel.isConnectedLiveData().observe(this, bluetoothHandler::handleConnectionState);
+        deviceViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
+        deviceViewModel.getDeviceDetails().observe(this, bluetoothHandler::handleDeviceDetails);
+        deviceViewModel.isConnectedLiveData().observe(this, bluetoothHandler::handleConnectionState);
     }
 
     protected void setupBluetooth(DeviceType deviceType) {
-        bluetoothViewModel.startScan(deviceType);
+        deviceViewModel.startScan(deviceType);
     }
 }

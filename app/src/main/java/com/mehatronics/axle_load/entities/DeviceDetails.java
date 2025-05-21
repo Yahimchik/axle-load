@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class DeviceDetails implements Serializable {
     private final String deviceName;
@@ -16,7 +17,7 @@ public class DeviceDetails implements Serializable {
     private final String batteryLevel;
     private final String weight;
     private final String pressure;
-    private final List<CalibrationTable> table;
+    private List<CalibrationTable> table;
     private final SensorConfig sensorConfig;
 
     private DeviceDetails(Builder builder) {
@@ -78,6 +79,10 @@ public class DeviceDetails implements Serializable {
         return table;
     }
 
+    public void setTable(List<CalibrationTable> table) {
+        this.table = table;
+    }
+
     public SensorConfig getSensorConfig() {
         return sensorConfig;
     }
@@ -96,7 +101,44 @@ public class DeviceDetails implements Serializable {
                 ", batteryLevel='" + batteryLevel + '\'' +
                 ", weight='" + weight + '\'' +
                 ", pressure='" + pressure + '\'' +
+                ", table=" + table +
+                ", sensorConfig=" + sensorConfig +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof DeviceDetails)) return false;
+        DeviceDetails details = (DeviceDetails) o;
+        return Objects.equals(deviceName, details.deviceName)
+                && Objects.equals(dateManufacturer, details.dateManufacturer)
+                && Objects.equals(manufacturer, details.manufacturer)
+                && Objects.equals(modelType, details.modelType)
+                && Objects.equals(serialNumber, details.serialNumber)
+                && Objects.equals(firmwareVersion, details.firmwareVersion)
+                && Objects.equals(hardWareVersion, details.hardWareVersion)
+                && Objects.equals(batteryLevel, details.batteryLevel)
+                && Objects.equals(weight, details.weight)
+                && Objects.equals(pressure, details.pressure)
+                && Objects.equals(table, details.table)
+                && Objects.equals(sensorConfig, details.sensorConfig);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                deviceName,
+                dateManufacturer,
+                manufacturer,
+                modelType,
+                serialNumber,
+                firmwareVersion,
+                hardWareVersion,
+                batteryLevel,
+                weight,
+                pressure,
+                table,
+                sensorConfig);
     }
 
     public static class Builder {
@@ -168,7 +210,7 @@ public class DeviceDetails implements Serializable {
             return this;
         }
 
-        public Builder setSensorConfig(SensorConfig sensorConfig){
+        public Builder setSensorConfig(SensorConfig sensorConfig) {
             this.sensorConfig = sensorConfig;
             return this;
         }

@@ -15,7 +15,7 @@ import com.mehatronics.axle_load.entities.enums.CharacteristicType;
 
 public class DataUtils {
 
-    public static String convertBytesToString(byte[] bytes){
+    public static String convertBytesToString(byte[] bytes) {
         return new String(bytes);
     }
 
@@ -46,6 +46,13 @@ public class DataUtils {
             }
         }
         return ZERO;
+    }
+
+    public static int parsePressure(String pressure) {
+        if (pressure == null || pressure.equalsIgnoreCase("0")) {
+            return 0;
+        }
+        return (int) (Float.parseFloat(pressure) * 10);
     }
 }
 

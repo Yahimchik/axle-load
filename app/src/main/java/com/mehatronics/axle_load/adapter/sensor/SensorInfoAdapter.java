@@ -8,14 +8,12 @@ import static com.mehatronics.axle_load.utils.format.DetailsFormat.setPressure;
 import static com.mehatronics.axle_load.utils.format.DetailsFormat.setWeight;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SensorInfoAdapter {
@@ -25,6 +23,7 @@ public class SensorInfoAdapter {
     private final TextView batteryLevelTextView;
     private final TextView weightTextView;
     private final TextView pressureTextView;
+    private final Button readFromSensorButton;
 
     private String cachedDeviceName;
     private String cachedFirmwareVersion;
@@ -40,6 +39,7 @@ public class SensorInfoAdapter {
         batteryLevelTextView = root.findViewById(R.id.batteryLevelValueTextView);
         weightTextView = root.findViewById(R.id.weightValueTextView);
         pressureTextView = root.findViewById(R.id.pressureValueTextView);
+        readFromSensorButton = root.findViewById(R.id.readFromSensorButton);
     }
 
     public void bind(DeviceDetails newDetails) {
@@ -63,18 +63,6 @@ public class SensorInfoAdapter {
                 val -> cachedPressure = val);
     }
 
-    public boolean hasDetectorChanged(List<CalibrationTable> o, List<CalibrationTable> n) {
-        if (n.size() < 2) return false;
-
-        int index = n.size() - 2;
-        if (index >= o.size()) return true;
-
-        CalibrationTable newItem = n.get(index);
-        CalibrationTable oldItem = o.get(index);
-
-        return !Objects.equals(newItem.getDetector(), oldItem.getDetector());
-    }
-
     private void updateTextIfChanged(TextView view, String newValue, String cachedValue, Consumer<String> cacheSetter) {
         if (!newValue.equals(cachedValue)) {
             view.setText(newValue);
@@ -82,6 +70,8 @@ public class SensorInfoAdapter {
         }
     }
 
-
+    public void setReadFromSensorButtonClickListener(View.OnClickListener listener) {
+        readFromSensorButton.setOnClickListener(listener);
+    }
 }
 
