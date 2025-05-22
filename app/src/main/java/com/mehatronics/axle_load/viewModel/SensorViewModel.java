@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.entities.Device;
-import com.mehatronics.axle_load.notification.SnackBarCallback;
+import com.mehatronics.axle_load.notification.MessageCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,14 +27,14 @@ public class SensorViewModel extends ViewModel {
     private final List<MutableLiveData<String>> leftImages = new ArrayList<>();
     private final Map<String, Device> processedDevices = new HashMap<>();
     private final Set<String> selectedMacs = new HashSet<>();
-    private SnackBarCallback snackBarCallback;
+    private MessageCallback messageCallback;
 
     @Inject
     public SensorViewModel() {
     }
 
-    public void setSnackBarCallback(SnackBarCallback snackBarCallback) {
-        this.snackBarCallback = snackBarCallback;
+    public void setSnackBarCallback(MessageCallback messageCallback) {
+        this.messageCallback = messageCallback;
     }
 
     public void updateScannedDevices(List<Device> newDevices) {
@@ -59,7 +59,7 @@ public class SensorViewModel extends ViewModel {
 
     public void markMacAsSelected(String mac) {
         try {
-            snackBarCallback.showSnackBar(
+            messageCallback.showMessage(
                     "Selected: " + Objects.requireNonNull(processedDevices.get(mac)).getDevice().getName());
         } catch (SecurityException e) {
             //

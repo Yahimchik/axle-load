@@ -208,9 +208,11 @@
                 app:layout_constraintTop_toBottomOf="@id/mainInfo">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/configurationLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="24dp">
+                    android:padding="16dp"
+                    tools:context=".ui.ConfigurationFragment">
 
                     <TextView
                         android:id="@+id/configurationTitleTextView"
@@ -289,6 +291,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/measurementPeriodLabel"
                         app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText" />
+
                     <!-- Data Transmission Mode Spinner -->
                     <TextView
                         android:id="@+id/configType"
@@ -315,7 +318,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/configType"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
-
 
                     <!-- Power Mode Spinner -->
                     <TextView
@@ -382,7 +384,6 @@
                         app:layout_constraintTop_toBottomOf="@id/installationPointSpinner"
                         tools:ignore="TextFields,VisualLintTextFieldSize" />
 
-
                     <Button
                         android:id="@+id/saveConfigurationButton"
                         android:layout_width="wrap_content"
@@ -404,6 +405,7 @@
                         app:layout_constraintTop_toBottomOf="@id/stateNumber" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -465,7 +467,7 @@
                         android:orientation="vertical" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/addCalibrationButton"
+                        android:id="@+id/saveTableButton"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
@@ -492,7 +494,7 @@
                         android:textAllCaps="false"
                         app:cornerRadius="12dp"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                        app:layout_constraintStart_toEndOf="@id/addCalibrationButton"
+                        app:layout_constraintStart_toEndOf="@id/saveTableButton"
                         app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
                         tools:ignore="TextSizeCheck" />
 
@@ -507,7 +509,7 @@
                         style="@style/Widget.MaterialComponents.Button"
                         app:cornerRadius="12dp"
                         android:fontFamily="@font/roboto_bold"
-                        app:layout_constraintTop_toBottomOf="@id/addCalibrationButton"
+                        app:layout_constraintTop_toBottomOf="@id/saveTableButton"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
                         app:layout_constraintEnd_toStartOf="@id/readFromFileButton"
                         android:layout_marginTop="16dp"

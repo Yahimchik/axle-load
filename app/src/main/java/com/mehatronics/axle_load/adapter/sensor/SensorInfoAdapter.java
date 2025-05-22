@@ -24,6 +24,7 @@ public class SensorInfoAdapter {
     private final TextView weightTextView;
     private final TextView pressureTextView;
     private final Button readFromSensorButton;
+    private final Button saveTableButton;
 
     private String cachedDeviceName;
     private String cachedFirmwareVersion;
@@ -40,6 +41,8 @@ public class SensorInfoAdapter {
         weightTextView = root.findViewById(R.id.weightValueTextView);
         pressureTextView = root.findViewById(R.id.pressureValueTextView);
         readFromSensorButton = root.findViewById(R.id.readFromSensorButton);
+        saveTableButton = root.findViewById(R.id.saveTableButton);
+
     }
 
     public void bind(DeviceDetails newDetails) {
@@ -72,6 +75,10 @@ public class SensorInfoAdapter {
 
     public void setReadFromSensorButtonClickListener(View.OnClickListener listener) {
         readFromSensorButton.setOnClickListener(listener);
+    }
+
+    public void setSaveTableButton(View.OnClickListener listener) {
+        saveTableButton.setOnClickListener(listener);
     }
 }
 

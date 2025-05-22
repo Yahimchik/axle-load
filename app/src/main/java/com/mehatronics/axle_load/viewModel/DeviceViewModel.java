@@ -11,6 +11,7 @@ import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
+import com.mehatronics.axle_load.notification.MessageCallback;
 
 import java.util.List;
 
@@ -21,10 +22,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class DeviceViewModel extends ViewModel {
     private final BluetoothRepository bluetoothRepository;
+    private MessageCallback messageCallback;
 
     @Inject
     public DeviceViewModel(BluetoothRepository bluetoothRepository) {
         this.bluetoothRepository = bluetoothRepository;
+    }
+
+    public void setSnackBarCallback(MessageCallback messageCallback) {
+        this.messageCallback = messageCallback;
     }
 
     public LiveData<Boolean> isConnectedLiveData() {
@@ -97,6 +103,10 @@ public class DeviceViewModel extends ViewModel {
 
     public void addPoint(CalibrationTable newPoint) {
         bluetoothRepository.addPoint(newPoint);
+    }
+
+    public int saveTable() {
+        return bluetoothRepository.saveTable();
     }
 }
 

@@ -67,5 +67,6 @@
     <string name="delete">DELETE</string>
 
 
-
+    <string name="invalid_detector">Invalid detector at line %1$d</string>
+    <string name="save_configuration">Configuration sent</string>
 </resources>

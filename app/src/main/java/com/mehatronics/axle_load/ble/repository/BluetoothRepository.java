@@ -96,4 +96,8 @@ public class BluetoothRepository {
     public void addPoint(CalibrationTable newPoint) {
         calibrationTableManager.addPoint(newPoint);
     }
+
+    public int saveTable() {
+        return calibrationTableManager.convertMultiplier();
+    }
 }

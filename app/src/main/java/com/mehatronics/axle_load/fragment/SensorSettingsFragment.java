@@ -15,14 +15,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.adapter.sensor.SensorAdapter;
 import com.mehatronics.axle_load.databinding.FragmentSensorSettingsBinding;
 import com.mehatronics.axle_load.entities.Device;
-import com.mehatronics.axle_load.notification.SnackBarCallback;
+import com.mehatronics.axle_load.notification.MessageCallback;
 import com.mehatronics.axle_load.viewModel.DeviceViewModel;
 import com.mehatronics.axle_load.viewModel.SensorViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class SensorSettingsFragment extends Fragment implements SnackBarCallback {
+public class SensorSettingsFragment extends Fragment implements MessageCallback {
     private FragmentSensorSettingsBinding binding;
     private DeviceViewModel deviceViewModel;
     private SensorViewModel sensorViewModel;
@@ -75,7 +75,7 @@ public class SensorSettingsFragment extends Fragment implements SnackBarCallback
     }
 
     @Override
-    public void showSnackBar(String message) {
+    public void showMessage(String message) {
         Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
     }
 }

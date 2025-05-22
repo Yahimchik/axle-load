@@ -76,6 +76,54 @@ public class SensorConfigAdapter {
         );
     }
 
+    private boolean isValid() {
+        return isValidInternal();
+    }
+
+    private void validateAndToggleSaveButton() {
+        boolean valid = isValid();
+        saveButton.setEnabled(valid);
+    }
+
+    private boolean isValidRange(String value) {
+        try {
+            int number = Integer.parseInt(value);
+            return number < 2 || number > 1800;
+        } catch (NumberFormatException e) {
+            return true;
+        }
+    }
+
+    private boolean isValidInternal() {
+        boolean valid = true;
+
+        String messagePeriodText = messageDeliveryPeriod.getText().toString().trim();
+        if (isValidRange(messagePeriodText)) {
+            messageDeliveryPeriod.setError("Value must be between 2 and 1800");
+            valid = false;
+        } else {
+            messageDeliveryPeriod.setError(null);
+        }
+
+        String measurementText = measurementPeriod.getText().toString().trim();
+        if (isValidRange(measurementText)) {
+            measurementPeriod.setError("Value must be between 2 and 1800");
+            valid = false;
+        } else {
+            measurementPeriod.setError(null);
+        }
+
+        String stateNumberText = stateNumber.getText().toString().trim();
+        if (stateNumberText.isEmpty() || stateNumberText.length() > 10) {
+            stateNumber.setError("Max 10 characters required");
+            valid = false;
+        } else {
+            stateNumber.setError(null);
+        }
+
+        return valid;
+    }
+
     private void addWatcher(EditText editText, Consumer<String> onChange, Supplier<String> cacheGetter, Consumer<String> cacheSetter) {
         editText.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,6 +138,7 @@ public class SensorConfigAdapter {
                     cacheSetter.accept(newValue);
                     onChange.accept(newValue);
                 }
+                validateAndToggleSaveButton();
             }
         });
     }
@@ -113,6 +162,7 @@ public class SensorConfigAdapter {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (isSpinnerListenerActive && (position + 1 != cache.installationPoint)) {
                     cache.installationPoint = position + 1;
+                    validateAndToggleSaveButton();
                 }
             }
 

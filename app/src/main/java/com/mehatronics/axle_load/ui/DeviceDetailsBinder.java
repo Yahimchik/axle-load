@@ -55,6 +55,10 @@ public class DeviceDetailsBinder {
         sensorInfoAdapter.setReadFromSensorButtonClickListener(listener);
     }
 
+    public void setupSaveTableButton(View.OnClickListener listener){
+        sensorInfoAdapter.setSaveTableButton(listener);
+    }
+
     public void updateSensorConfig(SensorConfig config) {
         sensorConfigAdapter.updateConfig(config);
     }
