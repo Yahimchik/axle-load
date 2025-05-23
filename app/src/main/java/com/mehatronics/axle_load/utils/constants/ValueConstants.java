@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.utils.constants;
 
 public class ValueConstants {
+    public static final int MAX_DETECTORS = 9;
     public static final float LOWER_MULTIPLIER_EDGE = 0.99F;
     public static final float UPPER_MULTIPLIER_EDGE = 1.01F;
     public static final float MAX_MULTIPLIER = 1_000_000.0F;

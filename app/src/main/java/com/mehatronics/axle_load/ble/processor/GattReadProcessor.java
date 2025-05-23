@@ -19,6 +19,7 @@ import com.mehatronics.axle_load.ble.parser.GattDataParser;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
+import com.mehatronics.axle_load.utils.CalibrationParseResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,15 +36,21 @@ public class GattReadProcessor {
     private final GattDataParser gattDataParser = new GattDataParser();
     private final List<CalibrationTable> table = new ArrayList<>();
     private final List<byte[]> values = new ArrayList<>();
-    private boolean isConfigurationSaved = false;
     private boolean isRieadingConfigComplete = false;
     private boolean isReadingTableComplete = false;
+    private boolean isConfigurationSaved = false;
     private boolean isReadingAll = false;
+    private boolean isTableSaved = false;
     private boolean isConnected = false;
+    private int tablePage = 0;
 
     @Inject
     public GattReadProcessor() {
 
+    }
+
+    public int getTablePage() {
+        return tablePage;
     }
 
     public void readAllCharacteristics(BluetoothGatt gatt) {
@@ -75,17 +82,17 @@ public class GattReadProcessor {
             return;
         }
 
-        if (isRieadingConfigComplete) {
-            if (isMatchingCommand(bytes, 0, SEVEN_COMMAND)
-                    && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
-                isRieadingConfigComplete = false;
-                sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
-            }
+        if (isRieadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
+                && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
+            isRieadingConfigComplete = false;
+            sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
         }
-        if (isReadingTableComplete) {
-            if (isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
+
+        if (isReadingTableComplete && isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
+            var result = convertBytesToCalibrationTable(bytes, table, tablePage);
+            tablePage = result.nextPage;
+            if (result.tableCompleted) {
                 isReadingTableComplete = false;
-                convertBytesToCalibrationTable(bytes, table);
             }
         }
 
@@ -96,6 +103,7 @@ public class GattReadProcessor {
 
     public void rereadCalibrationTable() {
         isReadingTableComplete = true;
+        tablePage = 0;
         table.clear();
     }
 
@@ -129,6 +137,14 @@ public class GattReadProcessor {
 
     public void setConfigurationSaved(boolean value) {
         isConfigurationSaved = value;
+    }
+
+    public void setTableSaved(boolean value){
+        isTableSaved = value;
+    }
+
+    public boolean isTableSaved() {
+        return isTableSaved;
     }
 
     public boolean isConfigurationSaved() {

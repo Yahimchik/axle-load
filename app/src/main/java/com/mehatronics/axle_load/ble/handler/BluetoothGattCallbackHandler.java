@@ -2,6 +2,8 @@ package com.mehatronics.axle_load.ble.handler;
 
 import static com.mehatronics.axle_load.utils.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
 
+import static java.util.Objects.requireNonNull;
+
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -13,11 +15,14 @@ import com.mehatronics.axle_load.ble.manager.GattConnectionManager;
 import com.mehatronics.axle_load.ble.parser.GattDataParser;
 import com.mehatronics.axle_load.ble.processor.GattReadProcessor;
 import com.mehatronics.axle_load.ble.processor.GattWriteProcessor;
-import com.mehatronics.axle_load.state.CommandStateHandler;
-import com.mehatronics.axle_load.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.entities.SensorConfig;
+import com.mehatronics.axle_load.state.CommandStateHandler;
+import com.mehatronics.axle_load.state.impl.CommandAfterAuth;
+import com.mehatronics.axle_load.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.state.impl.FirstCommandState;
+
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -81,6 +86,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
     }
 
+    public int getTablePage() {
+        return gattReadProcessor.getTablePage();
+    }
+
     public LiveData<Boolean> isConnectedLiveData() {
         return connectionManager.getConnectionStatus();
     }
@@ -114,6 +123,14 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         return gattReadProcessor.isConfigurationSaved();
     }
 
+    public void setTableSaved(boolean value) {
+        gattReadProcessor.setTableSaved(value);
+    }
+
+    public boolean isTableSaved() {
+        return gattReadProcessor.isTableSaved();
+    }
+
     public void writeToCharacteristic(BluetoothGatt gatt) {
         writeProcessor.clearBuffer();
         stateHandler.handle(gatt, this);
@@ -121,7 +138,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public void rereadCalibrationTable() {
-        setCommandState(new FirstCommandState());
+        setCommandState(new CommandAfterAuth());
         gattReadProcessor.rereadCalibrationTable();
     }
 
@@ -132,6 +149,12 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
         gattDataParser.setConfigureSettings(sensorConfig, writeProcessor.getBuffer());
         gattReadProcessor.setConfigurationSaved(false);
+    }
+
+    public void saveTableToSensor() {
+        var table = requireNonNull(getDeviceDetailsLiveData().getValue()).getTable();
+        gattDataParser.setCalibrationTable(table, writeProcessor.getBuffer(), getTablePage());
+        gattReadProcessor.setTableSaved(false);
     }
 
     public void setCommand(int commandFirst, int commandSecond) {

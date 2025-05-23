@@ -3,8 +3,8 @@ package com.mehatronics.axle_load.ble.repository;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.ble.BleScanner;
-import com.mehatronics.axle_load.ble.BluetoothConnectionManager;
-import com.mehatronics.axle_load.ble.CalibrationTableManager;
+import com.mehatronics.axle_load.ble.manager.BluetoothConnectionManager;
+import com.mehatronics.axle_load.ble.manager.CalibrationTableManager;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
@@ -67,6 +67,10 @@ public class BluetoothRepository {
 
     public void saveConfiguration() {
         bluetoothConnectionManager.saveConfiguration();
+    }
+
+    public void saveTableToSensor(){
+        bluetoothConnectionManager.saveTable();
     }
 
     public void rereadCalibrationTable() {

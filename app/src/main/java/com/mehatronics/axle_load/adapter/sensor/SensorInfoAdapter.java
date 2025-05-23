@@ -42,7 +42,6 @@ public class SensorInfoAdapter {
         pressureTextView = root.findViewById(R.id.pressureValueTextView);
         readFromSensorButton = root.findViewById(R.id.readFromSensorButton);
         saveTableButton = root.findViewById(R.id.saveTableButton);
-
     }
 
     public void bind(DeviceDetails newDetails) {

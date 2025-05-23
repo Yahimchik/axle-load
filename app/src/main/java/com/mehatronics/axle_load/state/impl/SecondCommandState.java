@@ -31,7 +31,12 @@ public class SecondCommandState implements CommandStateHandler {
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
         handler.setCommand(SEVEN_COMMAND, FIRST_COMMAND);
         Log.d("MyTag", "Second command sent");
-        if (handler.isConfigurationSaved()) {
+        if (handler.getTablePage() > 0) {
+            handler.setCommandState(new FirstCommandState());
+        }
+        if (handler.isTableSaved()) {
+            handler.setCommandState(new SaveTableCommand());
+        } else if (handler.isConfigurationSaved()) {
             handler.setCommandState(new ConfigureCommandState());
         } else {
             handler.setCommandState(new FinalCommandState());

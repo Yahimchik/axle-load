@@ -85,6 +85,10 @@ public class DeviceViewModel extends ViewModel {
         }
     }
 
+    public void saveTableToSensor(){
+        bluetoothRepository.saveTableToSensor();
+    }
+
     public void rereadCalibrationTable() {
         bluetoothRepository.rereadCalibrationTable();
     }

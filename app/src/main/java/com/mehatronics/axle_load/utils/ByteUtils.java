@@ -2,9 +2,8 @@ package com.mehatronics.axle_load.utils;
 
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
 import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
-
-import android.util.Log;
+import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_DETECTORS;
+import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_MULTIPLIER;
 
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDate;
@@ -16,6 +15,17 @@ import java.util.List;
  * Утилитный класс для работы с байтами, преобразованием чисел и строк.
  */
 public class ByteUtils {
+    public static void multiplierToBytes(byte[] buffer, int i, int intBits) {
+        buffer[i * 6 + 6] = (byte) (intBits & 0xff);
+        buffer[i * 6 + 7] = (byte) ((intBits >> 8) & 0xff);
+        buffer[i * 6 + 8] = (byte) ((intBits >> 16) & 0xff);
+        buffer[i * 6 + 9] = (byte) ((intBits >> 24) & 0xff);
+    }
+
+    public static void detectorToBytes(byte[] buffer, int i, int intBits) {
+        buffer[i * 6 + 4] = (byte) (intBits & 0xff);
+        buffer[i * 6 + 5] = (byte) ((intBits >> 8) & 0xff);
+    }
 
     /**
      * Преобразует целое число в 4 байта и записывает их в массив.
@@ -85,24 +95,29 @@ public class ByteUtils {
      * @param bytes массив байт от устройства
      * @param table список, в который будут добавлены элементы
      */
-    public static void convertBytesToCalibrationTable(byte[] bytes, List<CalibrationTable> table) {
-        if ((bytes[0] & ZERO_COMMAND_BINARY) == FIRST_COMMAND) {
-            if ((bytes[1] & ZERO_COMMAND_BINARY) == ZERO_COMMAND_DECIMAL) {
-                for (int i = 0; i < 9; i++) {
-                    int detector = convertToDetector(bytes, i);
-
-                    if (detector == 0) break;
-
-                    int multiplier = convertToMultiplier(bytes, i);
-                    float tableEnd = intToFloat(multiplier);
-
-//                    Log.d("MyTag", String.valueOf(new CalibrationTable(detector, tableEnd)));
-                    // TODO: необходимо вставить проверку полноты прочитанных данных
-                    table.add(new CalibrationTable(detector, Float.intBitsToFloat(multiplier)));
-                    if (tableEnd == 1000000.0F) break;
-                }
-            }
+    public static CalibrationParseResult convertBytesToCalibrationTable(byte[] bytes, List<CalibrationTable> table, int page) {
+        if (!isCalibrationCommand(bytes)) {
+            return new CalibrationParseResult(page, false);
         }
+
+        for (int i = 0; i < MAX_DETECTORS; i++) {
+            int detector = convertToDetector(bytes, i);
+            if (detector == 0) break;
+
+            int multiplier = convertToMultiplier(bytes, i);
+            float value = Float.intBitsToFloat(multiplier);
+
+            table.add(new CalibrationTable(detector, value));
+            if (value == MAX_MULTIPLIER) break;
+        }
+
+        int nextPage = (page < 1) ? page + 1 : -1;
+        boolean tableCompleted = (nextPage == 0 || nextPage == -1);
+        return new CalibrationParseResult(nextPage, tableCompleted);
+    }
+
+    public static boolean isCalibrationCommand(byte[] bytes) {
+        return (bytes[0] & ZERO_COMMAND_BINARY) == FIRST_COMMAND;
     }
 
     /**

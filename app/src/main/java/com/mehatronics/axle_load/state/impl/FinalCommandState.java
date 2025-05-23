@@ -30,6 +30,8 @@ public class FinalCommandState implements CommandStateHandler {
 
         if (handler.isConfigurationSaved()) {
             handler.setCommandState(new ConfigureCommandState());
+        } else if (handler.isTableSaved()) {
+            handler.setCommandState(new SaveTableCommand());
         }
     }
 }

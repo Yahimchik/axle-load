@@ -50,8 +50,6 @@ public class GattWriteProcessor {
         var characteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
         if (characteristic == null) return;
 
-//        Log.d("MyTag", Arrays.toString(buffer));
-
         characteristic.setValue(buffer);
 
         try {

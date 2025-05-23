@@ -63,6 +63,11 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     private void setupSaveTableButton() {
         detailsBinder.setupSaveTableButton(v -> {
             int error = deviceViewModel.saveTable();
+            var details = deviceViewModel.getDeviceDetails().getValue();
+            details.setTable(deviceViewModel.getCalibrationTable().getValue());
+            deviceViewModel.setDeviceDetailsLiveData(details);
+            Log.d("MyTag", String.valueOf(details));
+            deviceViewModel.saveTableToSensor();
             if (error > 0) showMessage(getString(R.string.invalid_detector, error));
         });
     }

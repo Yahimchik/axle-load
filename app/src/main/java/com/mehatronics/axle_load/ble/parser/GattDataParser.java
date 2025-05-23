@@ -2,14 +2,18 @@ package com.mehatronics.axle_load.ble.parser;
 
 import static com.mehatronics.axle_load.entities.enums.CharacteristicType.PRESSURE;
 import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT;
+import static com.mehatronics.axle_load.utils.ByteUtils.detectorToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToFourBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToTwoBytes;
+import static com.mehatronics.axle_load.utils.ByteUtils.multiplierToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.stringToBytes;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToBattery;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToDate;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
+import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_DETECTORS;
+import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_MULTIPLIER;
 
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDetails;
@@ -39,19 +43,7 @@ public class GattDataParser {
         String weight = convertBytesToValue(values.get(10), WEIGHT);
         String pressure = convertBytesToValue(values.get(10), PRESSURE);
 
-        return new DeviceDetails.Builder()
-                .setDeviceName(deviceName)
-                .setDateManufacturer(dateManufacture)
-                .setManufacturer(manufacturer)
-                .setModelType(modelType)
-                .setSerialNumber(serialNumber)
-                .setFirmwareVersion(firmwareVersion)
-                .setHardWareVersion(hardwareVersion)
-                .setBatteryLevel(batteryLevel)
-                .setWeight(weight)
-                .setPressure(pressure)
-                .setTable(table)
-                .build();
+        return new DeviceDetails.Builder().setDeviceName(deviceName).setDateManufacturer(dateManufacture).setManufacturer(manufacturer).setModelType(modelType).setSerialNumber(serialNumber).setFirmwareVersion(firmwareVersion).setHardWareVersion(hardwareVersion).setBatteryLevel(batteryLevel).setWeight(weight).setPressure(pressure).setTable(table).build();
     }
 
     public void setConfigureSettings(SensorConfig sensorConfig, byte[] buffer) {
@@ -73,4 +65,25 @@ public class GattDataParser {
 
         stringToBytes(buffer, sensorConfig.getStateNumber());
     }
+
+    public int setCalibrationTable(List<CalibrationTable> table, byte[] buffer, int page) {
+        for (int i = 0; i < MAX_DETECTORS; ++i) {
+            int intBits = table.get(page * 9 + i).getDetector();
+            detectorToBytes(buffer, i, intBits);
+
+            intBits = Float.floatToIntBits(table.get(page * 9 + i).getMultiplier());
+            multiplierToBytes(buffer, i, intBits);
+
+            if (table.get(page * 9 + i).getMultiplier() == MAX_MULTIPLIER) break;
+        }
+
+        if (page < 1) {
+            page++;
+        } else {
+            page = -1;
+        }
+        return page;
+    }
+
+
 }
