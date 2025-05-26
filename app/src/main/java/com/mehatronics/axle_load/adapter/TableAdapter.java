@@ -40,24 +40,24 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CalibrationTable table = getItem(position);
+        CalibrationTable curr = getItem(position);
 
-        holder.weightTextView.setText(getFormat(table.getDetector()));
-        holder.pressureTextView.setText(getFormat(table.getMultiplier()));
+        holder.weightTextView.setText(getFormat(curr.getDetector()));
+        holder.pressureTextView.setText(getFormat(curr.getMultiplier()));
 
-        if (table.isLast()) {
+        if (curr.isLast()) {
             holder.addButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setVisibility(View.INVISIBLE);
 
             holder.addButton.setOnClickListener(v -> {
-                var point = new CalibrationTable(table.getDetector(), table.getMultiplier());
+                var point = new CalibrationTable(curr.getDetector(), curr.getMultiplier());
                 onAddListener.onAdd(point);
             });
         } else {
             holder.addButton.setVisibility(View.INVISIBLE);
             holder.deleteButton.setVisibility(View.VISIBLE);
 
-            holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(table));
+            holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(curr));
         }
     }
 

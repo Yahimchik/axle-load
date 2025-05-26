@@ -1,10 +1,7 @@
 package com.mehatronics.axle_load.ble.manager;
 
 import static com.mehatronics.axle_load.utils.DataUtils.parsePressure;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.LOWER_MULTIPLIER_EDGE;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_MULTIPLIER;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.MIN_MULTIPLIER;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.UPPER_MULTIPLIER_EDGE;
+import static com.mehatronics.axle_load.utils.constants.ValueConstants.*;
 import static com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
 import android.util.Log;
@@ -20,19 +17,38 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * Менеджер для работы с таблицей калибровки.
+ *
+ * <p>Отвечает за управление точками калибровки, валидацию, пересчёт коэффициентов (multiplier),
+ * добавление виртуальной точки, а также за предоставление LiveData-объекта для UI.</p>
+ */
 public class CalibrationTableManager {
     private final MutableLiveData<List<CalibrationTable>> tableLiveData = new MutableLiveData<>();
     private List<CalibrationTable> originalPoints = new ArrayList<>();
     private List<CalibrationTable> initialPoints = new ArrayList<>();
 
+    /**
+     * Конструктор с внедрением зависимостей.
+     */
     @Inject
     public CalibrationTableManager() {
     }
 
+    /**
+     * Возвращает LiveData для отслеживания состояния таблицы калибровки.
+     *
+     * @return LiveData списка точек калибровки.
+     */
     public LiveData<List<CalibrationTable>> getCalibrationTable() {
         return tableLiveData;
     }
 
+    /**
+     * Обновляет виртуальную точку на основе давления, полученного от устройства.
+     *
+     * @param deviceDetails Детали устройства, включая давление.
+     */
     public void updateVirtualPoint(DeviceDetails deviceDetails) {
         originalPoints = deviceDetails.getTable();
 
@@ -43,18 +59,37 @@ public class CalibrationTableManager {
         aupdateVirtualPoint(deviceDetails);
     }
 
+    /**
+     * Удаляет точку калибровки из таблицы.
+     *
+     * @param item Точка калибровки для удаления.
+     */
     public void deletePoint(CalibrationTable item) {
         if (originalPoints == null) return;
         originalPoints.remove(item);
         updateTable(originalPoints);
     }
 
+    /**
+     * Добавляет новую точку калибровки перед виртуальной.
+     *
+     * @param newPoint Новая точка калибровки.
+     */
     public void addPoint(CalibrationTable newPoint) {
         if (originalPoints == null) return;
         originalPoints.add(originalPoints.size() - 1, newPoint);
         updateTable(originalPoints);
     }
 
+    /**
+     * Валидирует и пересчитывает множители (multiplier), подготавливая таблицу для сохранения.
+     *
+     * @return Код ошибки:
+     *         <ul>
+     *             <li>0 — успех</li>
+     *             <li>>0 — индекс строки с ошибкой</li>
+     *         </ul>
+     */
     public int convertMultiplier() {
         int validationError = validateTableValues();
         if (validationError > 0) return validationError;
@@ -82,6 +117,12 @@ public class CalibrationTableManager {
         return 0;
     }
 
+    /**
+     * Вычисляет промежуточные множители и добавляет точки в таблицу.
+     *
+     * @param tableToSave Таблица, в которую будут добавлены промежуточные точки.
+     * @return Общий вес (сумма множителей).
+     */
     private float calculateAndAppendIntermediatePoints(List<CalibrationTable> tableToSave) {
         float totalWeight = 0F;
 
@@ -99,6 +140,16 @@ public class CalibrationTableManager {
         return totalWeight;
     }
 
+    /**
+     * Проверяет корректность данных в таблице:
+     * <ul>
+     *     <li>Количество точек ≥ 3</li>
+     *     <li>Увеличение значений детектора</li>
+     *     <li>Множители > 0</li>
+     * </ul>
+     *
+     * @return 0 если всё корректно, иначе индекс строки с ошибкой.
+     */
     private int validateTableValues() {
         if (originalPoints == null || originalPoints.size() < 3) {
             Log.e("MyTag", "Invalid input: not enough points");
@@ -122,6 +173,11 @@ public class CalibrationTableManager {
         return 0;
     }
 
+    /**
+     * Внутренний метод для добавления виртуальной точки в таблицу.
+     *
+     * @param details Детали устройства, включая текущее давление.
+     */
     private void aupdateVirtualPoint(DeviceDetails details) {
         List<CalibrationTable> displayed = new ArrayList<>(originalPoints);
         try {
@@ -136,6 +192,11 @@ public class CalibrationTableManager {
         }
     }
 
+    /**
+     * Обновляет LiveData таблицы, если были изменения.
+     *
+     * @param table Обновлённый список точек.
+     */
     private void updateTable(List<CalibrationTable> table) {
         List<CalibrationTable> current = tableLiveData.getValue();
         if (hasTableChanged(current, table)) {

@@ -10,35 +10,44 @@ import com.mehatronics.axle_load.ble.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.state.CommandStateHandler;
 
 /**
- * Состояние "SECOND" в паттерне "Состояние" (State),
- * отправляющее вторую управляющую команду BLE-устройству.
+ * Состояние "SECOND" в паттерне "Состояние" (State), отвечающее за отправку второй управляющей команды BLE-устройству.
  * <p>
- * В зависимости от необходимости сохранения конфигурации переходит
- * либо в {@link ConfigureCommandState}, либо в {@link FinalCommandState}.
+ * При выполнении устанавливает команды SEVEN_COMMAND и FIRST_COMMAND в обработчике,
+ * затем переключает состояние обработчика в зависимости от текущих условий:
+ * <ul>
+ *   <li>Если количество страниц таблицы > 0 и таблица сохранена — переходит в состояние {@link SaveTableCommand}.</li>
+ *   <li>Если конфигурация сохранена — переходит в состояние {@link ConfigureCommandState}.</li>
+ *   <li>В противном случае — переходит в состояние {@link FinalCommandState}.</li>
+ * </ul>
+ * Также предусмотрена установка в {@link FirstCommandState} при определённых условиях (в коде есть проверка handler.getTablePage() > 0).
  */
 public class SecondCommandState implements CommandStateHandler {
 
     /**
-     * Устанавливает вторую команду (SEVEN_COMMAND и FIRST_COMMAND)
-     * и переводит обработчик в следующее состояние:
-     * - {@link ConfigureCommandState}, если необходимо сохранить конфигурацию;
-     * - {@link FinalCommandState}, если конфигурация не требуется.
+     * Обрабатывает отправку второй команды BLE-устройству и переключение состояния.
      *
-     * @param gatt    объект BluetoothGatt для взаимодействия с BLE-устройством
-     * @param handler обработчик GATT, управляющий состоянием и данными BLE
+     * @param gatt    объект {@link BluetoothGatt} для взаимодействия с BLE-устройством.
+     * @param handler обработчик {@link BluetoothGattCallbackHandler}, управляющий состоянием и передачей данных.
      */
     @Override
     public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
         handler.setCommand(SEVEN_COMMAND, FIRST_COMMAND);
         Log.d("MyTag", "Second command sent");
+
+        // Если есть страницы таблицы, переходим в FirstCommandState
         if (handler.getTablePage() > 0) {
             handler.setCommandState(new FirstCommandState());
         }
-        if (handler.isTableSaved()) {
+        // Если таблица сохранена и есть страницы - переходим к сохранению таблицы
+        if (handler.isTableSaved() && handler.getTablePage() > 0) {
             handler.setCommandState(new SaveTableCommand());
-        } else if (handler.isConfigurationSaved()) {
+        }
+        // Если конфигурация сохранена - переходим к состоянию конфигурации
+        else if (handler.isConfigurationSaved()) {
             handler.setCommandState(new ConfigureCommandState());
-        } else {
+        }
+        // В противном случае - завершаем процесс командой FinalCommandState
+        else {
             handler.setCommandState(new FinalCommandState());
         }
     }

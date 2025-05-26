@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public class CalibrationTable {
     private UUID id;
-    private int detector;
-    private float multiplier;
-    private boolean isLast;
+    private final int detector;
+    private final float multiplier;
+    private final boolean isLast;
 
     public CalibrationTable(int detector, float multiplier) {
         this(UUID.randomUUID(), detector, multiplier, false);
@@ -28,10 +28,6 @@ public class CalibrationTable {
 
     public boolean isLast() {
         return isLast;
-    }
-
-    public void setLast(boolean last) {
-        isLast = last;
     }
 
     public UUID getId() {

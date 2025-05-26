@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.viewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -62,7 +64,7 @@ public class SensorViewModel extends ViewModel {
             messageCallback.showMessage(
                     "Selected: " + Objects.requireNonNull(processedDevices.get(mac)).getDevice().getName());
         } catch (SecurityException e) {
-            //
+            Log.d("MyTag", "Error: " + e.getMessage());
         }
         selectedMacs.add(mac);
     }
