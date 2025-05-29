@@ -1,7 +1,7 @@
 package com.mehatronics.axle_load.activity;
 
 import static android.R.id.content;
-import static com.mehatronics.axle_load.R.id.configureButton;
+import static com.mehatronics.axle_load.R.id.buttonGoToAxes;
 import static dagger.hilt.android.EntryPointAccessors.fromActivity;
 
 import android.os.Bundle;
@@ -11,11 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.LoadingManager;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandler;
 import com.mehatronics.axle_load.ble.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.di.LoadingManagerEntryPoint;
 import com.mehatronics.axle_load.entities.enums.DeviceType;
+import com.mehatronics.axle_load.fragment.DeviceDetailsFragment;
 import com.mehatronics.axle_load.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.DeviceListBinder;
 import com.mehatronics.axle_load.viewModel.DeviceViewModel;
@@ -43,7 +45,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        initUI();
+        initializeInterface();
         setupObservers();
     }
 
@@ -58,7 +60,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
 
     @Override
     public void showFragment() {
-        fragmentNavigator.showFragment();
+        fragmentNavigator.showFragment(new DeviceDetailsFragment());
     }
 
     @Override
@@ -82,13 +84,13 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showSnackBar(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+    public void showMessage(String message) {
+        Snackbar.make(findViewById(content), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void initConfigureButton() {
-        fragmentNavigator.initConfigureButton(findViewById(configureButton));
+        fragmentNavigator.initConfigureButton(findViewById(buttonGoToAxes));
     }
 
     public void resetDeviceNavigatorState() {
@@ -97,13 +99,13 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         }
     }
 
-    protected void initUI() {
+    private void initializeInterface() {
         loadingManager.init(findViewById(content));
         deviceListBinder = new DeviceListBinder(findViewById(content), bluetoothHandler::onDeviceSelected);
         initConfigureButton();
     }
 
-    protected void setupObservers() {
+    private void setupObservers() {
         deviceViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
         deviceViewModel.getDeviceDetails().observe(this, bluetoothHandler::handleDeviceDetails);
         deviceViewModel.isConnectedLiveData().observe(this, bluetoothHandler::handleConnectionState);

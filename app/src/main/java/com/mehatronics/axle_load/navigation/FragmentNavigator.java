@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 public class FragmentNavigator {
     private final FragmentManager fragmentManager;
-    private boolean isDeviceDetailsFragmentOpened = false;
+    private boolean isFragmentOpened = false;
 
     @Inject
     public FragmentNavigator(AppCompatActivity activity) {
@@ -36,20 +36,20 @@ public class FragmentNavigator {
         }
     }
 
-    public void showFragment() {
+    public void showFragment(Fragment fragment) {
         if (fragmentManager == null) {
             throw new IllegalStateException("FragmentManager is not available");
         }
 
-        if (!isDeviceDetailsFragmentOpened) {
-            replaceFragment(new DeviceDetailsFragment());
-            isDeviceDetailsFragmentOpened = true;
+        if (!isFragmentOpened) {
+            replaceFragment(fragment);
+            isFragmentOpened = true;
             Log.d("MyTag", "Device details fragment is opened");
         }
     }
 
     public void resetState() {
-        isDeviceDetailsFragmentOpened = false;
+        isFragmentOpened = false;
     }
 
     public boolean isFragmentNotVisible() {

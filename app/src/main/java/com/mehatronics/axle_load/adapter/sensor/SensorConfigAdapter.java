@@ -37,6 +37,9 @@ public class SensorConfigAdapter {
 
     private final CachedValues cache = new CachedValues();
 
+    private static void accept(String val) {
+    }
+
     private static class CachedValues {
         String messageDeliveryPeriod;
         String measurementPeriod;
@@ -53,27 +56,12 @@ public class SensorConfigAdapter {
 
         initSpinner();
 
-        addWatcher(
-                messageDeliveryPeriod,
-                val -> {
-                },
-                () -> cache.messageDeliveryPeriod,
-                val -> cache.messageDeliveryPeriod = val
-        );
-        addWatcher(
-                measurementPeriod,
-                val -> {
-                },
-                () -> cache.measurementPeriod,
-                val -> cache.measurementPeriod = val
-        );
-        addWatcher(
-                stateNumber,
-                val -> {
-                },
-                () -> cache.stateNumber,
-                val -> cache.stateNumber = val
-        );
+        addWatcher(messageDeliveryPeriod, SensorConfigAdapter::accept,
+                () -> cache.messageDeliveryPeriod, val -> cache.messageDeliveryPeriod = val);
+        addWatcher(measurementPeriod, SensorConfigAdapter::accept,
+                () -> cache.measurementPeriod, val -> cache.measurementPeriod = val);
+        addWatcher(stateNumber, SensorConfigAdapter::accept,
+                () -> cache.stateNumber, val -> cache.stateNumber = val);
     }
 
     private boolean isValid() {

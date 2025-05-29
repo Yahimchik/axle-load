@@ -61,14 +61,6 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
         }
     }
 
-    private String getFormat(float value) {
-        return String.format(Locale.getDefault(), "%.3f ", value);
-    }
-
-    private String getFormat(int value) {
-        return String.format(Locale.getDefault(), "%d ", value);
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView weightTextView;
         TextView pressureTextView;
@@ -83,4 +75,13 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }
     }
+
+    private String getFormat(float value) {
+        return String.format(Locale.getDefault(), "%.3f ", value);
+    }
+
+    private String getFormat(int value) {
+        return String.format(Locale.getDefault(), "%d ", value);
+    }
+
 }

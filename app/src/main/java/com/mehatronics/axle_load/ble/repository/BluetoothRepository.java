@@ -118,7 +118,7 @@ public class BluetoothRepository {
      * @param device Объект {@link Device}, к которому необходимо подключиться.
      */
     public void connectToDevice(Device device) {
-        bluetoothConnectionManager.connectToDevice(device);
+        bluetoothConnectionManager.connect(device);
     }
 
     /**

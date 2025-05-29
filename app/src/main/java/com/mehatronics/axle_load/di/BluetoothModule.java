@@ -20,16 +20,17 @@ import dagger.hilt.components.SingletonComponent;
 
 @Module
 @InstallIn(SingletonComponent.class)
-public class BluetoothModule {
+public abstract class BluetoothModule {
+
     @Provides
     @Singleton
-    public BluetoothAdapter provideBluetoothAdapter(@ApplicationContext Context context) {
+    public static BluetoothAdapter provideBluetoothAdapter(@ApplicationContext Context context) {
         BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         return bluetoothManager != null ? bluetoothManager.getAdapter() : BluetoothAdapter.getDefaultAdapter();
     }
 
     @Provides
-    public CommandStateHandler provideCommandStateHandler() {
+    public static CommandStateHandler provideCommandStateHandler() {
         return new DefaultCommandStateFactory().createInitialState();
     }
 

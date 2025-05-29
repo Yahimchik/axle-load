@@ -37,6 +37,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final GattWriteProcessor writeProcessor;
     private final GattDataParser gattDataParser;
     private CommandStateHandler stateHandler;
+    private ConnectionHandler connectionHandler;
 
     /**
      * Constructs the BluetoothGattCallbackHandler with injected dependencies.
@@ -62,6 +63,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         this.stateHandler = stateHandler;
     }
 
+    public void setReconnectDelegate(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
+    }
+
     /**
      * Called when the connection state changes (connected/disconnected).
      * Updates connection manager and internal state accordingly.
@@ -73,11 +78,11 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         if (isStatusOk(newState, BluetoothGatt.STATE_CONNECTED)) {
+            connectionHandler.onConnected();
             connectionManager.onConnected(gatt);
             updateStateAfterConnect();
         } else if (isStatusOk(newState, BluetoothGatt.STATE_DISCONNECTED)) {
-            connectionManager.onDisconnected();
-            resetStateAfterDisconnect();
+            connectionHandler.reconnect(gatt.getDevice());
         }
     }
 

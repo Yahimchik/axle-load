@@ -1,6 +1,10 @@
 package com.mehatronics.axle_load.ble.handler;
 
-public interface BluetoothHandlerContract {
+import static com.mehatronics.axle_load.R.id.buttonGoToAxes;
+
+import com.mehatronics.axle_load.notification.MessageCallback;
+
+public interface BluetoothHandlerContract extends MessageCallback {
     void showFragment();
 
     boolean isFragmentNotVisible();
@@ -11,7 +15,8 @@ public interface BluetoothHandlerContract {
 
     boolean isAttemptingToConnect();
 
-    void showSnackBar(String message);
-
     void initConfigureButton();
+
+    @Override
+    void showMessage(String message);
 }

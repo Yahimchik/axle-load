@@ -43,8 +43,8 @@
 
     <string name="choose_sensor">Choose sensor</string>
     <string name="calibration_table">Calibration Table</string>
-
-    <string name="configuration_settings">Configuration Settings</string>
+    <string name="enter_number_of_axes">Enter number of axes</string>
+    <string name="configuration_settings">CONFIGURE AXES</string>
     <string name="message_delivery_period">Message delivery period (s)</string>
     <string name="measurement_period">Measurement period (s)</string>
     <string name="config_type">Config Type</string>
@@ -68,5 +68,7 @@
 
 
     <string name="invalid_detector">Invalid detector at line %1$d</string>
+    <string name="axle_numbered">Ось %1$d</string>
+
     <string name="save_configuration">Configuration sent</string>
 </resources>

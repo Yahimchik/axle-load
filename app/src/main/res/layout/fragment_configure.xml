@@ -1,83 +1,80 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/configureLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/background_color"
+    android:padding="24dp"
+    tools:context=".fragment.ConfigureFragment">
 
-    <FrameLayout
-        android:id="@+id/blockerLayer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:background="@android:color/white"
-        android:visibility="gone" />
-
+    <!-- Заголовок -->
     <TextView
-        android:id="@+id/titleText"
+        android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:text="@string/axles_count"
+        android:layout_marginBottom="24dp"
         android:fontFamily="@font/roboto_bold"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:text="@string/configuration_settings"
+        android:textColor="@android:color/white"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/buttonContainer"
-        android:layout_width="match_parent"
+    <!-- Поле ввода -->
+    <EditText
+        android:id="@+id/editTextAxisCount"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/edittext_background"
+        android:fontFamily="@font/roboto_bold"
+        android:hint="@string/enter_number_of_axes"
+        android:inputType="number"
+        android:letterSpacing="0.02"
+        android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="#B0BEC5"
+        android:textSize="20sp"
         android:gravity="center"
-        android:orientation="horizontal">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
-        <Button
-            android:id="@+id/btn_axis_1"
-            style="@style/AxleButton"
-            android:layout_weight="1"
-            android:text="@string/one"
-            android:fontFamily="@font/roboto_bold"
-            tools:ignore="VisualLintButtonSize" />
 
-        <Button
-            android:id="@+id/btn_axis_2"
-            style="@style/AxleButton"
-            android:layout_weight="1"
-            android:text="@string/two"
-            android:fontFamily="@font/roboto_bold"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/btn_axis_3"
-            style="@style/AxleButton"
-            android:layout_weight="1"
-            android:text="@string/three"
-            android:fontFamily="@font/roboto_bold"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/btn_axis_4"
-            style="@style/AxleButton"
-            android:layout_weight="1"
-            android:text="@string/four"
-            android:fontFamily="@font/roboto_bold"
-            tools:ignore="VisualLintButtonSize" />
-
-        <Button
-            android:id="@+id/btn_axis_5"
-            style="@style/AxleButton"
-            android:layout_weight="1"
-            android:text="@string/five"
-            android:fontFamily="@font/roboto_bold"
-            tools:ignore="VisualLintButtonSize" />
-    </LinearLayout>
+    <!-- Большая Кнопка -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonConfigure"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/button_background"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/configuration_settings"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:cornerRadius="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextAxisCount"
+        app:strokeColor="@color/white"
+        app:strokeWidth="2dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/axisContainer"
-        android:layout_width="match_parent"
+        android:id="@+id/recyclerViewAxes"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center" />
-</LinearLayout>
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/buttonConfigure"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

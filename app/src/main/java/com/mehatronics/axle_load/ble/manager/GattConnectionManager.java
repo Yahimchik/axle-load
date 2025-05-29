@@ -27,8 +27,4 @@ public class GattConnectionManager {
             Log.e("MyTag", "SecurityException: " + e.getMessage());
         }
     }
-
-    public void onDisconnected() {
-        isConnectedLiveData.postValue(false);
-    }
 }

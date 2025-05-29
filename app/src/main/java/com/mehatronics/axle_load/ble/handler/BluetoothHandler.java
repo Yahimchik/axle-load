@@ -2,6 +2,12 @@ package com.mehatronics.axle_load.ble.handler;
 
 import static java.lang.Boolean.TRUE;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
+
 import com.mehatronics.axle_load.entities.Device;
 import com.mehatronics.axle_load.entities.DeviceDetails;
 import com.mehatronics.axle_load.viewModel.DeviceViewModel;
@@ -20,7 +26,7 @@ public class BluetoothHandler {
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
         activity.loadingManagerShowLoading(false);
-        if (deviceDetails != null && TRUE.equals(deviceViewModel.isConnectedLiveData().getValue())) {
+        if (deviceDetails != null && isConnected()) {
             if (activity.isFragmentNotVisible()) {
                 activity.showFragment();
             }
@@ -29,7 +35,7 @@ public class BluetoothHandler {
 
     public void handleConnectionState(Boolean isConnected) {
         if (!isConnected && activity.isAttemptingToConnect()) {
-            activity.showSnackBar("Failed to connect to device");
+            activity.showMessage("Failed to connect to device");
             activity.loadingManagerShowLoading(false);
             activity.setIsAttemptingToConnect(false);
         }
@@ -39,9 +45,15 @@ public class BluetoothHandler {
         }
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onDeviceSelected(Device device) {
         activity.loadingManagerShowLoading(true);
         activity.setIsAttemptingToConnect(true);
+        activity.showMessage("Selected " + device.getDevice().getName());
         deviceViewModel.connectToDevice(device);
+    }
+
+    private boolean isConnected() {
+        return TRUE.equals(deviceViewModel.isConnectedLiveData().getValue());
     }
 }

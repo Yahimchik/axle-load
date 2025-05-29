@@ -5,9 +5,6 @@ import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerV
 
 import android.view.View;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.DeviceListAdapter;
 import com.mehatronics.axle_load.adapter.listener.OnDeviceClickListener;
