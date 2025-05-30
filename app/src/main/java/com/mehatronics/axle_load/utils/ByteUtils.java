@@ -5,6 +5,7 @@ import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_C
 import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_DETECTORS;
 import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_MULTIPLIER;
 
+import com.mehatronics.axle_load.CalibrationParseResult;
 import com.mehatronics.axle_load.entities.CalibrationTable;
 import com.mehatronics.axle_load.entities.DeviceDate;
 import com.mehatronics.axle_load.entities.SensorConfig;

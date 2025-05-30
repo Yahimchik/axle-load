@@ -1,12 +1,14 @@
 package com.mehatronics.axle_load.ui;
 
+import static com.mehatronics.axle_load.utils.constants.ValueConstants.ANIMATION_DURATION;
+
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RemoveOnlyItemAnimator extends DefaultItemAnimator {
 
     public RemoveOnlyItemAnimator() {
-        setRemoveDuration(250); // по умолчанию ~120-250мс
+        setRemoveDuration(ANIMATION_DURATION);
     }
 
     @Override

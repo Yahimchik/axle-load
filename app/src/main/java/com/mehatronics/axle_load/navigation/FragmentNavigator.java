@@ -9,16 +9,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.fragment.ConfigureFragment;
-import com.mehatronics.axle_load.fragment.DeviceDetailsFragment;
-
-import javax.inject.Inject;
+import com.mehatronics.axle_load.ui.fragment.ConfigureFragment;
+import com.mehatronics.axle_load.ui.fragment.DeviceDetailsFragment;
 
 public class FragmentNavigator {
     private final FragmentManager fragmentManager;
     private boolean isFragmentOpened = false;
 
-    @Inject
     public FragmentNavigator(AppCompatActivity activity) {
         this.fragmentManager = activity.getSupportFragmentManager();
     }

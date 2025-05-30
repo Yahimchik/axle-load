@@ -3,10 +3,15 @@ package com.mehatronics.axle_load.navigation;
 import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DDS_BTN;
 import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DPS_BTN;
 import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.DSS_BTN;
+import static com.mehatronics.axle_load.utils.constants.ButtonsConstants.SWITCH_LANGUAGE_BTN;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.widget.Button;
+
+import com.mehatronics.axle_load.domain.viewModel.LanguageViewModel;
+import com.mehatronics.axle_load.helper.LocaleHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +36,22 @@ public class ActivityNavigator {
                     button.setOnClickListener(v -> startActivity(activity, activityClass));
                 }
             }
+        }
+    }
+
+    public void registerLanguageSwitcher(Activity activity, LanguageViewModel viewModel) {
+        String lang = PreferenceManager
+                .getDefaultSharedPreferences(activity)
+                .getString("app_lang", "en");
+
+        LocaleHelper.setLocale(activity, lang);
+
+        var btnChangeLang = activity.findViewById(SWITCH_LANGUAGE_BTN);
+        if (btnChangeLang != null) {
+            btnChangeLang.setOnClickListener(v -> {
+                viewModel.toggleLanguage();
+                activity.recreate();
+            });
         }
     }
 

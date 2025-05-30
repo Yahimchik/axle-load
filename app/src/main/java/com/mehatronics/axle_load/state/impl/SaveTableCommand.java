@@ -4,7 +4,7 @@ import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVENT
 
 import android.bluetooth.BluetoothGatt;
 
-import com.mehatronics.axle_load.ble.handler.BluetoothGattCallbackHandler;
+import com.mehatronics.axle_load.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.state.CommandStateHandler;
 
 /**

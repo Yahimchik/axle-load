@@ -89,6 +89,16 @@
             tools:ignore="VisualLintButtonSize" />
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
+    <Button
+        android:id="@+id/btnChangeLang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_langauge"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGroup" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@ import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_
 import android.bluetooth.BluetoothGatt;
 import android.util.Log;
 
-import com.mehatronics.axle_load.ble.handler.BluetoothGattCallbackHandler;
+import com.mehatronics.axle_load.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.state.CommandStateHandler;
 
 public class CommandAfterAuth implements CommandStateHandler {

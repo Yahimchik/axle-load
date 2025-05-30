@@ -1,7 +1,9 @@
 package com.mehatronics.axle_load;
 
-public abstract class ValidationResult {
-    public static class Success extends ValidationResult {
+import com.mehatronics.axle_load.entities.enums.ValidationError;
+
+public sealed class ValidationResult {
+    public static final class Success extends ValidationResult {
         private final int count;
 
         public Success(int count) {
@@ -13,15 +15,16 @@ public abstract class ValidationResult {
         }
     }
 
-    public static class Error extends ValidationResult {
-        private final String message;
+    public static final class Error extends ValidationResult {
+        private final ValidationError error;
 
-        public Error(String message) {
-            this.message = message;
+        public Error(ValidationError error) {
+            this.error = error;
         }
 
-        public String getMessage() {
-            return message;
+        public ValidationError getError() {
+            return error;
         }
     }
 }
+

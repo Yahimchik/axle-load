@@ -1,13 +1,22 @@
 package com.mehatronics.axle_load.entities;
 
-public class AxisModel {
-    private final int number;
+import androidx.annotation.NonNull;
 
-    public AxisModel(int number) {
-        this.number = number;
+public record AxisModel(
+        int number
+) {
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof AxisModel axisModel)) return false;
+        return number == axisModel.number;
     }
 
-    public int getNumber() {
-        return number;
+    @NonNull
+    @Override
+    public String toString() {
+        return "AxisModel{" +
+                "number=" + number +
+                '}';
     }
 }

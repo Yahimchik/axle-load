@@ -1,6 +1,5 @@
 package com.mehatronics.axle_load.adapter;
 
-import android.app.Activity;
 import android.view.View;
 
 import com.mehatronics.axle_load.R;

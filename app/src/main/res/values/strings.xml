@@ -1,20 +1,20 @@
 <resources>
     <string name="app_name">Axle Load</string>
 
-    <string name="DDS">DDS</string>
-    <string name="DPS">DPS</string>
-    <string name="DSS">DSS</string>
+    <string name="DDS" translatable="false">DDS</string>
+    <string name="DPS" translatable="false">DPS</string>
+    <string name="DSS" translatable="false">DSS</string>
 
     <string name="choose_sensor_type">Chose Sensor Type</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
-    <string name="device_name">Device Name</string>
-    <string name="device_mac">MAC: </string>
-    <string name="device_rssi">RSSI: </string>
-    <string name="device_type">Type: </string>
-    <string name="device_status">Status: </string>
+    <string name="device_name" translatable="false">Device Name</string>
+    <string name="device_mac" translatable="false">MAC: </string>
+    <string name="device_rssi" translatable="false">RSSI: </string>
+    <string name="device_type" translatable="false">Type: </string>
+    <string name="device_status" translatable="false">Status: </string>
 
-    <string name="device_manufacturer_data">Manufacturer data: </string>
+    <string name="device_manufacturer_data" translatable="false">Manufacturer data: </string>
     <string name="available_devices">Available devices: </string>
     <string name="manufacturer">Manufacturer: </string>
     <string name="model_type">Model type: </string>
@@ -25,21 +25,21 @@
     <string name="weight">Weight: </string>
     <string name="pressure">Pressure: </string>
 
-    <string name="disconnect_button">Disconnect</string>
-    <string name="configure_the_settings">Configure The Settings</string>
+    <string name="disconnect_button" translatable="false">Disconnect</string>
+    <string name="configure_the_settings" translatable="false">Configure The Settings</string>
 
-    <string name="zero">0</string>
-    <string name="one">1</string>
-    <string name="two">2</string>
-    <string name="three">3</string>
-    <string name="four">4</string>
-    <string name="five">5</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="one" translatable="false">1</string>
+    <string name="two" translatable="false">2</string>
+    <string name="three" translatable="false">3</string>
+    <string name="four" translatable="false">4</string>
+    <string name="five" translatable="false">5</string>
 
     <string name="axles_count">Choose the axles count</string>
-    <string name="reset">Reset</string>
+    <string name="reset" translatable="false">Reset</string>
 
-    <string name="sensor_list">Sensors list</string>
-    <string name="axle">Axle</string>
+    <string name="sensor_list" translatable="false">Sensors list</string>
+    <string name="axle" translatable="false">Axle</string>
 
     <string name="choose_sensor">Choose sensor</string>
     <string name="calibration_table">Calibration Table</string>
@@ -51,9 +51,9 @@
     <string name="installation_point">Installation Point</string>
     <string name="stateNumber">State Number</string>
 
-    <string name="axle_center">Axle center</string>
-    <string name="axle_right">Axle right</string>
-    <string name="axle_left">Axle left</string>
+    <string name="axle_center" translatable="false">Axle center</string>
+    <string name="axle_right" translatable="false">Axle right</string>
+    <string name="axle_left" translatable="false">Axle left</string>
 
     <string name="save_button">SAVE TO SENSOR</string>
     <string name="save_to_file">SAVE TO FILE</string>
@@ -63,12 +63,28 @@
 
     <string name="reset_password">RESET PASSWORD</string>
     <string name="set_new_password">SET NEW PASSWORD</string>
-    <string name="add">ADD POINT</string>
-    <string name="delete">DELETE</string>
+    <string name="add" translatable="false">ADD POINT</string>
+    <string name="delete" translatable="false">DELETE</string>
 
 
     <string name="invalid_detector">Invalid detector at line %1$d</string>
-    <string name="axle_numbered">Ось %1$d</string>
+    <string name="axle_numbered" translatable="false">AXLE %1$d</string>
 
-    <string name="save_configuration">Configuration sent</string>
+    <string name="save_configuration" translatable="false">Configuration sent</string>
+    <string name="change_langauge">Change language</string>
+
+    <string name="error_empty_axis_count">Please enter the number of axes</string>
+    <string name="error_axis_count_out_of_range">Please enter a number between 1 and 8</string>
+    <string name="error_invalid_number">Please enter a valid number</string>
+
+    <string name="wheel_left">Left wheel of axle %1$d</string>
+    <string name="wheel_right">Right wheel of axle %1$d</string>
+    <string name="wheel_center">Center of axle %1$d</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="dialog_gps_title">Enable GPS</string>
+    <string name="dialog_gps_message">GPS must be enabled to use this app.</string>
+    <string name="dialog_bluetooth_title">Enable Bluetooth</string>
+    <string name="dialog_bluetooth_message">Bluetooth must be enabled to use this app.</string>
 </resources>

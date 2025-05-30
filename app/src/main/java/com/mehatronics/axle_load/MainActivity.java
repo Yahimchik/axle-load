@@ -1,14 +1,16 @@
 package com.mehatronics.axle_load;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
+import com.mehatronics.axle_load.domain.viewModel.LanguageViewModel;
+import com.mehatronics.axle_load.domain.viewModel.PermissionsViewModel;
+import com.mehatronics.axle_load.helper.LocaleHelper;
 import com.mehatronics.axle_load.navigation.ActivityNavigator;
-import com.mehatronics.axle_load.permissions.observer.PermissionObserver;
-import com.mehatronics.axle_load.permissions.usecase.PermissionUseCase;
-import com.mehatronics.axle_load.viewModel.PermissionsViewModel;
 
 import javax.inject.Inject;
 
@@ -24,18 +26,12 @@ import dagger.hilt.android.AndroidEntryPoint;
  */
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    /**
-     * UseCase для работы с разрешениями пользователя.
-     * Внедряется через Dagger Hilt.
-     */
     @Inject
-    protected PermissionUseCase permissionUseCase;
-    /**
-     * Навигатор для управления переходами между активностями.
-     * Внедряется через Dagger Hilt.
-     */
+    protected PermissionObserver permissionObserver;
     @Inject
     protected ActivityNavigator activityNavigator;
+    private LanguageViewModel languageViewModel;
+
 
     /**
      * Вызывается при создании активити.
@@ -48,10 +44,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        languageViewModel = new ViewModelProvider(this).get(LanguageViewModel.class);
         var permissionsViewModel = new ViewModelProvider(this).get(PermissionsViewModel.class);
-        var permissionObserver = new PermissionObserver(this, permissionUseCase, permissionsViewModel);
 
-        permissionObserver.observePermissionsStatus(this);
+        permissionObserver.setActivity(this);
+        permissionObserver.setPermissionsViewModel(permissionsViewModel);
+
+        if (savedInstanceState == null) {
+            permissionObserver.observePermissionsStatus(this);
+            permissionObserver.startPermissionFlow();
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.attachBaseContext(newBase));
     }
 
     /**
@@ -62,5 +69,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         activityNavigator.registerActivities(this);
+        activityNavigator.registerLanguageSwitcher(this, languageViewModel);
     }
 }

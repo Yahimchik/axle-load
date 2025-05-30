@@ -2,7 +2,7 @@ package com.mehatronics.axle_load.state;
 
 import android.bluetooth.BluetoothGatt;
 
-import com.mehatronics.axle_load.ble.handler.BluetoothGattCallbackHandler;
+import com.mehatronics.axle_load.handler.BluetoothGattCallbackHandler;
 
 /**
  * Интерфейс состояния команды (паттерн State) для обработки логики передачи команд

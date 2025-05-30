@@ -1,6 +1,8 @@
 package com.mehatronics.axle_load.adapter;
 
-import static com.mehatronics.axle_load.entities.enums.AxisSide.*;
+import static com.mehatronics.axle_load.entities.enums.AxisSide.CENTER;
+import static com.mehatronics.axle_load.entities.enums.AxisSide.LEFT;
+import static com.mehatronics.axle_load.entities.enums.AxisSide.RIGHT;
 import static com.mehatronics.axle_load.utils.constants.StringConstants.AXLE;
 
 import android.annotation.SuppressLint;
@@ -18,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.adapter.listener.OnAxisClickListener;
 import com.mehatronics.axle_load.entities.AxisModel;
-import com.mehatronics.axle_load.entities.enums.AxisSide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,11 +75,11 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.AxisViewHolder
 
         @SuppressLint("SetTextI18n")
         void bind(AxisModel axis) {
-            title.setText(AXLE + " " + axis.getNumber());
+            title.setText(AXLE + " " + axis.number());
 
-            axleSensorLeft.setOnClickListener(v -> listener.onClick(axis.getNumber(), LEFT));
-            axleSensorCenter.setOnClickListener(v -> listener.onClick(axis.getNumber(), CENTER));
-            axleSensorRight.setOnClickListener(v -> listener.onClick(axis.getNumber(), RIGHT));
+            axleSensorLeft.setOnClickListener(v -> listener.onClick(axis.number(), LEFT));
+            axleSensorCenter.setOnClickListener(v -> listener.onClick(axis.number(), CENTER));
+            axleSensorRight.setOnClickListener(v -> listener.onClick(axis.number(), RIGHT));
         }
     }
 }
