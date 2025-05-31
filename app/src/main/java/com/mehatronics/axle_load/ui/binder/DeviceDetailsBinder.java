@@ -1,32 +1,46 @@
 package com.mehatronics.axle_load.ui.binder;
 
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
-import static com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil.hasTableChanged;
+import static com.mehatronics.axle_load.ui.adapter.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
 import android.view.View;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.adapter.TableAdapter;
-import com.mehatronics.axle_load.adapter.sensor.SensorConfigAdapter;
-import com.mehatronics.axle_load.adapter.sensor.SensorInfoAdapter;
-import com.mehatronics.axle_load.entities.CalibrationTable;
-import com.mehatronics.axle_load.entities.DeviceDetails;
-import com.mehatronics.axle_load.entities.SensorConfig;
-import com.mehatronics.axle_load.domain.viewModel.DeviceViewModel;
+import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
+import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
+import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.ui.adapter.TableAdapter;
+import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigAdapter;
+import com.mehatronics.axle_load.ui.adapter.sensor.SensorInfoAdapter;
+import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.scopes.FragmentScoped;
+
+@FragmentScoped
 public class DeviceDetailsBinder {
-    private final SensorConfigAdapter sensorConfigAdapter;
-    private final SensorInfoAdapter sensorInfoAdapter;
-    private final TableAdapter tableAdapter;
+    private SensorConfigAdapter sensorConfigAdapter;
+    private SensorInfoAdapter sensorInfoAdapter;
+    private TableAdapter tableAdapter;
+    private final DeviceDetailsFormatter formatter;
+    private final SensorConfigFormatter configFormatter;
 
-    public DeviceDetailsBinder(View view, DeviceViewModel vm) {
-        sensorConfigAdapter = new SensorConfigAdapter(view);
-        sensorInfoAdapter = new SensorInfoAdapter(view);
-        tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
+    @Inject
+    public DeviceDetailsBinder(DeviceDetailsFormatter formatter, SensorConfigFormatter configFormatter) {
+        this.formatter = formatter;
+        this.configFormatter = configFormatter;
+    }
 
+    public void init(View view, DeviceViewModel deviceViewModel) {
+        sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter);
+        sensorInfoAdapter = new SensorInfoAdapter(view, formatter);
+        tableAdapter = new TableAdapter(deviceViewModel::addPoint, deviceViewModel::deletePoint);
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
     }
 
@@ -55,7 +69,7 @@ public class DeviceDetailsBinder {
         sensorInfoAdapter.setReadFromSensorButtonClickListener(listener);
     }
 
-    public void setupSaveTableButton(View.OnClickListener listener){
+    public void setupSaveTableButton(View.OnClickListener listener) {
         sensorInfoAdapter.setSaveTableButton(listener);
     }
 

@@ -3,7 +3,7 @@ package com.mehatronics.axle_load.helper;
 import android.content.Context;
 import android.content.res.Configuration;
 
-import com.mehatronics.axle_load.entities.enums.AppLanguage;
+import com.mehatronics.axle_load.domain.entities.enums.AppLanguage;
 
 import java.util.Locale;
 

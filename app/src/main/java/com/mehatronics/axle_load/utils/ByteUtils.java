@@ -1,14 +1,13 @@
 package com.mehatronics.axle_load.utils;
 
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.FIRST_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_DETECTORS;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_MULTIPLIER;
+import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.ValueConstants.MAX_DETECTORS;
+import static com.mehatronics.axle_load.constants.ValueConstants.MAX_MULTIPLIER;
 
-import com.mehatronics.axle_load.CalibrationParseResult;
-import com.mehatronics.axle_load.entities.CalibrationTable;
-import com.mehatronics.axle_load.entities.DeviceDate;
-import com.mehatronics.axle_load.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
+import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,8 +136,8 @@ public class ByteUtils {
     /**
      * Преобразует строку в байты и записывает в массив по позициям 30–39.
      *
-     * @param value        Целевой массив.
-     * @param stateNumber  Исходная строка (например, гос. номер).
+     * @param value       Целевой массив.
+     * @param stateNumber Исходная строка (например, гос. номер).
      */
     public static void stringToBytes(byte[] value, String stateNumber) {
         for (int i = 30; i < 40; ++i) {
@@ -237,21 +236,6 @@ public class ByteUtils {
     }
 
     /**
-     * Преобразует массив байт в объект даты устройства.
-     *
-     * @param bytes Массив байт.
-     * @return Объект {@link DeviceDate}.
-     */
-    public static DeviceDate getDate(byte[] bytes) {
-        if (bytes.length == 7) {
-            return createDeviceDate(bytes[3], bytes[2], getYearFromTwoBytes(bytes));
-        } else if (bytes.length >= 3) {
-            return createDeviceDate(bytes[2], bytes[1], bytes[0]);
-        }
-        return new DeviceDate.Builder().build();
-    }
-
-    /**
      * Вычисляет порционный множитель между текущей и предыдущей калибровочной точкой.
      *
      * @param curr Текущая калибровочная точка.
@@ -260,16 +244,6 @@ public class ByteUtils {
      */
     private static float calculateMultiplier(CalibrationTable curr, CalibrationTable prev) {
         return (curr.getDetector() - prev.getDetector()) * curr.getMultiplier();
-    }
-
-    /**
-     * Преобразует int в float через побитовую интерпретацию.
-     *
-     * @param integer Целочисленное представление float.
-     * @return Float-значение.
-     */
-    private static float intToFloat(int integer) {
-        return Float.intBitsToFloat(integer);
     }
 
     /**
@@ -338,17 +312,6 @@ public class ByteUtils {
     }
 
     /**
-     * Преобразует два байта в значение года.
-     *
-     * @param bytes Массив байт.
-     * @return Значение года.
-     */
-    private static int getYearFromTwoBytes(byte[] bytes) {
-        return ((bytes[1] & ZERO_COMMAND_BINARY) << 8) |
-                (bytes[0] & ZERO_COMMAND_BINARY);
-    }
-
-    /**
      * Преобразует два байта в значение типа short.
      *
      * @param bytes  Массив байт.
@@ -360,21 +323,4 @@ public class ByteUtils {
         return (short) (((bytes[index1] & ZERO_COMMAND_BINARY) << 8) |
                 (bytes[index2] & ZERO_COMMAND_BINARY));
     }
-
-    /**
-     * Создаёт объект {@link DeviceDate} из компонентов даты.
-     *
-     * @param year  Год.
-     * @param month Месяц.
-     * @param day   День.
-     * @return Объект {@link DeviceDate}.
-     */
-    private static DeviceDate createDeviceDate(int year, int month, int day) {
-        return new DeviceDate.Builder()
-                .addYear(year)
-                .addMonth(month)
-                .addDay(day)
-                .build();
-    }
-
 }

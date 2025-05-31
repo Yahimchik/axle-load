@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.ui.activity.impl;
 
-import static com.mehatronics.axle_load.entities.enums.DeviceType.DDS;
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DDS;
 
 import android.os.Bundle;
 

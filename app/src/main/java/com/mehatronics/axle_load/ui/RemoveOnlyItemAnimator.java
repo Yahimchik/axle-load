@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.ui;
 
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.ANIMATION_DURATION;
+import static com.mehatronics.axle_load.constants.ValueConstants.ANIMATION_DURATION;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;

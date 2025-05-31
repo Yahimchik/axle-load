@@ -8,30 +8,25 @@ import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCase;
-import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCaseImpl;
+import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
+import com.mehatronics.axle_load.domain.state.CommandStateHandler;
+import com.mehatronics.axle_load.domain.state.factory.impl.DefaultCommandStateFactory;
+import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
+import com.mehatronics.axle_load.domain.strategy.impl.FirstAuthStrategy;
+import com.mehatronics.axle_load.domain.strategy.impl.NineAuthStrategy;
+import com.mehatronics.axle_load.domain.strategy.impl.SecondAuthStrategy;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
+import com.mehatronics.axle_load.localization.ResourceProvider;
+import com.mehatronics.axle_load.localization.impl.AndroidResourceProvider;
+import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DDSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DPSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DSSActivity;
-import com.mehatronics.axle_load.handler.BluetoothHandler;
-import com.mehatronics.axle_load.handler.DefaultPermissionHandler;
-import com.mehatronics.axle_load.handler.PermissionHandler;
-import com.mehatronics.axle_load.localization.ResourceProvider;
-import com.mehatronics.axle_load.localization.impl.AndroidResourceProvider;
-import com.mehatronics.axle_load.mapper.DeviceMapper;
-import com.mehatronics.axle_load.mapper.impl.DeviceMapperImpl;
-import com.mehatronics.axle_load.navigation.ActivityNavigator;
-import com.mehatronics.axle_load.navigation.FragmentNavigator;
-import com.mehatronics.axle_load.service.impl.PermissionServiceImpl;
-import com.mehatronics.axle_load.state.CommandStateHandler;
-import com.mehatronics.axle_load.state.factory.impl.DefaultCommandStateFactory;
-import com.mehatronics.axle_load.strategy.CommandStrategy;
-import com.mehatronics.axle_load.strategy.impl.FirstAuthStrategy;
-import com.mehatronics.axle_load.strategy.impl.NineAuthStrategy;
-import com.mehatronics.axle_load.strategy.impl.SecondAuthStrategy;
-import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
-import com.mehatronics.axle_load.domain.viewModel.DeviceViewModel;
+import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
+import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
+import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 
 import javax.inject.Singleton;
 
@@ -40,9 +35,11 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
+import dagger.hilt.android.components.FragmentComponent;
 import dagger.hilt.android.qualifiers.ActivityContext;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.android.scopes.ActivityScoped;
+import dagger.hilt.android.scopes.FragmentScoped;
 import dagger.hilt.components.SingletonComponent;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.StringKey;
@@ -124,8 +121,9 @@ public class ApplicationModule {
         @Provides
         public static BluetoothHandler provideBluetoothConnectionManager(
                 DeviceViewModel deviceViewModel,
-                BaseBluetoothActivity activity) {
-            return new BluetoothHandler(deviceViewModel, activity);
+                BaseBluetoothActivity activity,
+                ResourceProvider resourceProvider) {
+            return new BluetoothHandler(deviceViewModel, activity, resourceProvider);
         }
     }
 
@@ -190,50 +188,8 @@ public class ApplicationModule {
     }
 
     @Module
-    @InstallIn(SingletonComponent.class)
-    public abstract static class MapperModule {
-
-        @Binds
-        @Singleton
-        public abstract DeviceMapper bindDeviceMapper(DeviceMapperImpl impl);
-    }
-
-    /**
-     * Модуль, предоставляющий зависимости для управления разрешениями.
-     */
-    @Module
-    @InstallIn(SingletonComponent.class)
-    public static abstract class PermissionModule {
-
-        /**
-         * Предоставляет реализацию сервиса управления разрешениями.
-         *
-         * @param context Контекст приложения.
-         */
-        @Provides
-        @Singleton
-        public static PermissionServiceImpl providePermissionManager(@ApplicationContext Context context) {
-            return new PermissionServiceImpl(context);
-        }
-
-        /**
-         * Предоставляет use case для проверки и запроса разрешений.
-         */
-        @Provides
-        @Singleton
-        public static PermissionUseCase providePermissionUseCase(PermissionServiceImpl permissionServiceImpl) {
-            return new PermissionUseCase(permissionServiceImpl);
-        }
-
-        @Binds
-        @Singleton
-        public abstract PermissionHandler bindPermissionHandler(DefaultPermissionHandler impl);
-    }
-
-    @Module
     @InstallIn(ActivityComponent.class)
     public static class NavigatorModule {
-
         @Provides
         @ActivityScoped
         public FragmentNavigator provideFragmentNavigator(@ActivityContext Context context) {
@@ -242,12 +198,16 @@ public class ApplicationModule {
     }
 
     @Module
-    @InstallIn(SingletonComponent.class)
-    public abstract static class LanguageModule {
+    @InstallIn(FragmentComponent.class)
+    public static class BinderModule {
 
-        @Binds
-        @Singleton
-        public abstract ChangeLanguageUseCase bindChangeLanguageUseCase(ChangeLanguageUseCaseImpl impl);
+        @Provides
+        @FragmentScoped
+
+
+        public DeviceDetailsBinder provideDeviceDetailsBinder(DeviceDetailsFormatter formatter, SensorConfigFormatter configFormatter) {
+            return new DeviceDetailsBinder(formatter, configFormatter);
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.domain.usecase;
 
-import com.mehatronics.axle_load.entities.enums.AppLanguage;
+import com.mehatronics.axle_load.domain.entities.enums.AppLanguage;
 
 public interface ChangeLanguageUseCase {
     AppLanguage getCurrentLanguage();

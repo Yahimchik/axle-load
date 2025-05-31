@@ -1,16 +1,19 @@
 package com.mehatronics.axle_load.domain.manager;
 
+import static com.mehatronics.axle_load.constants.ValueConstants.LOWER_MULTIPLIER_EDGE;
+import static com.mehatronics.axle_load.constants.ValueConstants.MAX_MULTIPLIER;
+import static com.mehatronics.axle_load.constants.ValueConstants.MIN_MULTIPLIER;
+import static com.mehatronics.axle_load.constants.ValueConstants.UPPER_MULTIPLIER_EDGE;
 import static com.mehatronics.axle_load.utils.DataUtils.parsePressure;
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.*;
-import static com.mehatronics.axle_load.utils.diffUtil.CalibrationDiffUtil.hasTableChanged;
+import static com.mehatronics.axle_load.ui.adapter.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mehatronics.axle_load.entities.CalibrationTable;
-import com.mehatronics.axle_load.entities.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
 import java.util.ArrayList;
 import java.util.List;

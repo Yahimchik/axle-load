@@ -40,4 +40,6 @@
     <string name="dialog_gps_message">Для использования приложения требуется включить GPS.</string>
     <string name="dialog_bluetooth_title">Включение Bluetooth</string>
     <string name="dialog_bluetooth_message">Для использования приложения требуется включить Bluetooth.</string>
+    <string name="connection_failed">Не удалось подключится к устройству</string>
+    <string name="selected">Выбран %1$s</string>
 </resources>

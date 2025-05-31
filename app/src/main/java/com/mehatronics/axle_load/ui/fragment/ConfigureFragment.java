@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.adapter.AxisAdapter;
-import com.mehatronics.axle_load.notification.MessageCallback;
-import com.mehatronics.axle_load.domain.viewModel.ConfigureViewModel;
+import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
+import com.mehatronics.axle_load.ui.notification.MessageCallback;
+import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 

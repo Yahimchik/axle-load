@@ -2,7 +2,6 @@ package com.mehatronics.axle_load.ui.activity;
 
 import static android.R.id.content;
 import static com.mehatronics.axle_load.R.id.buttonGoToAxes;
-import static dagger.hilt.android.EntryPointAccessors.fromActivity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,16 +12,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.helper.LocaleHelper;
-import com.mehatronics.axle_load.adapter.LoadingManager;
-import com.mehatronics.axle_load.handler.BluetoothHandler;
-import com.mehatronics.axle_load.handler.BluetoothHandlerContract;
-import com.mehatronics.axle_load.di.LoadingManagerEntryPoint;
-import com.mehatronics.axle_load.entities.enums.DeviceType;
+import com.mehatronics.axle_load.localization.ResourceProvider;
+import com.mehatronics.axle_load.ui.adapter.LoadingManager;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.ui.fragment.DeviceDetailsFragment;
-import com.mehatronics.axle_load.mapper.DeviceMapper;
-import com.mehatronics.axle_load.navigation.FragmentNavigator;
+import com.mehatronics.axle_load.data.mapper.DeviceMapper;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.binder.DeviceListBinder;
-import com.mehatronics.axle_load.domain.viewModel.DeviceViewModel;
+import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
 
@@ -33,6 +32,8 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     private DeviceViewModel deviceViewModel;
     @Inject
     protected FragmentNavigator fragmentNavigator;
+    @Inject
+    protected ResourceProvider resourceProvider;
     private BluetoothHandler bluetoothHandler;
     private DeviceListBinder deviceListBinder;
     private LoadingManager loadingManager;
@@ -43,14 +44,14 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadingManager = fromActivity(this, LoadingManagerEntryPoint.class).getLoadingManager();
         deviceViewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
-        bluetoothHandler = new BluetoothHandler(deviceViewModel, this);
+        bluetoothHandler = new BluetoothHandler(deviceViewModel, this, resourceProvider);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
+        loadingManager = new LoadingManager(findViewById(content));
         initializeInterface();
         setupObservers();
     }
@@ -64,14 +65,17 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         deviceViewModel.disconnect();
     }
 
-    @Override
-    public void showFragment() {
-        fragmentNavigator.showFragment(new DeviceDetailsFragment());
+    public void onDeviceDetailsFragmentClosed() {
+        bluetoothHandler.onDeviceDetailsFragmentClosed();
+    }
+
+    public void onDeviceDetailsFragmentOpen() {
+        bluetoothHandler.onDeviceDetailsFragmentOpen();
     }
 
     @Override
-    public boolean isFragmentNotVisible() {
-        return fragmentNavigator.isFragmentNotVisible();
+    public void showFragment() {
+        fragmentNavigator.showFragment(new DeviceDetailsFragment());
     }
 
     @Override
@@ -111,8 +115,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     }
 
     private void initializeInterface() {
-        loadingManager.init(findViewById(content));
-
         deviceListBinder = new DeviceListBinder(
                 findViewById(content),
                 bluetoothHandler::onDeviceSelected,

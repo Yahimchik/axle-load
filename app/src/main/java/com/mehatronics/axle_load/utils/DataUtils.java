@@ -1,17 +1,14 @@
 package com.mehatronics.axle_load.utils;
 
-import static com.mehatronics.axle_load.entities.enums.CharacteristicType.PRESSURE;
-import static com.mehatronics.axle_load.entities.enums.CharacteristicType.WEIGHT;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.PRESSURE;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.WEIGHT;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertByteToValue;
-import static com.mehatronics.axle_load.utils.ByteUtils.getDate;
-import static com.mehatronics.axle_load.utils.DateFormatUtils.convertToDateFormat;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SECOND_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.SEVEN_COMMAND;
-import static com.mehatronics.axle_load.utils.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.utils.constants.StringConstants.UNKNOWN;
-import static com.mehatronics.axle_load.utils.constants.StringConstants.ZERO;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.StringConstants.ZERO;
 
-import com.mehatronics.axle_load.entities.enums.CharacteristicType;
+import com.mehatronics.axle_load.domain.entities.enums.CharacteristicType;
 
 /**
  * Утилитный класс для преобразования байтов в строки, значения батареи,
@@ -41,19 +38,6 @@ public class DataUtils {
             return String.valueOf(bytes[0]);
         }
         return ZERO;
-    }
-
-    /**
-     * Преобразует массив байт в строковое представление даты.
-     *
-     * @param bytes Массив байт, содержащий дату устройства.
-     * @return Отформатированная строка даты или "неизвестно" при ошибке.
-     */
-    public static String convertBytesToDate(byte[] bytes) {
-        if (bytes != null) {
-            return convertToDateFormat(getDate(bytes));
-        }
-        return UNKNOWN;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.domain.manager;
 
-import static com.mehatronics.axle_load.utils.constants.ValueConstants.MAX_RECONNECT_ATTEMPTS;
+import static com.mehatronics.axle_load.constants.ValueConstants.MAX_RECONNECT_ATTEMPTS;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -9,11 +9,11 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.handler.BluetoothGattCallbackHandler;
-import com.mehatronics.axle_load.handler.ConnectionHandler;
-import com.mehatronics.axle_load.entities.Device;
-import com.mehatronics.axle_load.entities.DeviceDetails;
-import com.mehatronics.axle_load.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
+import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
+import com.mehatronics.axle_load.domain.entities.device.Device;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

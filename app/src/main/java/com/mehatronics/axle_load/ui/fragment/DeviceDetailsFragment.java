@@ -11,11 +11,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
-import com.mehatronics.axle_load.entities.SensorConfig;
-import com.mehatronics.axle_load.notification.MessageCallback;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
-import com.mehatronics.axle_load.domain.viewModel.DeviceViewModel;
+import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -26,9 +28,9 @@ import dagger.hilt.android.AndroidEntryPoint;
  */
 @AndroidEntryPoint
 public class DeviceDetailsFragment extends Fragment implements MessageCallback {
-
+    @Inject
+    protected DeviceDetailsBinder detailsBinder;
     private DeviceViewModel deviceViewModel;
-    private DeviceDetailsBinder detailsBinder;
     private View view;
 
     /**
@@ -45,15 +47,15 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     /**
      * Создаёт и возвращает иерархию представлений фрагмента.
      *
-     * @param inflater Инфлейтер для создания View из XML.
-     * @param container Родительский ViewGroup.
+     * @param inflater           Инфлейтер для создания View из XML.
+     * @param container          Родительский ViewGroup.
      * @param savedInstanceState Состояние, сохранённое при предыдущем создании.
      * @return Корневой View для фрагмента.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_device_details, container, false);
-        detailsBinder = new DeviceDetailsBinder(view, deviceViewModel);
+        detailsBinder.init(view, deviceViewModel);
 
         observeView();
         setupSaveButton();
@@ -122,8 +124,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         detailsBinder = null;
         deviceViewModel.clearDetails();
         deviceViewModel.disconnect();
-        if (getActivity() instanceof BaseBluetoothActivity) {
-            ((BaseBluetoothActivity) getActivity()).resetDeviceNavigatorState();
+        if (getActivity() instanceof BluetoothHandlerContract) {
+            ((BluetoothHandlerContract) getActivity()).onDeviceDetailsFragmentClosed();
         }
         Log.d("MyTag", "Device details fragment is closed");
     }
