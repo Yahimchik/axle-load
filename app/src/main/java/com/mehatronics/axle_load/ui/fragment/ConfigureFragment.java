@@ -14,15 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.domain.entities.Event;
+import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ConfigureFragment extends Fragment implements MessageCallback {
-
+    @Inject
+    protected FragmentNavigator fragmentNavigator;
     private EditText editTextAxisCount;
     private Button buttonConfigure;
     private ConfigureViewModel viewModel;
@@ -33,10 +39,11 @@ public class ConfigureFragment extends Fragment implements MessageCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_configure, container, false);
+
         editTextAxisCount = root.findViewById(R.id.editTextAxisCount);
         buttonConfigure = root.findViewById(R.id.buttonConfigure);
-        recyclerView = root.findViewById(R.id.recyclerViewAxes);
 
+        recyclerView = root.findViewById(R.id.recyclerViewAxes);
         viewModel = new ViewModelProvider(this).get(ConfigureViewModel.class);
 
         setupRecyclerView();
@@ -47,7 +54,7 @@ public class ConfigureFragment extends Fragment implements MessageCallback {
     }
 
     private void setupRecyclerView() {
-        adapter = new AxisAdapter((axisNumber, side) -> viewModel.onWheelClicked(axisNumber, side));
+        adapter = new AxisAdapter((num, side) -> viewModel.onWheelClicked(num, side));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
@@ -55,6 +62,14 @@ public class ConfigureFragment extends Fragment implements MessageCallback {
     private void setupObservers() {
         viewModel.getAxisList().observe(getViewLifecycleOwner(), adapter::submitList);
         viewModel.getMessage().observe(getViewLifecycleOwner(), this::showMessage);
+        viewModel.getAxisClick().observe(getViewLifecycleOwner(),this::handleAxisClickEvent);
+    }
+
+    private void handleAxisClickEvent(Event<InstalationPoint> event) {
+        InstalationPoint data = event.getContentIfNotHandled();
+        if (data != null) {
+            fragmentNavigator.showFragment(new AvailableSensorFragment());
+        }
     }
 
     private void setupListeners() {

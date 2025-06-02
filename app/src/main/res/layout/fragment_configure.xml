@@ -9,6 +9,8 @@
     android:padding="24dp"
     tools:context=".ui.fragment.ConfigureFragment">
 
+
+
     <!-- Заголовок -->
     <TextView
         android:id="@+id/textViewTitle"

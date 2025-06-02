@@ -1,18 +1,16 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 import com.mehatronics.axle_load.data.repository.BluetoothRepository;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
-import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
+import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 
 import java.util.List;
 
@@ -32,7 +30,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
  *     <li>Чтение и изменение таблицы калибровки</li>
  *     <li>Сохранение конфигурации сенсоров</li>
  * </ul>
- *
  */
 @HiltViewModel
 public class DeviceViewModel extends ViewModel {
@@ -44,7 +41,7 @@ public class DeviceViewModel extends ViewModel {
      * Конструктор с внедрением зависимостей.
      *
      * @param bluetoothRepository Репозиторий для работы с Bluetooth-устройствами
-     * @param saveUseCase UseCase для сохранения таблицы калибровки
+     * @param saveUseCase         UseCase для сохранения таблицы калибровки
      */
     @Inject
     public DeviceViewModel(BluetoothRepository bluetoothRepository, SaveCalibrationTableUseCase saveUseCase) {
@@ -173,8 +170,6 @@ public class DeviceViewModel extends ViewModel {
     public void saveSensorConfiguration() {
         if (getSensorConfigure().getValue() != null) {
             bluetoothRepository.saveConfiguration();
-        } else {
-            Log.w("MyTag", "Sensor config is null");
         }
     }
 

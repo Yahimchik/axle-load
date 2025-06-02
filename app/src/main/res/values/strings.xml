@@ -74,7 +74,7 @@
     <string name="change_langauge">Change language</string>
 
     <string name="error_empty_axis_count">Please enter the number of axes</string>
-    <string name="error_axis_count_out_of_range">Please enter a number between 1 and 8</string>
+    <string name="error_axis_out_of_range">Please enter a number between 1 and 8</string>
     <string name="error_invalid_number">Please enter a valid number</string>
 
     <string name="wheel_left">Left wheel of axle %1$d</string>

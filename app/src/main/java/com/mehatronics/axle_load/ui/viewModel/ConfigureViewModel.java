@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
-import static com.mehatronics.axle_load.R.string.error_axis_count_out_of_range;
+import static com.mehatronics.axle_load.R.string.error_axis_out_of_range;
 import static com.mehatronics.axle_load.R.string.error_empty_axis_count;
 import static com.mehatronics.axle_load.R.string.error_invalid_number;
 import static com.mehatronics.axle_load.R.string.wheel_center;
@@ -11,12 +11,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
-import com.mehatronics.axle_load.localization.ResourceProvider;
-import com.mehatronics.axle_load.domain.entities.ValidationResult;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
+import com.mehatronics.axle_load.domain.entities.Event;
+import com.mehatronics.axle_load.domain.entities.InstalationPoint;
+import com.mehatronics.axle_load.domain.entities.ValidationResult;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.ValidationError;
+import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ConfigureViewModel extends ViewModel {
-
+    private final MutableLiveData<Event<InstalationPoint>> axisClickEvent = new MutableLiveData<>();
     private final MutableLiveData<List<AxisModel>> axisList = new MutableLiveData<>();
     private final MutableLiveData<String> message = new MutableLiveData<>();
     private final ValidateAxisCountUseCase validationUseCase;
@@ -62,20 +64,23 @@ public class ConfigureViewModel extends ViewModel {
         }
     }
 
+    public LiveData<Event<InstalationPoint>> getAxisClick() {
+        return axisClickEvent;
+    }
+
     public void onWheelClicked(int axisNumber, AxisSide side) {
-        String text = switch (side) {
+        switch (side) {
             case LEFT -> resourceProvider.getString(wheel_left, axisNumber);
             case RIGHT -> resourceProvider.getString(wheel_right, axisNumber);
             case CENTER -> resourceProvider.getString(wheel_center, axisNumber);
-        };
-        message.setValue(text);
+        }
+        axisClickEvent.setValue(new Event<>(new InstalationPoint(axisNumber, side.ordinal())));
     }
-
 
     private String getErrorMessage(ValidationError error) {
         return switch (error) {
-            case EMPTY_AXIS_COUNT -> resourceProvider.getString(error_empty_axis_count);
-            case AXIS_COUNT_OUT_OF_RANGE -> resourceProvider.getString(error_axis_count_out_of_range);
+            case EMPTY_AXIS -> resourceProvider.getString(error_empty_axis_count);
+            case AXIS_OUT_OF_RANGE -> resourceProvider.getString(error_axis_out_of_range);
             case INVALID_NUMBER -> resourceProvider.getString(error_invalid_number);
         };
     }

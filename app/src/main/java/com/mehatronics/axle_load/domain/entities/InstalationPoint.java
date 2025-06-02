@@ -6,9 +6,14 @@ public class InstalationPoint {
     private final int axleNumber;
     private final int position;
 
+    public InstalationPoint(int axleNumber, int position) {
+        this.axleNumber = axleNumber;
+        this.position = position;
+    }
+
     public InstalationPoint(Builder builder) {
         this.axleNumber = builder.axleNumber;
-        this.position = builder.posotion;
+        this.position = builder.position;
     }
 
     @NonNull
@@ -20,9 +25,17 @@ public class InstalationPoint {
                 '}';
     }
 
+    public int getAxleNumber() {
+        return axleNumber;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
     public static class Builder {
         private int axleNumber;
-        private int posotion;
+        private int position;
 
         public Builder setAxleNumber(int axleNumber) {
             this.axleNumber = axleNumber;
@@ -30,7 +43,7 @@ public class InstalationPoint {
         }
 
         public Builder setPosition(int posotion) {
-            this.posotion = posotion;
+            this.position = posotion;
             return this;
         }
 

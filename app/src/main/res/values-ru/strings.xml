@@ -3,7 +3,7 @@
     <string name="choose_sensor_type">Выберите тип датчика</string>
     <string name="change_langauge">Сменить язык</string>
     <string name="error_empty_axis_count">Введите количество осей</string>
-    <string name="error_axis_count_out_of_range">Введите число от 1 до 8</string>
+    <string name="error_axis_out_of_range">Введите число от 1 до 8</string>
     <string name="error_invalid_number">Введите корректное число</string>
     <string name="enter_number_of_axes">Введите количество осей (1 - 8)</string>
     <string name="configuration_settings">Настроить ОСИ</string>

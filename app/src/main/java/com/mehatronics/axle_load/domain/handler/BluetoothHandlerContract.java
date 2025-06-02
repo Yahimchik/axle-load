@@ -2,7 +2,7 @@ package com.mehatronics.axle_load.domain.handler;
 
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
-public interface BluetoothHandlerContract extends MessageCallback {
+public interface BluetoothHandlerContract extends MessageCallback, FragmentHandler {
     void showFragment();
 
     void loadingManagerShowLoading(boolean isLoading);
@@ -13,8 +13,12 @@ public interface BluetoothHandlerContract extends MessageCallback {
 
     void initConfigureButton();
 
-    void onDeviceDetailsFragmentClosed();
-    void onDeviceDetailsFragmentOpen();
+    @Override
+    void onFragmentClosed();
+
+    @Override
+    void onFragmentOpen();
+
     @Override
     void showMessage(String message);
 }

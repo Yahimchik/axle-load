@@ -1,12 +1,11 @@
 package com.mehatronics.axle_load.ui.adapter;
 
+import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.CENTER;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.LEFT;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.RIGHT;
-import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
+import com.mehatronics.axle_load.ui.adapter.diffUtil.AxisDiffUtil;
+import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,12 @@ public class AxisAdapter extends RecyclerView.Adapter<AxisAdapter.AxisViewHolder
         this.listener = listener;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void submitList(List<AxisModel> list) {
-        axisList = list;
-        Log.d("MyTag", axisList.toString());
-        notifyDataSetChanged();
+    public void submitList(List<AxisModel> newList) {
+        AxisDiffUtil diffUtil = new AxisDiffUtil(this.axisList, newList);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffUtil);
+
+        this.axisList = new ArrayList<>(newList);
+        result.dispatchUpdatesTo(this);
     }
 
     @NonNull

@@ -125,7 +125,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         deviceViewModel.clearDetails();
         deviceViewModel.disconnect();
         if (getActivity() instanceof BluetoothHandlerContract) {
-            ((BluetoothHandlerContract) getActivity()).onDeviceDetailsFragmentClosed();
+            ((BluetoothHandlerContract) getActivity()).onFragmentClosed();
         }
         Log.d("MyTag", "Device details fragment is closed");
     }

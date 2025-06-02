@@ -64,7 +64,7 @@ public class BluetoothHandler {
         activity.loadingManagerShowLoading(true);
         activity.setIsAttemptingToConnect(true);
         activity.showMessage(resourceProvider.getString(selected, device.getDevice().getName()));
-        activity.onDeviceDetailsFragmentOpen();
+        activity.onFragmentOpen();
         deviceViewModel.connectToDevice(device);
     }
 

@@ -29,29 +29,29 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public abstract class BaseBluetoothActivity extends AppCompatActivity implements BluetoothHandlerContract {
-    private DeviceViewModel deviceViewModel;
     @Inject
-    protected FragmentNavigator fragmentNavigator;
+    protected FragmentNavigator navigator;
     @Inject
-    protected ResourceProvider resourceProvider;
-    private BluetoothHandler bluetoothHandler;
-    private DeviceListBinder deviceListBinder;
-    private LoadingManager loadingManager;
+    protected ResourceProvider provider;
+    private DeviceViewModel viewModel;
+    private BluetoothHandler handler;
+    private DeviceListBinder binder;
+    private LoadingManager manager;
     @Inject
-    protected DeviceMapper deviceMapper;
+    protected DeviceMapper mapper;
     private boolean isAttemptingToConnect = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deviceViewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
-        bluetoothHandler = new BluetoothHandler(deviceViewModel, this, resourceProvider);
+        viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
+        handler = new BluetoothHandler(viewModel, this, provider);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        loadingManager = new LoadingManager(findViewById(content));
+        manager = new LoadingManager(findViewById(content));
         initializeInterface();
         setupObservers();
     }
@@ -59,28 +59,30 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        deviceViewModel.clearScannedDevices();
-        deviceViewModel.stopScan();
-        deviceViewModel.clearDetails();
-        deviceViewModel.disconnect();
+        viewModel.clearScannedDevices();
+        viewModel.stopScan();
+        viewModel.clearDetails();
+        viewModel.disconnect();
     }
 
-    public void onDeviceDetailsFragmentClosed() {
-        bluetoothHandler.onDeviceDetailsFragmentClosed();
+    @Override
+    public void onFragmentClosed() {
+        handler.onDeviceDetailsFragmentClosed();
     }
 
-    public void onDeviceDetailsFragmentOpen() {
-        bluetoothHandler.onDeviceDetailsFragmentOpen();
+    @Override
+    public void onFragmentOpen() {
+        handler.onDeviceDetailsFragmentOpen();
     }
 
     @Override
     public void showFragment() {
-        fragmentNavigator.showFragment(new DeviceDetailsFragment());
+        navigator.showFragment(new DeviceDetailsFragment());
     }
 
     @Override
     public void loadingManagerShowLoading(boolean isLoading) {
-        loadingManager.showLoading(isLoading);
+        manager.showLoading(isLoading);
     }
 
     @Override
@@ -100,7 +102,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
 
     @Override
     public void initConfigureButton() {
-        fragmentNavigator.initConfigureButton(findViewById(buttonGoToAxes));
+        navigator.initConfigureButton(findViewById(buttonGoToAxes));
     }
 
     @Override
@@ -108,28 +110,18 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         super.attachBaseContext(LocaleHelper.attachBaseContext(newBase));
     }
 
-    public void resetDeviceNavigatorState() {
-        if (fragmentNavigator != null) {
-            fragmentNavigator.resetState();
-        }
-    }
-
     private void initializeInterface() {
-        deviceListBinder = new DeviceListBinder(
-                findViewById(content),
-                bluetoothHandler::onDeviceSelected,
-                deviceMapper
-        );
+        binder = new DeviceListBinder(findViewById(content), handler::onDeviceSelected, mapper);
         initConfigureButton();
     }
 
     private void setupObservers() {
-        deviceViewModel.getScannedDevices().observe(this, deviceListBinder::updateDevices);
-        deviceViewModel.getDeviceDetails().observe(this, bluetoothHandler::handleDeviceDetails);
-        deviceViewModel.isConnectedLiveData().observe(this, bluetoothHandler::handleConnectionState);
+        viewModel.getScannedDevices().observe(this, binder::updateDevices);
+        viewModel.getDeviceDetails().observe(this, handler::handleDeviceDetails);
+        viewModel.isConnectedLiveData().observe(this, handler::handleConnectionState);
     }
 
     protected void setupBluetooth(DeviceType deviceType) {
-        deviceViewModel.startScan(deviceType);
+        viewModel.startScan(deviceType);
     }
 }
