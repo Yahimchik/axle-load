@@ -1,6 +1,10 @@
 package com.mehatronics.axle_load.ui.adapter.sensor;
 
 import static android.view.LayoutInflater.from;
+import static androidx.core.content.ContextCompat.getColor;
+import static com.mehatronics.axle_load.R.color.black;
+import static com.mehatronics.axle_load.R.color.button_selected_color;
+import static com.mehatronics.axle_load.R.color.card_background_color;
 import static com.mehatronics.axle_load.R.layout.item_sensor;
 
 import android.view.View;
@@ -67,13 +71,15 @@ public class AvailableSensorAdapter extends RecyclerView.Adapter<AvailableSensor
         holder.itemView.setEnabled(!isSelected);
         holder.itemView.setClickable(!isSelected);
 
-        int sensorNameColor = ContextCompat.getColor(holder.itemView.getContext(),
-                isSelected ? R.color.button_selected_color : R.color.black);
-        int macAddressColor = ContextCompat.getColor(holder.itemView.getContext(),
-                isSelected ? R.color.button_selected_color : R.color.card_background_color);
+        var context = holder.itemView.getContext();
 
-        holder.name.setTextColor(sensorNameColor);
-        holder.mac.setTextColor(macAddressColor);
+        int name = getColor(context, isSelected ? button_selected_color : black);
+        int mac = getColor(context, isSelected ? button_selected_color : card_background_color);
+        int rssi = getColor(context, isSelected ? button_selected_color : card_background_color);
+
+        holder.name.setTextColor(name);
+        holder.mac.setTextColor(mac);
+        holder.rssi.setTextColor(rssi);
     }
 
     @Override

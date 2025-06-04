@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.mapper.DeviceMapper;
 import com.mehatronics.axle_load.domain.entities.device.Device;
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.ui.binder.AvailableListBinder;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
@@ -31,6 +32,18 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
     private SensorViewModel sensorViewModel;
     private AvailableListBinder binder;
     private View view;
+    private int axisNumber;
+    private AxisSide axisSide;
+
+
+    public static AvailableSensorFragment newInstance(int axisNumber, AxisSide axisSide) {
+        AvailableSensorFragment fragment = new AvailableSensorFragment();
+        Bundle args = new Bundle();
+        args.putInt("axisNumber", axisNumber);
+        args.putString("axisSide", axisSide.name());
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +52,11 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
         viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
         sensorViewModel = new ViewModelProvider(requireActivity()).get(SensorViewModel.class);
         sensorViewModel.setSnackBarCallback(this);
+
+        if (getArguments() != null) {
+            axisNumber = getArguments().getInt("axisNumber");
+            axisSide = AxisSide.valueOf(getArguments().getString("axisSide"));
+        }
     }
 
     @Override
@@ -51,6 +69,7 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
 
         sensorViewModel.getScannedDevicesLiveData().observe(getViewLifecycleOwner(), processedDevices
                 -> binder.updateDevices(processedDevices));
+
         return view;
     }
 
@@ -59,6 +78,7 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
         if (device.isSelected()) return;
         device.setSelected(true);
         sensorViewModel.markMacAsSelected(device);
+        sendDeviceBack(device);
         requireActivity().getSupportFragmentManager().popBackStack();
     }
 
@@ -66,4 +86,13 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
     public void showMessage(String message) {
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
     }
+
+    private void sendDeviceBack(Device device) {
+        Bundle result = new Bundle();
+        result.putString("mac", device.getDevice().getAddress()); // или сериализуй всё устройство, если нужно больше полей
+        result.putInt("axisNumber", axisNumber);
+        result.putString("axisSide", axisSide.name());
+        getParentFragmentManager().setFragmentResult("selected_device_result", result);
+    }
+
 }

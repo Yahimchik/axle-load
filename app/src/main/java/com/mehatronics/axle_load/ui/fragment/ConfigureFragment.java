@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
+import com.mehatronics.axle_load.domain.entities.device.Device;
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
@@ -32,9 +35,9 @@ public class ConfigureFragment extends Fragment implements MessageCallback {
     private EditText editTextAxisCount;
     private Button buttonConfigure;
     private ConfigureViewModel viewModel;
-    private View root;
     private RecyclerView recyclerView;
     private AxisAdapter adapter;
+    private View root;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +53,17 @@ public class ConfigureFragment extends Fragment implements MessageCallback {
         setupObservers();
         setupListeners();
 
+        getParentFragmentManager().setFragmentResultListener("selected_device_result", this, (key, bundle) -> {
+            String mac = bundle.getString("mac");
+            String sideStr = bundle.getString("axisSide");
+            int axisNumber = bundle.getInt("axisNumber");
+
+            AxisSide side = AxisSide.valueOf(sideStr);
+            Device device = new Device(mac);
+
+            viewModel.setDeviceToAxis(axisNumber, side, device);
+        });
+
         return root;
     }
 
@@ -62,13 +76,13 @@ public class ConfigureFragment extends Fragment implements MessageCallback {
     private void setupObservers() {
         viewModel.getAxisList().observe(getViewLifecycleOwner(), adapter::submitList);
         viewModel.getMessage().observe(getViewLifecycleOwner(), this::showMessage);
-        viewModel.getAxisClick().observe(getViewLifecycleOwner(),this::handleAxisClickEvent);
+        viewModel.getAxisClick().observe(getViewLifecycleOwner(), this::handleAxisClickEvent);
     }
 
     private void handleAxisClickEvent(Event<InstalationPoint> event) {
         InstalationPoint data = event.getContentIfNotHandled();
         if (data != null) {
-            fragmentNavigator.showFragment(new AvailableSensorFragment());
+            fragmentNavigator.showFragment(AvailableSensorFragment.newInstance(data.getAxleNumber(), data.getPosition()));
         }
     }
 

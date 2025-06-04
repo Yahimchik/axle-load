@@ -1,7 +1,8 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
+import static com.mehatronics.axle_load.R.string.selected;
+
 import android.Manifest;
-import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -28,9 +28,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class SensorViewModel extends ViewModel {
     private final MutableLiveData<List<Device>> processedDevicesLiveData = new MutableLiveData<>();
-    private final List<MutableLiveData<String>> centerImages = new ArrayList<>();
-    private final List<MutableLiveData<String>> rightImages = new ArrayList<>();
-    private final List<MutableLiveData<String>> leftImages = new ArrayList<>();
     private final Map<String, Device> processedDevices = new HashMap<>();
     private final Set<String> selectedMacs = new HashSet<>();
     private final ResourceProvider resourceProvider;
@@ -67,8 +64,11 @@ public class SensorViewModel extends ViewModel {
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void markMacAsSelected(Device device) {
-        messageCallback.showMessage(resourceProvider.getString(R.string.selected, device.getDevice().getName()));
-        selectedMacs.add(device.getDevice().getAddress());
+        String name = device.getDevice().getName();
+        String mac = device.getDevice().getAddress();
+
+        messageCallback.showMessage(resourceProvider.getString(selected, name));
+        selectedMacs.add(mac);
     }
 
     private boolean isMacSelected(String mac) {

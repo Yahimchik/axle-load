@@ -19,6 +19,7 @@
     <string name="reset_password">СБРОСИТЬ ПАРОЛЬ</string>
     <string name="set_new_password">УСТАНОВИТЬ НОВЫЙ ПАРОЛЬ</string>
     <string name="invalid_detector">Неверный детектор в строгке %1$d</string>
+    <string name="axle">ОСЬ</string>
     <string name="choose_sensor">Выберите датчик</string>
     <string name="calibration_table">Тарировочная таблица</string>
     <string name="axles_count">Выберите количество осей</string>

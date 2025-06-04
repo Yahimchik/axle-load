@@ -39,7 +39,7 @@
     <string name="reset" translatable="false">Reset</string>
 
     <string name="sensor_list" translatable="false">Sensors list</string>
-    <string name="axle" translatable="false">Axle</string>
+    <string name="axle">AXLE</string>
 
     <string name="choose_sensor">Choose sensor</string>
     <string name="calibration_table">Calibration Table</string>

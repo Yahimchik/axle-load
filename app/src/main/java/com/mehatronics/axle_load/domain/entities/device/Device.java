@@ -11,10 +11,22 @@ public class Device implements Serializable {
     private final BluetoothDevice device;
     private final ScanResult scanResult;
     private boolean isSelected;
+    private final String macAddress;
 
     public Device(BluetoothDevice device, ScanResult scanResult) {
         this.device = device;
         this.scanResult = scanResult;
+        this.macAddress = device.getAddress();
+    }
+
+    public Device(String macAddress) {
+        this.device = null;
+        this.scanResult = null;
+        this.macAddress = macAddress;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
     }
 
     public boolean isSelected() {

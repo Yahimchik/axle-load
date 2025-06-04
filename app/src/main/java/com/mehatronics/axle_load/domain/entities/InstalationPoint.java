@@ -2,11 +2,13 @@ package com.mehatronics.axle_load.domain.entities;
 
 import androidx.annotation.NonNull;
 
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
+
 public class InstalationPoint {
     private final int axleNumber;
-    private final int position;
+    private final AxisSide position;
 
-    public InstalationPoint(int axleNumber, int position) {
+    public InstalationPoint(int axleNumber, AxisSide position) {
         this.axleNumber = axleNumber;
         this.position = position;
     }
@@ -29,20 +31,20 @@ public class InstalationPoint {
         return axleNumber;
     }
 
-    public int getPosition() {
+    public AxisSide getPosition() {
         return position;
     }
 
     public static class Builder {
         private int axleNumber;
-        private int position;
+        private AxisSide position;
 
         public Builder setAxleNumber(int axleNumber) {
             this.axleNumber = axleNumber;
             return this;
         }
 
-        public Builder setPosition(int posotion) {
+        public Builder setPosition(AxisSide posotion) {
             this.position = posotion;
             return this;
         }

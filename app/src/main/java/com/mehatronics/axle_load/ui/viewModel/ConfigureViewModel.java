@@ -15,6 +15,7 @@ import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.ValidationResult;
+import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.ValidationError;
 import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
@@ -49,6 +50,21 @@ public class ConfigureViewModel extends ViewModel {
         return message;
     }
 
+    public void setDeviceToAxis(int axisNumber, AxisSide side, Device device) {
+        List<AxisModel> currentList = axisList.getValue();
+        if (currentList == null) return;
+
+        List<AxisModel> updatedList = new ArrayList<>();
+        for (AxisModel model : currentList) {
+            if (model.getNumber() == axisNumber) {
+                model.setDeviceForSide(side, device);
+            }
+            updatedList.add(model);
+        }
+
+        axisList.setValue(updatedList);
+    }
+
     public void onConfigureClicked(String input) {
         ValidationResult result = validationUseCase.execute(input);
         if (result instanceof ValidationResult.Success) {
@@ -74,7 +90,7 @@ public class ConfigureViewModel extends ViewModel {
             case RIGHT -> resourceProvider.getString(wheel_right, axisNumber);
             case CENTER -> resourceProvider.getString(wheel_center, axisNumber);
         }
-        axisClickEvent.setValue(new Event<>(new InstalationPoint(axisNumber, side.ordinal())));
+        axisClickEvent.setValue(new Event<>(new InstalationPoint(axisNumber, side)));
     }
 
     private String getErrorMessage(ValidationError error) {
