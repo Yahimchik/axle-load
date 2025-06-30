@@ -11,6 +11,7 @@ import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
+import com.mehatronics.axle_load.ui.adapter.listener.DeviceConnectionCallback;
 
 import java.util.List;
 
@@ -106,6 +107,10 @@ public class DeviceViewModel extends ViewModel {
      * @param device Устройство для подключения
      */
     public void connectToDevice(Device device) {
+        bluetoothRepository.connectToDevice(device);
+    }
+
+    public void connectToDevice(Device device, DeviceConnectionCallback callback) {
         bluetoothRepository.connectToDevice(device);
     }
 

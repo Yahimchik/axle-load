@@ -2,16 +2,15 @@ package com.mehatronics.axle_load.domain.entities;
 
 import androidx.annotation.NonNull;
 
-import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class AxisModel {
     private final int number;
-    private final Map<AxisSide, Device> sideDeviceMap = new HashMap<>();
+    private final Map<AxisSide, String> sideDeviceMap = new LinkedHashMap<>();
 
     public AxisModel(int number) {
         this.number = number;
@@ -21,12 +20,16 @@ public class AxisModel {
         return number;
     }
 
-    public void setDeviceForSide(AxisSide side, Device device) {
-        sideDeviceMap.put(side, device);
+    public void setDeviceForSide(AxisSide side, String mac) {
+        sideDeviceMap.put(side, mac);
     }
 
-    public Device getDeviceForSide(AxisSide side) {
+    public String getDeviceForSide(AxisSide side) {
         return sideDeviceMap.get(side);
+    }
+
+    public Map<AxisSide, String> getSideDeviceMap() {
+        return sideDeviceMap;
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.Manifest;
 
 import androidx.annotation.RequiresPermission;
 
+import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.localization.ResourceProvider;
@@ -17,19 +18,23 @@ import javax.inject.Inject;
 
 public class BluetoothHandler {
     private final DeviceViewModel deviceViewModel;
-    private final BluetoothHandlerContract activity;
+    private final BluetoothHandlerContract contract;
     private final ResourceProvider resourceProvider;
     private boolean userClosedDeviceDetails = false;
+    private String deviceName;
 
     @Inject
-    public BluetoothHandler(DeviceViewModel deviceViewModel, BluetoothHandlerContract activity, ResourceProvider resourceProvider) {
+    public BluetoothHandler(DeviceViewModel deviceViewModel, BluetoothHandlerContract contract, ResourceProvider resourceProvider) {
         this.deviceViewModel = deviceViewModel;
-        this.activity = activity;
+        this.contract = contract;
         this.resourceProvider = resourceProvider;
     }
 
     public void onDeviceDetailsFragmentClosed() {
         userClosedDeviceDetails = true;
+        deviceViewModel.disconnect();
+        deviceViewModel.clearDetails();
+        contract.showMessage(resourceProvider.getString(R.string.disconnect_from, deviceName));
     }
 
     public void onDeviceDetailsFragmentOpen() {
@@ -37,10 +42,11 @@ public class BluetoothHandler {
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
-        activity.loadingManagerShowLoading(false);
+        contract.loadingManagerShowLoading(false);
         if (deviceDetails != null && isConnected()) {
+            deviceName = deviceDetails.getDeviceName();
             if (!userClosedDeviceDetails) {
-                activity.showFragment();
+                contract.showFragment();
             }
         } else {
             userClosedDeviceDetails = false;
@@ -48,23 +54,23 @@ public class BluetoothHandler {
     }
 
     public void handleConnectionState(Boolean isConnected) {
-        if (!isConnected && activity.isAttemptingToConnect()) {
-            activity.showMessage(resourceProvider.getString(connection_failed));
-            activity.loadingManagerShowLoading(false);
-            activity.setIsAttemptingToConnect(false);
+        if (!isConnected && contract.isAttemptingToConnect()) {
+            contract.showMessage(resourceProvider.getString(connection_failed));
+            contract.loadingManagerShowLoading(false);
+            contract.setIsAttemptingToConnect(false);
         }
 
         if (isConnected) {
-            activity.setIsAttemptingToConnect(false);
+            contract.setIsAttemptingToConnect(false);
         }
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onDeviceSelected(Device device) {
-        activity.loadingManagerShowLoading(true);
-        activity.setIsAttemptingToConnect(true);
-        activity.showMessage(resourceProvider.getString(selected, device.getDevice().getName()));
-        activity.onFragmentOpen();
+        contract.loadingManagerShowLoading(true);
+        contract.setIsAttemptingToConnect(true);
+        contract.showMessage(resourceProvider.getString(selected, device.getDevice().getName()));
+        contract.onFragmentOpen();
         deviceViewModel.connectToDevice(device);
     }
 

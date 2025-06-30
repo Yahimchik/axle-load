@@ -15,7 +15,6 @@ import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.ValidationResult;
-import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.ValidationError;
 import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
@@ -50,30 +49,71 @@ public class ConfigureViewModel extends ViewModel {
         return message;
     }
 
-    public void setDeviceToAxis(int axisNumber, AxisSide side, Device device) {
+    public void setDeviceToAxis(int axisNumber, AxisSide side, String mac) {
         List<AxisModel> currentList = axisList.getValue();
         if (currentList == null) return;
 
         List<AxisModel> updatedList = new ArrayList<>();
+        boolean updated = false;
+
         for (AxisModel model : currentList) {
             if (model.getNumber() == axisNumber) {
-                model.setDeviceForSide(side, device);
+                AxisModel updatedModel = cloneWithUpdatedDevice(model, side, mac);
+                updatedList.add(updatedModel);
+                updated = true;
+            } else {
+                updatedList.add(model);
             }
-            updatedList.add(model);
+        }
+
+        if (!updated) {
+            AxisModel newModel = new AxisModel(axisNumber);
+            newModel.setDeviceForSide(side, mac);
+            updatedList.add(newModel);
         }
 
         axisList.setValue(updatedList);
     }
 
+    public String getMacForAxisSide(int axisNumber, AxisSide side) {
+        List<AxisModel> currentList = axisList.getValue();
+        if (currentList == null) return null;
+
+        for (AxisModel model : currentList) {
+            if (model.getNumber() == axisNumber) {
+                return model.getDeviceForSide(side);
+            }
+        }
+        return null;
+    }
+
     public void onConfigureClicked(String input) {
         ValidationResult result = validationUseCase.execute(input);
+
         if (result instanceof ValidationResult.Success) {
             int count = ((ValidationResult.Success) result).getCount();
-            List<AxisModel> list = new ArrayList<>();
-            for (int i = 1; i <= count; i++) {
-                list.add(new AxisModel(i));
+
+            List<AxisModel> currentList = axisList.getValue();
+            if (currentList == null) {
+                currentList = new ArrayList<>();
+            } else {
+                currentList = new ArrayList<>(currentList);
             }
-            axisList.setValue(list);
+
+            int currentSize = currentList.size();
+
+            if (count > currentSize) {
+                for (int i = currentSize + 1; i <= count; i++) {
+                    currentList.add(new AxisModel(i));
+                }
+            } else if (count < currentSize) {
+                currentList.subList(count, currentSize).clear();
+            } else {
+                return;
+            }
+
+            axisList.setValue(currentList);
+
         } else if (result instanceof ValidationResult.Error) {
             ValidationError error = ((ValidationResult.Error) result).getError();
             message.setValue(getErrorMessage(error));
@@ -99,6 +139,18 @@ public class ConfigureViewModel extends ViewModel {
             case AXIS_OUT_OF_RANGE -> resourceProvider.getString(error_axis_out_of_range);
             case INVALID_NUMBER -> resourceProvider.getString(error_invalid_number);
         };
+    }
+
+    private AxisModel cloneWithUpdatedDevice(AxisModel model, AxisSide sideToUpdate, String mac) {
+        AxisModel clone = new AxisModel(model.getNumber());
+        for (AxisSide side : AxisSide.values()) {
+            String existingMac = model.getDeviceForSide(side);
+            if (existingMac != null) {
+                clone.setDeviceForSide(side, existingMac);
+            }
+        }
+        clone.setDeviceForSide(sideToUpdate, mac);
+        return clone;
     }
 }
 

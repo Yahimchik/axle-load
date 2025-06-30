@@ -4,8 +4,6 @@ import android.view.View;
 
 import com.mehatronics.axle_load.R;
 
-
-
 public class LoadingManager {
     private final View progressBar;
     private final View overlayView;

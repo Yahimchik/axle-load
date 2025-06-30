@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
@@ -69,6 +68,28 @@ public class SensorViewModel extends ViewModel {
 
         messageCallback.showMessage(resourceProvider.getString(selected, name));
         selectedMacs.add(mac);
+    }
+
+    public void resetSelectedDevices() {
+        selectedMacs.clear();
+
+        for (Device device : processedDevices.values()) {
+            device.setSelected(false);
+        }
+
+        processedDevicesLiveData.setValue(new ArrayList<>(processedDevices.values()));
+    }
+
+    public Device findDeviceByMac(String mac) {
+        List<Device> current = processedDevicesLiveData.getValue();
+        if (current == null) return null;
+
+        for (Device device : current) {
+            if (device.getDevice().getAddress().equalsIgnoreCase(mac)) {
+                return device;
+            }
+        }
+        return null;
     }
 
     private boolean isMacSelected(String mac) {
