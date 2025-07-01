@@ -80,6 +80,22 @@ public class SensorViewModel extends ViewModel {
         processedDevicesLiveData.setValue(new ArrayList<>(processedDevices.values()));
     }
 
+    public void resetSelectedDevicesByMacs(Set<String> macs) {
+        boolean changed = false;
+        for (String mac : macs) {
+            if (selectedMacs.remove(mac)) {
+                Device device = processedDevices.get(mac);
+                if (device != null) {
+                    device.setSelected(false);
+                    changed = true;
+                }
+            }
+        }
+        if (changed) {
+            processedDevicesLiveData.setValue(new ArrayList<>(processedDevices.values()));
+        }
+    }
+
     public Device findDeviceByMac(String mac) {
         List<Device> current = processedDevicesLiveData.getValue();
         if (current == null) return null;

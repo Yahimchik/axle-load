@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
@@ -58,7 +59,7 @@ public class ConfigureFragment extends Fragment implements MessageCallback, Blue
     private View root;
     private Set<String> list = new HashSet<>();
     private LoadingManager loadingManager;
-    private BluetoothHandler bluetoothHandler;
+    private BluetoothHandler handler;
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     @Override
@@ -73,7 +74,7 @@ public class ConfigureFragment extends Fragment implements MessageCallback, Blue
         configureViewModel = new ViewModelProvider(this).get(ConfigureViewModel.class);
         sensorViewModel = new ViewModelProvider(requireActivity()).get(SensorViewModel.class);
         deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
-        bluetoothHandler = new BluetoothHandler(deviceViewModel, this, provider);
+        handler = new BluetoothHandler(deviceViewModel, this, provider);
         loadingManager = new LoadingManager(root);
 
         setupRecyclerView();
@@ -152,21 +153,27 @@ public class ConfigureFragment extends Fragment implements MessageCallback, Blue
         adapter = new AxisAdapter(
                 (axis, side) -> configureViewModel.onWheelClicked(axis, side),
                 axis -> {
+                    var macsToReset = configureViewModel.getMacsForAxis(axis);
+                    configureViewModel.resetDevicesForAxis(axis);
+                    sensorViewModel.resetSelectedDevicesByMacs(macsToReset);
+                    adapter.setSavedState(false);
                 },
                 (axis, side) -> {
                     String mac = configureViewModel.getMacForAxisSide(axis, side);
                     if (mac != null) {
                         var device = findDevice(mac);
                         assert device != null;
-                        bluetoothHandler.onDeviceSelected(device);
+                        handler.onDeviceSelected(device);
                     } else {
                         showMessage("Device not selected");
                     }
                 }
         );
-        saveButton.setOnClickListener(v -> adapter.setSavedState(true));
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+
+        saveButton.setOnClickListener(v -> adapter.setSavedState(true));
     }
 
     private Device findDevice(String mac) {
@@ -186,8 +193,8 @@ public class ConfigureFragment extends Fragment implements MessageCallback, Blue
         configureViewModel.getMessage().observe(getViewLifecycleOwner(), this::showMessage);
         configureViewModel.getAxisClick().observe(getViewLifecycleOwner(), this::handleAxisClickEvent);
 
-        deviceViewModel.getDeviceDetails().observe(getViewLifecycleOwner(), bluetoothHandler::handleDeviceDetails);
-        deviceViewModel.isConnectedLiveData().observe(getViewLifecycleOwner(), bluetoothHandler::handleConnectionState);
+        deviceViewModel.getDeviceDetails().observe(getViewLifecycleOwner(), handler::handleDeviceDetails);
+        deviceViewModel.isConnectedLiveData().observe(getViewLifecycleOwner(), handler::handleConnectionState);
     }
 
     private void handleAxisClickEvent(Event<InstalationPoint> event) {

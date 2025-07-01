@@ -21,7 +21,11 @@ import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -72,6 +76,22 @@ public class ConfigureViewModel extends ViewModel {
             updatedList.add(newModel);
         }
 
+        axisList.setValue(updatedList);
+    }
+
+    public void resetDevicesForAxis(int axisNumber) {
+        List<AxisModel> currentList = axisList.getValue();
+        if (currentList == null) return;
+
+        List<AxisModel> updatedList = new ArrayList<>();
+        for (AxisModel model : currentList) {
+            if (model.getNumber() == axisNumber) {
+                AxisModel resetModel = new AxisModel(axisNumber);
+                updatedList.add(resetModel);
+            } else {
+                updatedList.add(model);
+            }
+        }
         axisList.setValue(updatedList);
     }
 
@@ -152,6 +172,23 @@ public class ConfigureViewModel extends ViewModel {
         clone.setDeviceForSide(sideToUpdate, mac);
         return clone;
     }
+
+    public Set<String> getMacsForAxis(int axisNumber) {
+        Set<String> macs = new HashSet<>();
+        List<AxisModel> currentList = axisList.getValue();
+        if (currentList == null) return macs;
+
+        for (AxisModel model : currentList) {
+            if (model.getNumber() == axisNumber) {
+                macs.addAll(model.getSideDeviceMap().values().stream()
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet()));
+                break;
+            }
+        }
+        return macs;
+    }
+
 }
 
 

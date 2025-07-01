@@ -10,6 +10,7 @@ import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.CENTER;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.LEFT;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.RIGHT;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,26 +28,26 @@ import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.ui.adapter.diffUtil.AxisDiffUtil;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisConnectListener;
-import com.mehatronics.axle_load.ui.adapter.listener.OnAxisSaveListener;
+import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
 
 import java.util.Map;
 
 public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHolder> {
     private final OnAxisClickListener clickListener;
-    private final OnAxisSaveListener saveListener;
+    private final OnAxisResetListener resetListener;
     private final OnAxisConnectListener connectListener;
+    private boolean isSavedState = false;
 
     public AxisAdapter(OnAxisClickListener clickListener,
-                       OnAxisSaveListener saveListener,
+                       OnAxisResetListener resetListener,
                        OnAxisConnectListener connectListener) {
         super(new AxisDiffUtil());
         this.clickListener = clickListener;
-        this.saveListener = saveListener;
+        this.resetListener = resetListener;
         this.connectListener = connectListener;
     }
 
-    private boolean isSavedState = false;
-
+    @SuppressLint("NotifyDataSetChanged")
     public void setSavedState(boolean saved) {
         this.isSavedState = saved;
         notifyDataSetChanged();
@@ -109,6 +110,7 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
             } else if (!isSavedState && isEnabled) {
                 view.setOnClickListener(v -> clickListener.onClick(axis.getNumber(), side));
             }
+            resetButton.setOnClickListener(v -> resetListener.onReset(axis.getNumber()));
         }
 
         private void setIcon(ImageView imageView, AxisSide side, String mac) {
