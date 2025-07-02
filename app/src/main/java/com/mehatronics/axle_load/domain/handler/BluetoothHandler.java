@@ -11,23 +11,58 @@ import androidx.annotation.RequiresPermission;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.localization.ResourceProvider;
+import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
-
-import javax.inject.Inject;
 
 public class BluetoothHandler {
     private final DeviceViewModel deviceViewModel;
+    private final ConfigureViewModel configureViewModel;
     private final BluetoothHandlerContract contract;
     private final ResourceProvider resourceProvider;
     private boolean userClosedDeviceDetails = false;
     private String deviceName;
 
-    @Inject
-    public BluetoothHandler(DeviceViewModel deviceViewModel, BluetoothHandlerContract contract, ResourceProvider resourceProvider) {
-        this.deviceViewModel = deviceViewModel;
-        this.contract = contract;
-        this.resourceProvider = resourceProvider;
+    public BluetoothHandler(builder builder) {
+        this.deviceViewModel = builder.deviceViewModel;
+        this.configureViewModel = builder.configureViewModel;
+        this.contract = builder.contract;
+        this.resourceProvider = builder.resourceProvider;
+    }
+
+    public void onClick(int axisNumber, AxisSide side) {
+        configureViewModel.onClick(axisNumber, side);
+    }
+
+    public void onReset(int axis) {
+        var macsToReset = configureViewModel.getMacsForAxis(axis);
+        configureViewModel.resetDevicesForAxis(axis);
+        configureViewModel.resetSelectedDevicesByMacs(macsToReset);
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    public void onConnect(int axis, AxisSide side) {
+        String mac = configureViewModel.getMacForAxisSide(axis, side);
+        if (mac == null) {
+            contract.showMessage("MAC-адрес не найден");
+            return;
+        }
+
+        var scanned = deviceViewModel.getScannedDevices().getValue();
+        if (scanned == null) {
+            contract.showMessage("Список устройств пуст");
+            return;
+        }
+
+        for (Device device : scanned) {
+            if (device.getDevice().getAddress().equalsIgnoreCase(mac)) {
+                onDeviceSelected(device);
+                return;
+            }
+        }
+
+        contract.showMessage("Устройство не найдено по MAC: " + mac);
     }
 
     public void onDeviceDetailsFragmentClosed() {
@@ -76,5 +111,36 @@ public class BluetoothHandler {
 
     private boolean isConnected() {
         return TRUE.equals(deviceViewModel.isConnectedLiveData().getValue());
+    }
+
+    public static class builder {
+        private DeviceViewModel deviceViewModel;
+        private ConfigureViewModel configureViewModel;
+        private BluetoothHandlerContract contract;
+        private ResourceProvider resourceProvider;
+
+        public builder withModel(DeviceViewModel deviceViewModel) {
+            this.deviceViewModel = deviceViewModel;
+            return this;
+        }
+
+        public builder withModel(ConfigureViewModel configureViewModel) {
+            this.configureViewModel = configureViewModel;
+            return this;
+        }
+
+        public builder withContract(BluetoothHandlerContract contract) {
+            this.contract = contract;
+            return this;
+        }
+
+        public builder withResource(ResourceProvider provider) {
+            this.resourceProvider = provider;
+            return this;
+        }
+
+        public BluetoothHandler build() {
+            return new BluetoothHandler(this);
+        }
     }
 }

@@ -19,7 +19,6 @@ import com.mehatronics.axle_load.ui.adapter.diffUtil.CalibrationDiffUtil;
 import java.util.Locale;
 
 public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.ViewHolder> {
-
     private final OnDeleteCalibrationPointListener onDeleteListener;
     private final OnAddCalibrationPointListener onAddListener;
 

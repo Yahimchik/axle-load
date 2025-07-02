@@ -1,29 +1,20 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
-import static com.mehatronics.axle_load.R.string.error_axis_out_of_range;
-import static com.mehatronics.axle_load.R.string.error_empty_axis_count;
-import static com.mehatronics.axle_load.R.string.error_invalid_number;
-import static com.mehatronics.axle_load.R.string.wheel_center;
-import static com.mehatronics.axle_load.R.string.wheel_left;
-import static com.mehatronics.axle_load.R.string.wheel_right;
+import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mehatronics.axle_load.data.repository.DeviceRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
-import com.mehatronics.axle_load.domain.entities.ValidationResult;
+import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
-import com.mehatronics.axle_load.domain.entities.enums.ValidationError;
-import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
-import com.mehatronics.axle_load.localization.ResourceProvider;
+import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,162 +24,82 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class ConfigureViewModel extends ViewModel {
-    private final MutableLiveData<Event<InstalationPoint>> axisClickEvent = new MutableLiveData<>();
-    private final MutableLiveData<List<AxisModel>> axisList = new MutableLiveData<>();
-    private final MutableLiveData<String> message = new MutableLiveData<>();
-    private final ValidateAxisCountUseCase validationUseCase;
-    private final ResourceProvider resourceProvider;
+    private final DeviceRepository repository;
 
     @Inject
-    public ConfigureViewModel(ValidateAxisCountUseCase validationUseCase, ResourceProvider resourceProvider) {
-        this.validationUseCase = validationUseCase;
-        this.resourceProvider = resourceProvider;
+    public ConfigureViewModel(DeviceRepository repository) {
+        this.repository = repository;
     }
 
+
     public LiveData<List<AxisModel>> getAxisList() {
-        return axisList;
+        return repository.getAxisList();
     }
 
     public LiveData<String> getMessage() {
-        return message;
+        return repository.getMessage();
     }
 
     public void setDeviceToAxis(int axisNumber, AxisSide side, String mac) {
-        List<AxisModel> currentList = axisList.getValue();
-        if (currentList == null) return;
-
-        List<AxisModel> updatedList = new ArrayList<>();
-        boolean updated = false;
-
-        for (AxisModel model : currentList) {
-            if (model.getNumber() == axisNumber) {
-                AxisModel updatedModel = cloneWithUpdatedDevice(model, side, mac);
-                updatedList.add(updatedModel);
-                updated = true;
-            } else {
-                updatedList.add(model);
-            }
-        }
-
-        if (!updated) {
-            AxisModel newModel = new AxisModel(axisNumber);
-            newModel.setDeviceForSide(side, mac);
-            updatedList.add(newModel);
-        }
-
-        axisList.setValue(updatedList);
+        repository.setDeviceToAxis(axisNumber, side, mac);
     }
 
     public void resetDevicesForAxis(int axisNumber) {
-        List<AxisModel> currentList = axisList.getValue();
-        if (currentList == null) return;
-
-        List<AxisModel> updatedList = new ArrayList<>();
-        for (AxisModel model : currentList) {
-            if (model.getNumber() == axisNumber) {
-                AxisModel resetModel = new AxisModel(axisNumber);
-                updatedList.add(resetModel);
-            } else {
-                updatedList.add(model);
-            }
-        }
-        axisList.setValue(updatedList);
+        repository.resetDevicesForAxis(axisNumber);
     }
 
     public String getMacForAxisSide(int axisNumber, AxisSide side) {
-        List<AxisModel> currentList = axisList.getValue();
-        if (currentList == null) return null;
-
-        for (AxisModel model : currentList) {
-            if (model.getNumber() == axisNumber) {
-                return model.getDeviceForSide(side);
-            }
-        }
-        return null;
+        return repository.getMacForAxisSide(axisNumber, side);
     }
 
     public void onConfigureClicked(String input) {
-        ValidationResult result = validationUseCase.execute(input);
-
-        if (result instanceof ValidationResult.Success) {
-            int count = ((ValidationResult.Success) result).getCount();
-
-            List<AxisModel> currentList = axisList.getValue();
-            if (currentList == null) {
-                currentList = new ArrayList<>();
-            } else {
-                currentList = new ArrayList<>(currentList);
-            }
-
-            int currentSize = currentList.size();
-
-            if (count > currentSize) {
-                for (int i = currentSize + 1; i <= count; i++) {
-                    currentList.add(new AxisModel(i));
-                }
-            } else if (count < currentSize) {
-                currentList.subList(count, currentSize).clear();
-            } else {
-                return;
-            }
-
-            axisList.setValue(currentList);
-
-        } else if (result instanceof ValidationResult.Error) {
-            ValidationError error = ((ValidationResult.Error) result).getError();
-            message.setValue(getErrorMessage(error));
-        }
+        repository.onConfigureClicked(input);
     }
 
     public LiveData<Event<InstalationPoint>> getAxisClick() {
-        return axisClickEvent;
+        return repository.getAxisClick();
     }
 
-    public void onWheelClicked(int axisNumber, AxisSide side) {
-        switch (side) {
-            case LEFT -> resourceProvider.getString(wheel_left, axisNumber);
-            case RIGHT -> resourceProvider.getString(wheel_right, axisNumber);
-            case CENTER -> resourceProvider.getString(wheel_center, axisNumber);
-        }
-        axisClickEvent.setValue(new Event<>(new InstalationPoint(axisNumber, side)));
-    }
-
-    private String getErrorMessage(ValidationError error) {
-        return switch (error) {
-            case EMPTY_AXIS -> resourceProvider.getString(error_empty_axis_count);
-            case AXIS_OUT_OF_RANGE -> resourceProvider.getString(error_axis_out_of_range);
-            case INVALID_NUMBER -> resourceProvider.getString(error_invalid_number);
-        };
-    }
-
-    private AxisModel cloneWithUpdatedDevice(AxisModel model, AxisSide sideToUpdate, String mac) {
-        AxisModel clone = new AxisModel(model.getNumber());
-        for (AxisSide side : AxisSide.values()) {
-            String existingMac = model.getDeviceForSide(side);
-            if (existingMac != null) {
-                clone.setDeviceForSide(side, existingMac);
-            }
-        }
-        clone.setDeviceForSide(sideToUpdate, mac);
-        return clone;
+    public void onClick(int axisNumber, AxisSide side) {
+        repository.onWheelClicked(axisNumber, side);
     }
 
     public Set<String> getMacsForAxis(int axisNumber) {
-        Set<String> macs = new HashSet<>();
-        List<AxisModel> currentList = axisList.getValue();
-        if (currentList == null) return macs;
-
-        for (AxisModel model : currentList) {
-            if (model.getNumber() == axisNumber) {
-                macs.addAll(model.getSideDeviceMap().values().stream()
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toSet()));
-                break;
-            }
-        }
-        return macs;
+        return repository.getMacsForAxis(axisNumber);
     }
 
+    public void setSnackBarCallback(MessageCallback messageCallback) {
+        repository.setSnackBarCallback(messageCallback);
+    }
+
+    public LiveData<List<Device>> getScannedDevicesLiveData() {
+        return repository.getScannedDevicesLiveData();
+    }
+
+    public void updateScannedDevices(List<Device> newDevices) {
+        repository.updateScannedDevices(newDevices);
+    }
+
+    public void markMacAsSelected(Device device) {
+        repository.markMacAsSelected(device);
+    }
+
+    public void resetSelectedDevices() {
+        repository.resetSelectedDevices();
+    }
+
+    public void resetSelectedDevicesByMacs(Set<String> macs) {
+        repository.resetSelectedDevicesByMacs(macs);
+    }
+
+    public void method(LifecycleOwner owner) {
+        getAxisList().observe(owner, list
+                -> Log.d("MyTag", String.valueOf(list.stream()
+                .flatMap(axis -> axis.getSideDeviceMap()
+                        .values()
+                        .stream()
+                ).collect(Collectors.toSet()))));
+    }
 }
 
 

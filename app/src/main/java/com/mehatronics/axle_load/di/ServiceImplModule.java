@@ -2,18 +2,22 @@ package com.mehatronics.axle_load.di;
 
 import android.content.Context;
 
+import com.mehatronics.axle_load.data.service.AxisService;
 import com.mehatronics.axle_load.data.service.BleScannerService;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.data.service.PermissionHandlerService;
 import com.mehatronics.axle_load.data.service.PermissionObserverService;
 import com.mehatronics.axle_load.data.service.PermissionService;
+import com.mehatronics.axle_load.data.service.SensorService;
+import com.mehatronics.axle_load.data.service.impl.AxisServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.BleScannerServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.GattReadServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.GattWriteServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionHandlerServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionObserverServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionServiceImpl;
+import com.mehatronics.axle_load.data.service.impl.SensorServiceImpl;
 import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCase;
 import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
@@ -80,4 +84,12 @@ public abstract class ServiceImplModule {
     @Binds
     @Singleton
     public abstract PermissionObserverService bindPermissionObserverService(PermissionObserverServiceImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract AxisService bindAxisService(AxisServiceImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract SensorService bindSensorService(SensorServiceImpl impl);
 }

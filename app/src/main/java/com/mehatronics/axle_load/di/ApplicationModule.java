@@ -25,6 +25,7 @@ import com.mehatronics.axle_load.ui.activity.impl.DDSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DPSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DSSActivity;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
+import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 
@@ -118,13 +119,14 @@ public class ApplicationModule {
          * @param deviceViewModel ViewModel, содержащая состояние устройства.
          * @param activity        Активность, реализующая Bluetooth-логику.
          */
-        @Provides
-        public static BluetoothHandler provideBluetoothConnectionManager(
-                DeviceViewModel deviceViewModel,
-                BaseBluetoothActivity activity,
-                ResourceProvider resourceProvider) {
-            return new BluetoothHandler(deviceViewModel, activity, resourceProvider);
-        }
+//        @Provides
+//        public static BluetoothHandler provideBluetoothConnectionManager(
+//                DeviceViewModel deviceViewModel,
+//                ConfigureViewModel configureViewModel,
+//                BaseBluetoothActivity activity,
+//                ResourceProvider resourceProvider) {
+//            return new BluetoothHandler(deviceViewModel,configureViewModel, activity, resourceProvider);
+//        }
     }
 
     /**

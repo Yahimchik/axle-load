@@ -11,16 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mehatronics.axle_load.data.mapper.DeviceMapper;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.helper.LocaleHelper;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
-import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
-import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
-import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
-import com.mehatronics.axle_load.ui.fragment.DeviceDetailsFragment;
-import com.mehatronics.axle_load.data.mapper.DeviceMapper;
-import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.binder.DeviceListBinder;
+import com.mehatronics.axle_load.ui.fragment.DeviceDetailsFragment;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
@@ -45,7 +45,11 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
-        handler = new BluetoothHandler(viewModel, this, provider);
+        handler = new BluetoothHandler.builder()
+                .withModel(viewModel)
+                .withContract(this)
+                .withResource(provider)
+                .build();
     }
 
     @Override

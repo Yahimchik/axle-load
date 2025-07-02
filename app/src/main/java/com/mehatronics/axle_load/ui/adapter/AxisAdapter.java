@@ -103,14 +103,17 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
             view.setEnabled(isEnabled || (isSavedState && isSelected));
             view.setAlpha((isEnabled || (isSavedState && isSelected)) ? 1f : 0.3f);
 
-            view.setOnClickListener(null); // Очистим сначала
+            view.setOnClickListener(null);
 
             if (isSavedState && isSelected) {
                 view.setOnClickListener(v -> connectListener.onConnect(axis.getNumber(), side));
             } else if (!isSavedState && isEnabled) {
                 view.setOnClickListener(v -> clickListener.onClick(axis.getNumber(), side));
             }
-            resetButton.setOnClickListener(v -> resetListener.onReset(axis.getNumber()));
+            resetButton.setOnClickListener(v -> {
+                resetListener.onReset(axis.getNumber());
+                setSavedState(false);
+            });
         }
 
         private void setIcon(ImageView imageView, AxisSide side, String mac) {

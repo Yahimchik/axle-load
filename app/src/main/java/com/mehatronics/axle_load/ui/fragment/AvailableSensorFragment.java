@@ -17,8 +17,8 @@ import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.ui.binder.AvailableListBinder;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
+import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
-import com.mehatronics.axle_load.ui.viewModel.SensorViewModel;
 
 import javax.inject.Inject;
 
@@ -29,12 +29,11 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
     @Inject
     protected DeviceMapper mapper;
     private DeviceViewModel viewModel;
-    private SensorViewModel sensorViewModel;
+    private ConfigureViewModel configureViewModel;
     private AvailableListBinder binder;
     private View view;
     private int axisNumber;
     private AxisSide axisSide;
-
 
     public static AvailableSensorFragment newInstance(int axisNumber, AxisSide axisSide) {
         AvailableSensorFragment fragment = new AvailableSensorFragment();
@@ -50,8 +49,8 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
         super.onCreate(savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
-        sensorViewModel = new ViewModelProvider(requireActivity()).get(SensorViewModel.class);
-        sensorViewModel.setSnackBarCallback(this);
+        configureViewModel = new ViewModelProvider(requireActivity()).get(ConfigureViewModel.class);
+        configureViewModel.setSnackBarCallback(this);
 
         if (getArguments() != null) {
             axisNumber = getArguments().getInt("axisNumber");
@@ -64,11 +63,9 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
         view = inflater.inflate(R.layout.fragment_available_sensor, container, false);
 
         binder = new AvailableListBinder(view, mapper, this::onSensorSelected);
-        viewModel.getScannedDevices().observe(getViewLifecycleOwner(), devices
-                -> sensorViewModel.updateScannedDevices(devices));
+        viewModel.getScannedDevices().observe(getViewLifecycleOwner(), configureViewModel::updateScannedDevices);
 
-        sensorViewModel.getScannedDevicesLiveData().observe(getViewLifecycleOwner(), processedDevices
-                -> binder.updateDevices(processedDevices));
+        configureViewModel.getScannedDevicesLiveData().observe(getViewLifecycleOwner(), binder::updateDevices);
 
         return view;
     }
@@ -77,7 +74,7 @@ public class AvailableSensorFragment extends Fragment implements MessageCallback
     private void onSensorSelected(Device device) {
         if (device.isSelected()) return;
         device.setSelected(true);
-        sensorViewModel.markMacAsSelected(device);
+        configureViewModel.markMacAsSelected(device);
         sendDeviceBack(device);
         requireActivity().getSupportFragmentManager().popBackStack();
     }
