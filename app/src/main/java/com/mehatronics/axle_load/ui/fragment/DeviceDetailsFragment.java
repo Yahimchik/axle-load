@@ -30,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     @Inject
     protected DeviceDetailsBinder detailsBinder;
-    private DeviceViewModel deviceViewModel;
+    private DeviceViewModel viewModel;
     private View view;
 
     /**
@@ -41,7 +41,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deviceViewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
     /**
@@ -55,7 +55,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_device_details, container, false);
-        detailsBinder.init(view, deviceViewModel);
+        detailsBinder.init(view, viewModel);
 
         observeView();
         setupSaveButton();
@@ -70,20 +70,20 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      * Обновляет детали устройства, таблицу калибровки и конфигурацию сенсора.
      */
     private void observeView() {
-        deviceViewModel.getDeviceDetails().observe(getViewLifecycleOwner(), deviceDetails -> {
+        viewModel.getDeviceDetails().observe(getViewLifecycleOwner(), deviceDetails -> {
             detailsBinder.bindInfo(deviceDetails);
-            deviceViewModel.updateVirtualPoint(deviceDetails);
+            viewModel.updateVirtualPoint(deviceDetails);
         });
 
-        deviceViewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
-        deviceViewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
+        viewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
+        viewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
     }
 
     /**
      * Настраивает кнопку сброса таблицы калибровки для повторного чтения из сенсора.
      */
     private void setupResetTableBtn() {
-        detailsBinder.setupReadFromSensorButton(v -> deviceViewModel.rereadCalibrationTable());
+        detailsBinder.setupReadFromSensorButton(v -> viewModel.rereadCalibrationTable());
     }
 
     /**
@@ -92,7 +92,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      */
     private void setupSaveTableButton() {
         detailsBinder.setupSaveTableButton(v -> {
-            int result = deviceViewModel.saveTable();
+            int result = viewModel.saveTable();
             if (result > 0) showMessage(getString(R.string.invalid_detector, result));
             else showMessage(getString(R.string.save_configuration));
         });
@@ -104,10 +104,10 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      */
     private void setupSaveButton() {
         detailsBinder.setupSaveButton(v -> {
-            SensorConfig config = deviceViewModel.getSensorConfigure().getValue();
+            SensorConfig config = viewModel.getSensorConfigure().getValue();
             if (config != null) {
                 detailsBinder.updateSensorConfig(config);
-                deviceViewModel.saveSensorConfiguration();
+                viewModel.saveSensorConfiguration();
                 showMessage(getString(R.string.save_configuration));
             }
         });
@@ -122,8 +122,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     public void onDestroyView() {
         super.onDestroyView();
         detailsBinder = null;
-        deviceViewModel.clearDetails();
-        deviceViewModel.disconnect();
+        viewModel.clearDetails();
+        viewModel.disconnect();
         if (getActivity() instanceof BluetoothHandlerContract) {
             ((BluetoothHandlerContract) getActivity()).onFragmentClosed();
         }

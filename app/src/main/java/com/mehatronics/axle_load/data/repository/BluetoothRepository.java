@@ -3,13 +3,13 @@ package com.mehatronics.axle_load.data.repository;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.service.BleScannerService;
-import com.mehatronics.axle_load.domain.manager.BluetoothConnectionManager;
-import com.mehatronics.axle_load.domain.manager.CalibrationTableManager;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
-import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
+import com.mehatronics.axle_load.domain.manager.BluetoothConnectionManager;
+import com.mehatronics.axle_load.domain.manager.CalibrationTableManager;
 
 import java.util.List;
 
@@ -27,12 +27,13 @@ public class BluetoothRepository {
     private final CalibrationTableManager calibrationTableManager;
     private final BleScannerService bleScannerService;
 
+
     /**
      * Конструктор репозитория с внедрением зависимостей.
      *
      * @param bluetoothConnectionManager Менеджер Bluetooth-соединений.
-     * @param bleScannerService Компонент для сканирования BLE-устройств.
-     * @param calibrationTableManager Менеджер таблицы калибровки.
+     * @param bleScannerService          Компонент для сканирования BLE-устройств.
+     * @param calibrationTableManager    Менеджер таблицы калибровки.
      */
     @Inject
     public BluetoothRepository(BluetoothConnectionManager bluetoothConnectionManager,

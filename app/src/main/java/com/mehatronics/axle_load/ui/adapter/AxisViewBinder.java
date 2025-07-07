@@ -20,14 +20,12 @@ public class AxisViewBinder {
     private final Button buttonConfigure;
     private final Button saveButton;
     private final AxisAdapter adapter;
-    private final LoadingManager loadingManager;
 
     private AxisViewBinder(builder builder) {
         this.adapter = new AxisAdapter(builder.clickListener, builder.resetListener, builder.connectListener);
         this.editTextAxisCount = builder.root.findViewById(R.id.editTextAxisCount);
         this.buttonConfigure = builder.root.findViewById(R.id.buttonConfigure);
         this.saveButton = builder.root.findViewById(R.id.buttonSave);
-        this.loadingManager = new LoadingManager(builder.root);
 
         initRecyclerView(builder.root, R.id.recyclerViewAxes, adapter);
 
@@ -35,8 +33,8 @@ public class AxisViewBinder {
         onSave();
     }
 
-    public void showLoading(boolean value) {
-        loadingManager.showLoading(value);
+    public void setSavedState(boolean saved) {
+        adapter.setSavedState(saved);
     }
 
     public void submitList(List<AxisModel> list) {

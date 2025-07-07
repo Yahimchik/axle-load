@@ -4,6 +4,7 @@ import android.Manifest;
 
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.service.AxisService;
 import com.mehatronics.axle_load.data.service.BleScannerService;
@@ -27,6 +28,7 @@ public class DeviceRepository {
     private final AxisService axisService;
     private final SensorService sensorService;
     private final BleScannerService bleScannerService;
+    private final MutableLiveData<Boolean> savedStateLiveData = new MutableLiveData<>(false);
 
     @Inject
     public DeviceRepository(AxisService axisService, SensorService sensorService, BleScannerService bleScannerService) {
@@ -109,4 +111,17 @@ public class DeviceRepository {
 
     public LiveData<List<Device>> getScannedDevices() {
         return bleScannerService.getScannedDevices();
-    }}
+    }
+
+    public LiveData<Boolean> getSavedStateLiveData() {
+        return savedStateLiveData;
+    }
+
+    public void markAsSaved() {
+        savedStateLiveData.setValue(true);
+    }
+
+    public void markAsUnsaved() {
+        savedStateLiveData.setValue(false);
+    }
+}

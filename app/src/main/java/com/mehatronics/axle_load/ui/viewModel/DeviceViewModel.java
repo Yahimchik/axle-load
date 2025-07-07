@@ -1,19 +1,29 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
 
+import android.util.Log;
+
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.repository.BluetoothRepository;
+import com.mehatronics.axle_load.data.repository.DeviceRepository;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.Event;
+import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
-import com.mehatronics.axle_load.ui.adapter.listener.DeviceConnectionCallback;
+import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -34,8 +44,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
  */
 @HiltViewModel
 public class DeviceViewModel extends ViewModel {
-
     private final BluetoothRepository bluetoothRepository;
+    private final DeviceRepository deviceRepository;
     private final SaveCalibrationTableUseCase saveUseCase;
 
     /**
@@ -45,8 +55,11 @@ public class DeviceViewModel extends ViewModel {
      * @param saveUseCase         UseCase для сохранения таблицы калибровки
      */
     @Inject
-    public DeviceViewModel(BluetoothRepository bluetoothRepository, SaveCalibrationTableUseCase saveUseCase) {
+    public DeviceViewModel(BluetoothRepository bluetoothRepository, DeviceRepository deviceRepository,
+                           SaveCalibrationTableUseCase saveUseCase
+    ) {
         this.bluetoothRepository = bluetoothRepository;
+        this.deviceRepository = deviceRepository;
         this.saveUseCase = saveUseCase;
     }
 
@@ -107,10 +120,6 @@ public class DeviceViewModel extends ViewModel {
      * @param device Устройство для подключения
      */
     public void connectToDevice(Device device) {
-        bluetoothRepository.connectToDevice(device);
-    }
-
-    public void connectToDevice(Device device, DeviceConnectionCallback callback) {
         bluetoothRepository.connectToDevice(device);
     }
 
@@ -185,6 +194,88 @@ public class DeviceViewModel extends ViewModel {
      */
     public int saveTable() {
         return saveUseCase.execute();
+    }
+
+
+    public LiveData<List<AxisModel>> getAxisList() {
+        return deviceRepository.getAxisList();
+    }
+
+    public LiveData<String> getMessage() {
+        return deviceRepository.getMessage();
+    }
+
+    public void setDeviceToAxis(int axisNumber, AxisSide side, String mac) {
+        deviceRepository.setDeviceToAxis(axisNumber, side, mac);
+    }
+
+    public void resetDevicesForAxis(int axisNumber) {
+        deviceRepository.resetDevicesForAxis(axisNumber);
+    }
+
+    public String getMacForAxisSide(int axisNumber, AxisSide side) {
+        return deviceRepository.getMacForAxisSide(axisNumber, side);
+    }
+
+    public void onConfigureClicked(String input) {
+        deviceRepository.onConfigureClicked(input);
+    }
+
+    public LiveData<Event<InstalationPoint>> getAxisClick() {
+        return deviceRepository.getAxisClick();
+    }
+
+    public void onClick(int axisNumber, AxisSide side) {
+        deviceRepository.onWheelClicked(axisNumber, side);
+    }
+
+    public Set<String> getMacsForAxis(int axisNumber) {
+        return deviceRepository.getMacsForAxis(axisNumber);
+    }
+
+    public void setSnackBarCallback(MessageCallback messageCallback) {
+        deviceRepository.setSnackBarCallback(messageCallback);
+    }
+
+    public LiveData<List<Device>> getScannedDevicesLiveData() {
+        return deviceRepository.getScannedDevicesLiveData();
+    }
+
+    public void updateScannedDevices(List<Device> newDevices) {
+        deviceRepository.updateScannedDevices(newDevices);
+    }
+
+    public void markMacAsSelected(Device device) {
+        deviceRepository.markMacAsSelected(device);
+    }
+
+    public void resetSelectedDevices() {
+        deviceRepository.resetSelectedDevices();
+    }
+
+    public void resetSelectedDevicesByMacs(Set<String> macs) {
+        deviceRepository.resetSelectedDevicesByMacs(macs);
+    }
+
+    public void method(LifecycleOwner owner) {
+        getAxisList().observe(owner, list
+                -> Log.d("MyTag", String.valueOf(list.stream()
+                .flatMap(axis -> axis.getSideDeviceMap()
+                        .values()
+                        .stream()
+                ).collect(Collectors.toSet()))));
+    }
+
+    public LiveData<Boolean> getSavedStateLiveData() {
+        return deviceRepository.getSavedStateLiveData();
+    }
+
+    public void markAsSaved() {
+        deviceRepository.markAsSaved();
+    }
+
+    public void markAsUnsaved() {
+        deviceRepository.markAsUnsaved();
     }
 }
 

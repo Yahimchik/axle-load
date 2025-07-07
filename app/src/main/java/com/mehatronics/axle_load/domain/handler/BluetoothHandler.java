@@ -13,12 +13,10 @@ import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.localization.ResourceProvider;
-import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 public class BluetoothHandler {
     private final DeviceViewModel deviceViewModel;
-    private final ConfigureViewModel configureViewModel;
     private final BluetoothHandlerContract contract;
     private final ResourceProvider resourceProvider;
     private boolean userClosedDeviceDetails = false;
@@ -26,24 +24,24 @@ public class BluetoothHandler {
 
     public BluetoothHandler(builder builder) {
         this.deviceViewModel = builder.deviceViewModel;
-        this.configureViewModel = builder.configureViewModel;
         this.contract = builder.contract;
         this.resourceProvider = builder.resourceProvider;
     }
 
     public void onClick(int axisNumber, AxisSide side) {
-        configureViewModel.onClick(axisNumber, side);
+        deviceViewModel.onClick(axisNumber, side);
     }
 
     public void onReset(int axis) {
-        var macsToReset = configureViewModel.getMacsForAxis(axis);
-        configureViewModel.resetDevicesForAxis(axis);
-        configureViewModel.resetSelectedDevicesByMacs(macsToReset);
+        var macsToReset = deviceViewModel.getMacsForAxis(axis);
+        deviceViewModel.resetDevicesForAxis(axis);
+        deviceViewModel.resetSelectedDevicesByMacs(macsToReset);
+        deviceViewModel.markAsUnsaved();
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onConnect(int axis, AxisSide side) {
-        String mac = configureViewModel.getMacForAxisSide(axis, side);
+        String mac = deviceViewModel.getMacForAxisSide(axis, side);
         if (mac == null) {
             contract.showMessage("MAC-адрес не найден");
             return;
@@ -61,7 +59,7 @@ public class BluetoothHandler {
                 return;
             }
         }
-
+        deviceViewModel.markAsSaved();
         contract.showMessage("Устройство не найдено по MAC: " + mac);
     }
 
@@ -70,6 +68,7 @@ public class BluetoothHandler {
         deviceViewModel.disconnect();
         deviceViewModel.clearDetails();
         contract.showMessage(resourceProvider.getString(R.string.disconnect_from, deviceName));
+        deviceViewModel.markAsSaved();
     }
 
     public void onDeviceDetailsFragmentOpen() {
@@ -115,17 +114,11 @@ public class BluetoothHandler {
 
     public static class builder {
         private DeviceViewModel deviceViewModel;
-        private ConfigureViewModel configureViewModel;
         private BluetoothHandlerContract contract;
         private ResourceProvider resourceProvider;
 
         public builder withModel(DeviceViewModel deviceViewModel) {
             this.deviceViewModel = deviceViewModel;
-            return this;
-        }
-
-        public builder withModel(ConfigureViewModel configureViewModel) {
-            this.configureViewModel = configureViewModel;
             return this;
         }
 

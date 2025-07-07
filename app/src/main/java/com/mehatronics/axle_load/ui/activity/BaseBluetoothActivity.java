@@ -114,6 +114,10 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         super.attachBaseContext(LocaleHelper.attachBaseContext(newBase));
     }
 
+    public BluetoothHandler getBluetoothHandler() {
+        return handler;
+    }
+
     private void initializeInterface() {
         binder = new DeviceListBinder(findViewById(content), handler::onDeviceSelected, mapper);
         initConfigureButton();

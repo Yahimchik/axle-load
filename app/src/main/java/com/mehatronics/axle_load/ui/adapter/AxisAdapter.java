@@ -110,10 +110,7 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
             } else if (!isSavedState && isEnabled) {
                 view.setOnClickListener(v -> clickListener.onClick(axis.getNumber(), side));
             }
-            resetButton.setOnClickListener(v -> {
-                resetListener.onReset(axis.getNumber());
-                setSavedState(false);
-            });
+            resetButton.setOnClickListener(v -> resetListener.onReset(axis.getNumber()));
         }
 
         private void setIcon(ImageView imageView, AxisSide side, String mac) {

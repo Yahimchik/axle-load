@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.factory.impl.DefaultCommandStateFactory;
@@ -15,19 +16,14 @@ import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.FirstAuthStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.NineAuthStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.SecondAuthStrategy;
-import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.localization.impl.AndroidResourceProvider;
-import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
-import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
-import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DDSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DPSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DSSActivity;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
-import com.mehatronics.axle_load.ui.viewModel.ConfigureViewModel;
-import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
-import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
+import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 
 import javax.inject.Singleton;
 
