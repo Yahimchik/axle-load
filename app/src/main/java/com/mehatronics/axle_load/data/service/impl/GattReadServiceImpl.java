@@ -179,7 +179,7 @@ public class GattReadServiceImpl implements GattReadService {
         }
 
         if (isConnected && values.size() > 8) {
-            deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(values, table));
+            deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
         }
     }
 

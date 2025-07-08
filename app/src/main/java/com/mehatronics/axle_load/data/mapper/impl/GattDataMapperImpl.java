@@ -14,6 +14,8 @@ import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToBattery;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
 
+import android.bluetooth.BluetoothGatt;
+
 import com.mehatronics.axle_load.data.mapper.DateFormatMapper;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
@@ -48,7 +50,7 @@ public class GattDataMapperImpl implements GattDataMapper {
      * либо null, если данных недостаточно.
      */
     @Override
-    public DeviceDetails convertToDeviceDetails(List<byte[]> values, List<CalibrationTable> table) {
+    public DeviceDetails convertToDeviceDetails(BluetoothGatt gatt, List<byte[]> values, List<CalibrationTable> table) {
         if (values.size() < 9) return null;
 
         String deviceName = convertBytesToString(values.get(2));
@@ -64,6 +66,7 @@ public class GattDataMapperImpl implements GattDataMapper {
 
         return new DeviceDetails.Builder()
                 .setDeviceName(deviceName)
+                .setDeviceMac(gatt.getDevice().getAddress())
                 .setDateManufacturer(dateManufacture)
                 .setManufacturer(manufacturer)
                 .setModelType(modelType)

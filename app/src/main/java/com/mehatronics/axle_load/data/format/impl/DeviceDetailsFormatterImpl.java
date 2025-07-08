@@ -17,6 +17,11 @@ public class DeviceDetailsFormatterImpl implements DeviceDetailsFormatter {
     }
 
     @Override
+    public String formatDeviceMac(DeviceDetails details) {
+        return details.getDeviceMac();
+    }
+
+    @Override
     public String formatFirmwareVersion(DeviceDetails details) {
         return details.getFirmwareVersion();
     }

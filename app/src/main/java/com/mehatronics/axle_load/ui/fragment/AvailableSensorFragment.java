@@ -1,88 +1,44 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static com.mehatronics.axle_load.domain.entities.enums.ScreenType.AVAILABLE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.mapper.DeviceMapper;
-import com.mehatronics.axle_load.domain.entities.InstalationPoint;
-import com.mehatronics.axle_load.domain.entities.device.Device;
-import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
+import com.mehatronics.axle_load.domain.entities.enums.ScreenType;
 import com.mehatronics.axle_load.ui.binder.AvailableListBinder;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
-import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class AvailableSensorFragment extends Fragment implements MessageCallback {
+public class AvailableSensorFragment extends BaseSensorFragment {
     @Inject
     protected DeviceMapper mapper;
-    private DeviceViewModel viewModel;
-    private View view;
-    private int axisNumber;
-    private AxisSide axisSide;
-
-    public static AvailableSensorFragment newInstance(InstalationPoint data) {
-        AvailableSensorFragment fragment = new AvailableSensorFragment();
-        Bundle args = new Bundle();
-        args.putInt("axisNumber", data.getAxleNumber());
-        args.putString("axisSide", data.getPosition().name());
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
-        viewModel.setSnackBarCallback(this);
-
-        if (getArguments() != null) {
-            axisNumber = getArguments().getInt("axisNumber");
-            axisSide = AxisSide.valueOf(getArguments().getString("axisSide"));
-        }
+        setupSnackBarCallback(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_available_sensor, container, false);
-
-        var binder = new AvailableListBinder(view, mapper, this::onSensorSelected);
-        viewModel.getScannedDevices().observe(getViewLifecycleOwner(), viewModel::updateScannedDevices);
-
-        viewModel.getScannedDevicesLiveData().observe(getViewLifecycleOwner(), binder::updateDevices);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_available_sensor, container, false);
     }
 
     @Override
-    public void showMessage(String message) {
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+    protected AvailableListBinder createBinder(View view) {
+        return new AvailableListBinder(view, mapper, this::onSelected);
     }
 
-    private void onSensorSelected(Device device) {
-        if (device.isSelected()) return;
-        device.setSelected(true);
-        viewModel.markMacAsSelected(device);
-        sendDeviceBack(device);
-        requireActivity().getSupportFragmentManager().popBackStack();
-    }
-
-    private void sendDeviceBack(Device device) {
-        Bundle result = new Bundle();
-        result.putString("mac", device.getDevice().getAddress());
-        result.putInt("axisNumber", axisNumber);
-        result.putString("axisSide", axisSide.name());
-        getParentFragmentManager().setFragmentResult("selected_device_result", result);
+    @Override
+    protected ScreenType getScreenType() {
+        return AVAILABLE;
     }
 }

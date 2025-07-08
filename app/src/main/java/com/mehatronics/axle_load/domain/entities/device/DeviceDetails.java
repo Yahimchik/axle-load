@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class DeviceDetails implements Serializable {
     private final String deviceName;
+    private final String deviceMac;
     private final String dateManufacturer;
     private final String manufacturer;
     private final String modelType;
@@ -25,6 +26,7 @@ public class DeviceDetails implements Serializable {
 
     private DeviceDetails(Builder builder) {
         this.deviceName = builder.deviceName;
+        this.deviceMac = builder.deviceMac;
         this.dateManufacturer = builder.dateManufacturer;
         this.manufacturer = builder.manufacturer;
         this.modelType = builder.modelType;
@@ -40,6 +42,10 @@ public class DeviceDetails implements Serializable {
 
     public String getDeviceName() {
         return deviceName;
+    }
+
+    public String getDeviceMac() {
+        return deviceMac;
     }
 
     public String getDateManufacturer() {
@@ -114,6 +120,7 @@ public class DeviceDetails implements Serializable {
         if (!(o instanceof DeviceDetails)) return false;
         DeviceDetails details = (DeviceDetails) o;
         return Objects.equals(deviceName, details.deviceName)
+                && Objects.equals(deviceMac, details.deviceMac)
                 && Objects.equals(dateManufacturer, details.dateManufacturer)
                 && Objects.equals(manufacturer, details.manufacturer)
                 && Objects.equals(modelType, details.modelType)
@@ -131,6 +138,7 @@ public class DeviceDetails implements Serializable {
     public int hashCode() {
         return Objects.hash(
                 deviceName,
+                deviceMac,
                 dateManufacturer,
                 manufacturer,
                 modelType,
@@ -146,6 +154,7 @@ public class DeviceDetails implements Serializable {
 
     public static class Builder {
         private String deviceName;
+        private String deviceMac;
         private String dateManufacturer;
         private String manufacturer;
         private String modelType;
@@ -160,6 +169,11 @@ public class DeviceDetails implements Serializable {
 
         public Builder setDeviceName(String deviceName) {
             this.deviceName = deviceName;
+            return this;
+        }
+
+        public Builder setDeviceMac(String deviceMac) {
+            this.deviceMac = deviceMac;
             return this;
         }
 

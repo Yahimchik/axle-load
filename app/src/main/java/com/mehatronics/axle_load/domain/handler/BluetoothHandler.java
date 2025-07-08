@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.domain.handler;
 
 import static com.mehatronics.axle_load.R.string.connection_failed;
+import static com.mehatronics.axle_load.R.string.disconnect_from;
 import static com.mehatronics.axle_load.R.string.selected;
 import static java.lang.Boolean.TRUE;
 
@@ -8,7 +9,6 @@ import android.Manifest;
 
 import androidx.annotation.RequiresPermission;
 
-import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
@@ -16,42 +16,36 @@ import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 public class BluetoothHandler {
-    private final DeviceViewModel deviceViewModel;
+    private final DeviceViewModel viewModel;
     private final BluetoothHandlerContract contract;
     private final ResourceProvider resourceProvider;
     private boolean userClosedDeviceDetails = false;
     private String deviceName;
 
     public BluetoothHandler(builder builder) {
-        this.deviceViewModel = builder.deviceViewModel;
+        this.viewModel = builder.deviceViewModel;
         this.contract = builder.contract;
         this.resourceProvider = builder.resourceProvider;
     }
 
     public void onClick(int axisNumber, AxisSide side) {
-        deviceViewModel.onClick(axisNumber, side);
+        viewModel.onClick(axisNumber, side);
     }
 
     public void onReset(int axis) {
-        var macsToReset = deviceViewModel.getMacsForAxis(axis);
-        deviceViewModel.resetDevicesForAxis(axis);
-        deviceViewModel.resetSelectedDevicesByMacs(macsToReset);
-        deviceViewModel.markAsUnsaved();
+        var macsToReset = viewModel.getMacsForAxis(axis);
+        viewModel.resetDevicesForAxis(axis);
+        viewModel.resetSelectedDevicesByMacs(macsToReset);
+        viewModel.markAsUnsaved();
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onConnect(int axis, AxisSide side) {
-        String mac = deviceViewModel.getMacForAxisSide(axis, side);
-        if (mac == null) {
-            contract.showMessage("MAC-адрес не найден");
-            return;
-        }
+        String mac = viewModel.getMacForAxisSide(axis, side);
+        if (mac == null) return;
 
-        var scanned = deviceViewModel.getScannedDevices().getValue();
-        if (scanned == null) {
-            contract.showMessage("Список устройств пуст");
-            return;
-        }
+        var scanned = viewModel.getScannedDevices().getValue();
+        if (scanned == null) return;
 
         for (Device device : scanned) {
             if (device.getDevice().getAddress().equalsIgnoreCase(mac)) {
@@ -59,16 +53,19 @@ public class BluetoothHandler {
                 return;
             }
         }
-        deviceViewModel.markAsSaved();
-        contract.showMessage("Устройство не найдено по MAC: " + mac);
+        viewModel.markAsSaved();
+    }
+
+    public void onConfigureClick(String input) {
+        viewModel.onConfigureClicked(input);
     }
 
     public void onDeviceDetailsFragmentClosed() {
         userClosedDeviceDetails = true;
-        deviceViewModel.disconnect();
-        deviceViewModel.clearDetails();
-        contract.showMessage(resourceProvider.getString(R.string.disconnect_from, deviceName));
-        deviceViewModel.markAsSaved();
+        viewModel.disconnect();
+        viewModel.clearDetails();
+        contract.showMessage(resourceProvider.getString(disconnect_from, deviceName));
+        viewModel.markAsSaved();
     }
 
     public void onDeviceDetailsFragmentOpen() {
@@ -105,11 +102,11 @@ public class BluetoothHandler {
         contract.setIsAttemptingToConnect(true);
         contract.showMessage(resourceProvider.getString(selected, device.getDevice().getName()));
         contract.onFragmentOpen();
-        deviceViewModel.connectToDevice(device);
+        viewModel.connectToDevice(device);
     }
 
     private boolean isConnected() {
-        return TRUE.equals(deviceViewModel.isConnectedLiveData().getValue());
+        return TRUE.equals(viewModel.isConnectedLiveData().getValue());
     }
 
     public static class builder {

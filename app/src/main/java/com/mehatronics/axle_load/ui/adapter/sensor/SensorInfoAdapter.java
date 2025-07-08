@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 public class SensorInfoAdapter {
     private final TextView deviceNameTextView;
+    private final TextView deviceMac;
     private final TextView firmwareVersionTextView;
     private final TextView hardwareVersionTextView;
     private final TextView batteryLevelTextView;
@@ -21,6 +22,7 @@ public class SensorInfoAdapter {
     private final Button saveTableButton;
 
     private String cachedDeviceName;
+    private String cachedDeviceMac;
     private String cachedFirmwareVersion;
     private String cachedHardwareVersion;
     private String cachedBatteryLevel;
@@ -31,6 +33,7 @@ public class SensorInfoAdapter {
 
     public SensorInfoAdapter(View root, DeviceDetailsFormatter formatter) {
         deviceNameTextView = root.findViewById(R.id.deviceNameTextView);
+        deviceMac = root.findViewById(R.id.deviceMacTextView);
         firmwareVersionTextView = root.findViewById(R.id.firmwareVersionValueTextView);
         hardwareVersionTextView = root.findViewById(R.id.hardwareVersionValueTextView);
         batteryLevelTextView = root.findViewById(R.id.batteryLevelValueTextView);
@@ -45,6 +48,9 @@ public class SensorInfoAdapter {
         if (newDetails == null) return;
         updateTextIfChanged(deviceNameTextView, formatter.formatDeviceName(newDetails), cachedDeviceName,
                 val -> cachedDeviceName = val);
+
+        updateTextIfChanged(deviceMac, formatter.formatDeviceMac(newDetails), cachedDeviceMac,
+                val -> cachedDeviceMac = val);
 
         updateTextIfChanged(firmwareVersionTextView, formatter.formatFirmwareVersion(newDetails), cachedFirmwareVersion,
                 val -> cachedFirmwareVersion = val);

@@ -64,6 +64,7 @@ public class SensorServiceImpl implements SensorService {
     @Override
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void markMacAsSelected(Device device) {
+        device.setSelected(true);
         String name = device.getDevice().getName();
         String mac = device.getDevice().getAddress();
 

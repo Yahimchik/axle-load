@@ -205,8 +205,8 @@ public class DeviceViewModel extends ViewModel {
         return deviceRepository.getMessage();
     }
 
-    public void setDeviceToAxis(int axisNumber, AxisSide side, String mac) {
-        deviceRepository.setDeviceToAxis(axisNumber, side, mac);
+    public void setDeviceToAxis( String mac, int axisNumber, String side) {
+        deviceRepository.setDeviceToAxis(axisNumber, AxisSide.valueOf(side), mac);
     }
 
     public void resetDevicesForAxis(int axisNumber) {

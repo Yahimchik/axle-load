@@ -18,6 +18,8 @@ import com.mehatronics.axle_load.data.service.impl.PermissionHandlerServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionObserverServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.SensorServiceImpl;
+import com.mehatronics.axle_load.data.service.SensorSelectionService;
+import com.mehatronics.axle_load.data.service.impl.SensorSelectionServiceImpl;
 import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCase;
 import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
@@ -92,4 +94,8 @@ public abstract class ServiceImplModule {
     @Binds
     @Singleton
     public abstract SensorService bindSensorService(SensorServiceImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract SensorSelectionService bindSensorSelectionManager(SensorSelectionServiceImpl impl);
 }
