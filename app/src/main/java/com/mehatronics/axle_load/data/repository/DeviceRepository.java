@@ -1,20 +1,14 @@
 package com.mehatronics.axle_load.data.repository;
 
-import android.Manifest;
-
-import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.service.AxisService;
-import com.mehatronics.axle_load.data.service.BleScannerService;
 import com.mehatronics.axle_load.data.service.SensorService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
-import com.mehatronics.axle_load.domain.entities.enums.ValidationError;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
@@ -27,14 +21,11 @@ import javax.inject.Singleton;
 public class DeviceRepository {
     private final AxisService axisService;
     private final SensorService sensorService;
-    private final BleScannerService bleScannerService;
-    private final MutableLiveData<Boolean> savedStateLiveData = new MutableLiveData<>(false);
 
     @Inject
-    public DeviceRepository(AxisService axisService, SensorService sensorService, BleScannerService bleScannerService) {
+    public DeviceRepository(AxisService axisService, SensorService sensorService) {
         this.axisService = axisService;
         this.sensorService = sensorService;
-        this.bleScannerService = bleScannerService;
     }
 
     public LiveData<List<AxisModel>> getAxisList() {
@@ -69,14 +60,6 @@ public class DeviceRepository {
         axisService.onWheelClicked(axisNumber, side);
     }
 
-    public String getErrorMessage(ValidationError error) {
-        return axisService.getErrorMessage(error);
-    }
-
-    public AxisModel cloneWithUpdatedDevice(AxisModel model, AxisSide sideToUpdate, String mac) {
-        return axisService.cloneWithUpdatedDevice(model, sideToUpdate, mac);
-    }
-
     public Set<String> getMacsForAxis(int axisNumber) {
         return axisService.getMacsForAxis(axisNumber);
     }
@@ -105,23 +88,35 @@ public class DeviceRepository {
         sensorService.resetSelectedDevicesByMacs(macs);
     }
 
-    public boolean isMacSelected(String mac) {
-        return sensorService.isMacSelected(mac);
-    }
-
-    public LiveData<List<Device>> getScannedDevices() {
-        return bleScannerService.getScannedDevices();
-    }
-
     public LiveData<Boolean> getSavedStateLiveData() {
-        return savedStateLiveData;
+        return sensorService.getSavedStateLiveData();
     }
 
     public void markAsSaved() {
-        savedStateLiveData.setValue(true);
+        sensorService.markAsSaved();
     }
 
     public void markAsUnsaved() {
-        savedStateLiveData.setValue(false);
+        sensorService.markAsUnsaved();
+    }
+
+    public void clearMacs() {
+        sensorService.clearMacs();
+    }
+
+    public LiveData<Set<String>> getConfiguredMacs() {
+        return sensorService.getConfiguredMacs();
+    }
+
+    public void addConfiguredMac(String mac) {
+        sensorService.addConfiguredMac(mac);
+    }
+
+    public void setLastConfiguredMac(String mac) {
+        sensorService.setLastConfiguredMac(mac);
+    }
+
+    public LiveData<String> getLastConfiguredMac() {
+        return sensorService.getLastConfiguredMac();
     }
 }

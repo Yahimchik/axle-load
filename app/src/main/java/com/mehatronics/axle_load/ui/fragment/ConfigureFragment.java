@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.ui.fragment;
 
-import static com.mehatronics.axle_load.domain.entities.enums.ScreenType.*;
+import static com.mehatronics.axle_load.domain.entities.enums.ScreenType.CONFIGURE;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.enums.ScreenType;
-import com.mehatronics.axle_load.ui.binder.AvailableListBinder;
 import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
 
 import dagger.hilt.android.AndroidEntryPoint;

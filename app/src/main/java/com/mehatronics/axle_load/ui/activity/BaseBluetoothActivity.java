@@ -75,11 +75,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentOpen() {
-        handler.onDeviceDetailsFragmentOpen();
-    }
-
-    @Override
     public void showFragment() {
         navigator.showFragment(new DeviceDetailsFragment());
     }

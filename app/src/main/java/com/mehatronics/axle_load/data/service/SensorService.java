@@ -1,8 +1,5 @@
 package com.mehatronics.axle_load.data.service;
 
-import android.Manifest;
-
-import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.domain.entities.device.Device;
@@ -25,4 +22,20 @@ public interface SensorService {
     void resetSelectedDevicesByMacs(Set<String> macs);
 
     boolean isMacSelected(String mac);
+
+    LiveData<Boolean> getSavedStateLiveData();
+
+    void markAsSaved();
+
+    void markAsUnsaved();
+
+    void clearMacs();
+
+    void addConfiguredMac(String mac);
+
+    void setLastConfiguredMac(String mac);
+
+    LiveData<String> getLastConfiguredMac();
+
+    LiveData<Set<String>> getConfiguredMacs();
 }

@@ -48,7 +48,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
     @Override
@@ -127,7 +127,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                 observe(viewModel.getAxisList(), binder::submitList);
                 observe(viewModel.getAxisClick(), this::handleAxisClickEvent);
                 observe(viewModel.getSavedStateLiveData(), binder::setSavedState);
-
+                observe(viewModel.getFinishedMacs(), binder::addFinishedMac);
                 observeDeviceSelection(viewModel::setDeviceToAxis);
 
                 viewModel.method(getOwner());

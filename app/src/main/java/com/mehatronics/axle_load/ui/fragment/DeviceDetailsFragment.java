@@ -5,16 +5,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
+import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
+import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
@@ -75,6 +76,20 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
             viewModel.updateVirtualPoint(deviceDetails);
         });
 
+        Button finishButton = view.findViewById(R.id.finishButton);
+        viewModel.getSelectionModeLiveData().observe(getViewLifecycleOwner(), isSelection -> {
+            finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE);
+        });
+
+        finishButton.setOnClickListener(v -> {
+            String lastMac = viewModel.getLastFinishedMac().getValue();
+            if (lastMac != null) {
+                viewModel.addFinishedMac(lastMac);
+            }
+
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
+
         viewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         viewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
     }
@@ -118,9 +133,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      * Сбрасывает биндер, очищает детали и отключается от устройства.
      * Если активити реализует BaseBluetoothActivity, сбрасывает состояние навигатора устройства.
      */
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    private void cleanUpOnClose() {
         detailsBinder = null;
         viewModel.clearDetails();
         viewModel.disconnect();
@@ -129,6 +142,13 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         }
         Log.d("MyTag", "Device details fragment is closed");
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        cleanUpOnClose();
+    }
+
 
     /**
      * Отображает сообщение в Snackbar.

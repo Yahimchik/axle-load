@@ -17,8 +17,5 @@ public interface BluetoothHandlerContract extends MessageCallback, FragmentHandl
     void onFragmentClosed();
 
     @Override
-    void onFragmentOpen();
-
-    @Override
     void showMessage(String message);
 }

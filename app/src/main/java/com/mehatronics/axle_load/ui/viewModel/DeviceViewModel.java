@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.repository.BluetoothRepository;
@@ -196,7 +197,6 @@ public class DeviceViewModel extends ViewModel {
         return saveUseCase.execute();
     }
 
-
     public LiveData<List<AxisModel>> getAxisList() {
         return deviceRepository.getAxisList();
     }
@@ -205,7 +205,7 @@ public class DeviceViewModel extends ViewModel {
         return deviceRepository.getMessage();
     }
 
-    public void setDeviceToAxis( String mac, int axisNumber, String side) {
+    public void setDeviceToAxis(String mac, int axisNumber, String side) {
         deviceRepository.setDeviceToAxis(axisNumber, AxisSide.valueOf(side), mac);
     }
 
@@ -277,6 +277,34 @@ public class DeviceViewModel extends ViewModel {
     public void markAsUnsaved() {
         deviceRepository.markAsUnsaved();
     }
+
+    private final MutableLiveData<Boolean> isSelectionMode = new MutableLiveData<>(false);
+
+    public LiveData<Boolean> getSelectionModeLiveData() {
+        return isSelectionMode;
+    }
+
+    public void setSelectionMode(boolean isSelection) {
+        isSelectionMode.setValue(isSelection);
+    }
+
+    public LiveData<Set<String>> getFinishedMacs() {
+        return deviceRepository.getConfiguredMacs();
+    }
+
+    public void clearMacs() {
+        deviceRepository.clearMacs();
+    }
+
+    public void addFinishedMac(String mac) {
+        deviceRepository.addConfiguredMac(mac);
+    }
+
+    public void setLastFinishedMac(String mac) {
+        deviceRepository.setLastConfiguredMac(mac);
+    }
+
+    public LiveData<String> getLastFinishedMac() {
+        return deviceRepository.getLastConfiguredMac();
+    }
 }
-
-

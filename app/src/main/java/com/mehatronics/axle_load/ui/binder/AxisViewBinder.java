@@ -18,6 +18,7 @@ import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class AxisViewBinder implements BaseBinder {
@@ -48,6 +49,10 @@ public class AxisViewBinder implements BaseBinder {
 
         onClickConfig(builder.onConfigureClicked);
         onSave();
+    }
+
+    public void addFinishedMac(Set<String> mac){
+        adapter.setFinishedMacs(mac);
     }
 
     public void setSavedState(boolean saved) {

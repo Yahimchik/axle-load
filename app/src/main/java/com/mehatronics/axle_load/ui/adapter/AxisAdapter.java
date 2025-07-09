@@ -1,8 +1,11 @@
 package com.mehatronics.axle_load.ui.adapter;
 
 import static com.mehatronics.axle_load.R.drawable.axle_center;
+import static com.mehatronics.axle_load.R.drawable.axle_center_configured;
 import static com.mehatronics.axle_load.R.drawable.axle_left;
+import static com.mehatronics.axle_load.R.drawable.axle_left_configured;
 import static com.mehatronics.axle_load.R.drawable.axle_right;
+import static com.mehatronics.axle_load.R.drawable.axle_right_configured;
 import static com.mehatronics.axle_load.R.drawable.axle_sensor_center;
 import static com.mehatronics.axle_load.R.drawable.axle_sensor_left;
 import static com.mehatronics.axle_load.R.drawable.axle_sensor_right;
@@ -30,12 +33,15 @@ import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisConnectListener;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHolder> {
     private final OnAxisClickListener clickListener;
     private final OnAxisResetListener resetListener;
     private final OnAxisConnectListener connectListener;
+    private final Set<String> finishedMacs = new HashSet<>();
     private boolean isSavedState = false;
 
     public AxisAdapter(OnAxisClickListener clickListener,
@@ -51,6 +57,11 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
     public void setSavedState(boolean saved) {
         this.isSavedState = saved;
         notifyDataSetChanged();
+    }
+
+    public void setFinishedMacs(Set<String> macs) {
+        this.finishedMacs.clear();
+        if (macs != null) finishedMacs.addAll(macs);
     }
 
     @NonNull
@@ -114,19 +125,37 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
         }
 
         private void setIcon(ImageView imageView, AxisSide side, String mac) {
-            if (mac != null) {
-                switch (side) {
-                    case LEFT -> imageView.setImageResource(axle_sensor_left);
-                    case CENTER -> imageView.setImageResource(axle_sensor_center);
-                    case RIGHT -> imageView.setImageResource(axle_sensor_right);
-                }
+            if (mac == null) {
+                imageView.setImageResource(getDefaultIcon(side));
+            } else if (finishedMacs.contains(mac)) {
+                imageView.setImageResource(getConnfiguredIcon(side));
             } else {
-                switch (side) {
-                    case LEFT -> imageView.setImageResource(axle_left);
-                    case CENTER -> imageView.setImageResource(axle_center);
-                    case RIGHT -> imageView.setImageResource(axle_right);
-                }
+                imageView.setImageResource(getSensorIcon(side));
             }
+        }
+
+        private int getDefaultIcon(AxisSide side) {
+            return switch (side) {
+                case LEFT -> axle_left;
+                case CENTER -> axle_center;
+                case RIGHT -> axle_right;
+            };
+        }
+
+        private int getSensorIcon(AxisSide side) {
+            return switch (side) {
+                case LEFT -> axle_sensor_left;
+                case CENTER -> axle_sensor_center;
+                case RIGHT -> axle_sensor_right;
+            };
+        }
+
+        private int getConnfiguredIcon(AxisSide side) {
+            return switch (side) {
+                case LEFT -> axle_left_configured;
+                case CENTER -> axle_center_configured;
+                case RIGHT -> axle_right_configured;
+            };
         }
     }
 }

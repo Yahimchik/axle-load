@@ -20,6 +20,9 @@ public class BluetoothHandler {
     private final BluetoothHandlerContract contract;
     private final ResourceProvider resourceProvider;
     private boolean userClosedDeviceDetails = false;
+    private boolean isDeviceDetailsFragmentOpen = false;
+    private boolean shouldOpenFragmentAfterConnect = false;
+
     private String deviceName;
 
     public BluetoothHandler(builder builder) {
@@ -37,6 +40,7 @@ public class BluetoothHandler {
         viewModel.resetDevicesForAxis(axis);
         viewModel.resetSelectedDevicesByMacs(macsToReset);
         viewModel.markAsUnsaved();
+        viewModel.clearMacs();
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -50,6 +54,7 @@ public class BluetoothHandler {
         for (Device device : scanned) {
             if (device.getDevice().getAddress().equalsIgnoreCase(mac)) {
                 onDeviceSelected(device);
+                viewModel.setSelectionMode(true);
                 return;
             }
         }
@@ -62,24 +67,31 @@ public class BluetoothHandler {
 
     public void onDeviceDetailsFragmentClosed() {
         userClosedDeviceDetails = true;
+        isDeviceDetailsFragmentOpen = false;
+
         viewModel.disconnect();
         viewModel.clearDetails();
-        contract.showMessage(resourceProvider.getString(disconnect_from, deviceName));
-        viewModel.markAsSaved();
-    }
 
-    public void onDeviceDetailsFragmentOpen() {
-        userClosedDeviceDetails = false;
+        contract.showMessage(resourceProvider.getString(disconnect_from, deviceName));
+
+        viewModel.markAsSaved();
+        viewModel.setSelectionMode(false);
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
         contract.loadingManagerShowLoading(false);
+
         if (deviceDetails != null && isConnected()) {
             deviceName = deviceDetails.getDeviceName();
-            if (!userClosedDeviceDetails) {
+
+            if (shouldOpenFragmentAfterConnect && !userClosedDeviceDetails && !isDeviceDetailsFragmentOpen) {
                 contract.showFragment();
+                isDeviceDetailsFragmentOpen = true;
+                shouldOpenFragmentAfterConnect = false;
             }
+
         } else {
+            isDeviceDetailsFragmentOpen = false;
             userClosedDeviceDetails = false;
         }
     }
@@ -93,6 +105,7 @@ public class BluetoothHandler {
 
         if (isConnected) {
             contract.setIsAttemptingToConnect(false);
+            shouldOpenFragmentAfterConnect = true;
         }
     }
 
@@ -100,8 +113,10 @@ public class BluetoothHandler {
     public void onDeviceSelected(Device device) {
         contract.loadingManagerShowLoading(true);
         contract.setIsAttemptingToConnect(true);
+
         contract.showMessage(resourceProvider.getString(selected, device.getDevice().getName()));
-        contract.onFragmentOpen();
+
+        viewModel.setLastFinishedMac(device.getDevice().getAddress());
         viewModel.connectToDevice(device);
     }
 

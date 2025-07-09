@@ -23,7 +23,10 @@ import java.util.Set;
 import javax.inject.Inject;
 
 public class SensorServiceImpl implements SensorService {
+    private final MutableLiveData<Set<String>> finishedMacs = new MutableLiveData<>(new HashSet<>());
     private final MutableLiveData<List<Device>> processedDevicesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> savedStateLiveData = new MutableLiveData<>(false);
+    private final MutableLiveData<String> lastFinishedMac = new MutableLiveData<>();
     private final Map<String, Device> processedDevices = new HashMap<>();
     private final Set<String> selectedMacs = new HashSet<>();
     private final ResourceProvider resourceProvider;
@@ -103,5 +106,52 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public boolean isMacSelected(String mac) {
         return selectedMacs.contains(mac);
+    }
+
+    @Override
+    public LiveData<Boolean> getSavedStateLiveData() {
+        return savedStateLiveData;
+    }
+
+    @Override
+    public void markAsSaved() {
+        savedStateLiveData.setValue(true);
+    }
+
+    @Override
+    public void markAsUnsaved() {
+        savedStateLiveData.setValue(false);
+    }
+
+    @Override
+    public void clearMacs() {
+        finishedMacs.setValue(new HashSet<>());
+    }
+
+    @Override
+    public void addConfiguredMac(String mac) {
+        if (mac != null && !mac.isEmpty()) {
+            Set<String> value = finishedMacs.getValue();
+            if (value != null) {
+                Set<String> current = new HashSet<>(value);
+                current.add(mac);
+                finishedMacs.setValue(current);
+            }
+        }
+    }
+
+    @Override
+    public void setLastConfiguredMac(String mac) {
+        lastFinishedMac.setValue(mac);
+    }
+
+    @Override
+    public LiveData<String> getLastConfiguredMac() {
+        return lastFinishedMac;
+    }
+
+    @Override
+    public LiveData<Set<String>> getConfiguredMacs() {
+        return finishedMacs;
     }
 }
