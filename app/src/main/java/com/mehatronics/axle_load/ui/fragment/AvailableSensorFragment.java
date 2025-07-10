@@ -34,7 +34,11 @@ public class AvailableSensorFragment extends BaseSensorFragment {
 
     @Override
     protected AvailableListBinder createBinder(View view) {
-        return new AvailableListBinder(view, mapper, this::onSelected);
+        return new AvailableListBinder.Builder()
+                .withRoot(view)
+                .withDeviceMapper(mapper)
+                .withClickListener(this::onSelected)
+                .build();
     }
 
     @Override

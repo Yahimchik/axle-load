@@ -126,14 +126,18 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
 
                 observe(viewModel.getAxisList(), binder::submitList);
                 observe(viewModel.getAxisClick(), this::handleAxisClickEvent);
+
                 observe(viewModel.getSavedStateLiveData(), binder::setSavedState);
                 observe(viewModel.getFinishedMacs(), binder::addFinishedMac);
+
                 observeDeviceSelection(viewModel::setDeviceToAxis);
+                observe(viewModel.getAxisList(), binder::updateSaveButtonState);
 
                 viewModel.method(getOwner());
             }
             case AVAILABLE -> {
                 var binder = (AvailableListBinder) createBinder(view);
+
                 observe(viewModel.getScannedDevices(), viewModel::updateScannedDevices);
                 observe(viewModel.getScannedDevicesLiveData(), binder::updateDevices);
             }

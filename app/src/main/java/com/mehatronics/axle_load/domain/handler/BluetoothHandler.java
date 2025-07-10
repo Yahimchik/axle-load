@@ -9,6 +9,7 @@ import android.Manifest;
 
 import androidx.annotation.RequiresPermission;
 
+import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
@@ -18,21 +19,29 @@ import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 public class BluetoothHandler {
     private final DeviceViewModel viewModel;
     private final BluetoothHandlerContract contract;
-    private final ResourceProvider resourceProvider;
+    private final ResourceProvider provider;
     private boolean userClosedDeviceDetails = false;
     private boolean isDeviceDetailsFragmentOpen = false;
     private boolean shouldOpenFragmentAfterConnect = false;
-
     private String deviceName;
 
     public BluetoothHandler(builder builder) {
         this.viewModel = builder.deviceViewModel;
         this.contract = builder.contract;
-        this.resourceProvider = builder.resourceProvider;
+        this.provider = builder.resourceProvider;
     }
 
-    public void onClick(int axisNumber, AxisSide side) {
-        viewModel.onClick(axisNumber, side);
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    public void onClick(int axisNumber, AxisSide side, boolean isSavedState, boolean isSelected) {
+        if (isSavedState) {
+            if (isSelected) {
+                onConnect(axisNumber, side);
+            } else {
+                contract.showMessage(provider.getString(R.string.error_sensor_not_selected));
+            }
+        } else {
+            viewModel.onClick(axisNumber, side);
+        }
     }
 
     public void onReset(int axis) {
@@ -41,12 +50,16 @@ public class BluetoothHandler {
         viewModel.resetSelectedDevicesByMacs(macsToReset);
         viewModel.markAsUnsaved();
         viewModel.clearMacs();
+        contract.showMessage(provider.getString(R.string.configure_reset, axis));
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onConnect(int axis, AxisSide side) {
         String mac = viewModel.getMacForAxisSide(axis, side);
-        if (mac == null) return;
+        if (mac == null){
+            contract.showMessage(provider.getString(R.string.error_sensor_not_selected));
+            return;
+        }
 
         var scanned = viewModel.getScannedDevices().getValue();
         if (scanned == null) return;
@@ -63,6 +76,7 @@ public class BluetoothHandler {
 
     public void onConfigureClick(String input) {
         viewModel.onConfigureClicked(input);
+        viewModel.markAsUnsaved();
     }
 
     public void onDeviceDetailsFragmentClosed() {
@@ -72,7 +86,7 @@ public class BluetoothHandler {
         viewModel.disconnect();
         viewModel.clearDetails();
 
-        contract.showMessage(resourceProvider.getString(disconnect_from, deviceName));
+        contract.showMessage(provider.getString(disconnect_from, deviceName));
 
         viewModel.markAsSaved();
         viewModel.setSelectionMode(false);
@@ -98,7 +112,7 @@ public class BluetoothHandler {
 
     public void handleConnectionState(Boolean isConnected) {
         if (!isConnected && contract.isAttemptingToConnect()) {
-            contract.showMessage(resourceProvider.getString(connection_failed));
+            contract.showMessage(provider.getString(connection_failed));
             contract.loadingManagerShowLoading(false);
             contract.setIsAttemptingToConnect(false);
         }
@@ -114,7 +128,7 @@ public class BluetoothHandler {
         contract.loadingManagerShowLoading(true);
         contract.setIsAttemptingToConnect(true);
 
-        contract.showMessage(resourceProvider.getString(selected, device.getDevice().getName()));
+        contract.showMessage(provider.getString(selected, device.getDevice().getName()));
 
         viewModel.setLastFinishedMac(device.getDevice().getAddress());
         viewModel.connectToDevice(device);

@@ -9,12 +9,18 @@ import android.view.ViewGroup;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.enums.ScreenType;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ConfigureFragment extends BaseSensorFragment {
+    @Inject
+    protected ResourceProvider provider;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_configure, container, false);
@@ -30,7 +36,12 @@ public class ConfigureFragment extends BaseSensorFragment {
 
     @Override
     protected AxisViewBinder createBinder(View view) {
-        return new AxisViewBinder(view, handler);
+        return new AxisViewBinder.builder()
+                .withRoot(view)
+                .onAction(handler)
+                .withMessageCallback(this)
+                .withResourceProvider(provider)
+                .build();
     }
 
     @Override

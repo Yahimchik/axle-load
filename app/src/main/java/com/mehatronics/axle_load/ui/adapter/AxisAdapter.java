@@ -30,7 +30,6 @@ import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.ui.adapter.diffUtil.AxisDiffUtil;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
-import com.mehatronics.axle_load.ui.adapter.listener.OnAxisConnectListener;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
 
 import java.util.HashSet;
@@ -40,17 +39,14 @@ import java.util.Set;
 public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHolder> {
     private final OnAxisClickListener clickListener;
     private final OnAxisResetListener resetListener;
-    private final OnAxisConnectListener connectListener;
     private final Set<String> finishedMacs = new HashSet<>();
     private boolean isSavedState = false;
 
     public AxisAdapter(OnAxisClickListener clickListener,
-                       OnAxisResetListener resetListener,
-                       OnAxisConnectListener connectListener) {
+                       OnAxisResetListener resetListener) {
         super(new AxisDiffUtil());
         this.clickListener = clickListener;
         this.resetListener = resetListener;
-        this.connectListener = connectListener;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -115,12 +111,8 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
             view.setAlpha((isEnabled || (isSavedState && isSelected)) ? 1f : 0.3f);
 
             view.setOnClickListener(null);
+            view.setOnClickListener(v -> clickListener.onClick(axis.getNumber(), side, isSavedState, isSelected));
 
-            if (isSavedState && isSelected) {
-                view.setOnClickListener(v -> connectListener.onConnect(axis.getNumber(), side));
-            } else if (!isSavedState && isEnabled) {
-                view.setOnClickListener(v -> clickListener.onClick(axis.getNumber(), side));
-            }
             resetButton.setOnClickListener(v -> resetListener.onReset(axis.getNumber()));
         }
 

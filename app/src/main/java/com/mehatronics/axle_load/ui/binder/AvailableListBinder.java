@@ -17,15 +17,43 @@ public class AvailableListBinder implements BaseBinder{
     private final AvailableSensorAdapter adapter;
     private final DeviceMapper deviceMapper;
 
-    public AvailableListBinder(View view, DeviceMapper deviceMapper, OnDeviceClickListener listener) {
-        this.deviceMapper = deviceMapper;
-        adapter = new AvailableSensorAdapter(listener);
-        initRecyclerView(view, R.id.sensorRecyclerView, adapter);
+    private AvailableListBinder(Builder builder) {
+        this.deviceMapper = builder.deviceMapper;
+        this.adapter = new AvailableSensorAdapter(builder.deviceClickListener);
+        initRecyclerView(builder.root, R.id.sensorRecyclerView, adapter);
     }
 
     public void updateDevices(List<Device> devices) {
         adapter.setDevices(devices.stream()
                 .map(deviceMapper::convertToDeviceDTO)
                 .collect(Collectors.toList()));
+    }
+
+    public static class Builder {
+        private View root;
+        private DeviceMapper deviceMapper;
+        private OnDeviceClickListener deviceClickListener;
+
+        public Builder withRoot(View root) {
+            this.root = root;
+            return this;
+        }
+
+        public Builder withDeviceMapper(DeviceMapper mapper) {
+            this.deviceMapper = mapper;
+            return this;
+        }
+
+        public Builder withClickListener(OnDeviceClickListener listener) {
+            this.deviceClickListener = listener;
+            return this;
+        }
+
+        public AvailableListBinder build() {
+            if (root == null || deviceMapper == null || deviceClickListener == null) {
+                throw new IllegalStateException("AvailableListBinder: all fields must be set before building");
+            }
+            return new AvailableListBinder(this);
+        }
     }
 }

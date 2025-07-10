@@ -90,4 +90,7 @@
     <string name="connection_failed">Failed to connect to device</string>
     <string name="selected">Selected %1$s</string>
     <string name="disconnect_from">Disconnect from %1$s</string>
+    <string name="error_select_at_least_one_sensor_per_axis">Select at least one sensor per axis</string>
+    <string name="error_sensor_not_selected">Sensor not select</string>
+    <string name="configure_reset">Configure on axle %1$s reset</string>
 </resources>
