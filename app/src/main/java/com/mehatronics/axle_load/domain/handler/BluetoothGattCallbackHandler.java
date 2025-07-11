@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.domain.entities.PasswordHolder;
 import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.service.GattReadService;

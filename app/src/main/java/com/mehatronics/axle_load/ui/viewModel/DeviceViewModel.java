@@ -2,6 +2,7 @@ package com.mehatronics.axle_load.ui.viewModel;
 
 
 import android.util.Log;
+import android.view.View;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -306,5 +307,13 @@ public class DeviceViewModel extends ViewModel {
 
     public LiveData<String> getLastFinishedMac() {
         return deviceRepository.getLastConfiguredMac();
+    }
+
+    public void resetPassword(View view){
+
+    }
+
+    public void setNewPassword(View view){
+
     }
 }

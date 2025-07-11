@@ -193,54 +193,27 @@
                         app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
 
                     <Button
-                        android:id="@+id/resetPasswordButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="@string/reset_password"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/batteryLevelValueTextView" />
-
-                    <Button
-                        android:id="@+id/setNewPasswordButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="@string/set_new_password"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/resetPasswordButton" />
-
-                    <Button
                         android:id="@+id/finishButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/roboto_bold"
-                        android:text="finish"
+                        android:text="@string/finish_button"
                         android:textAllCaps="true"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/setNewPasswordButton" />
+                        app:layout_constraintTop_toBottomOf="@id/batteryLevelTextView" />
 
-<!--                    <Button-->
-<!--                        android:id="@+id/finishButton"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="16dp"-->
-<!--                        android:text="фывыфв"-->
-<!--                        android:textAllCaps="false"-->
-<!--                        android:visibility="gone"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/setNewPasswordButton"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        />-->
-
-
+                    <ImageButton
+                        android:id="@+id/overflowButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/finish_button"
+                        android:src="@drawable/dots"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -269,12 +242,12 @@
                         android:id="@+id/configurationTitleTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center"
                         android:text="@string/configuration_settings"
                         android:textColor="#000000"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -285,12 +258,12 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="12dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
                         android:labelFor="@id/messageDeliveryPeriodEditText"
                         android:text="@string/message_delivery_period"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/messageDeliveryPeriodEditText"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView" />
@@ -302,11 +275,11 @@
                         android:layout_marginTop="12dp"
                         android:autofillHints="postalCode"
                         android:background="@android:drawable/edit_text"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center"
                         android:inputType="number"
                         android:padding="8dp"
                         android:textColor="#000000"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/messageDeliveryLabel"
                         app:layout_constraintTop_toBottomOf="@id/configurationTitleTextView" />
@@ -317,11 +290,11 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
                         android:labelFor="@id/measurementPeriodEditText"
                         android:text="@string/measurement_period"
                         android:textColor="#000000"
-                        android:fontFamily="@font/roboto_bold"
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/measurementPeriodEditText"
                         app:layout_constraintStart_toStartOf="parent"
@@ -334,11 +307,11 @@
                         android:layout_marginTop="8dp"
                         android:autofillHints="postalCode"
                         android:background="@android:drawable/edit_text"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center"
                         android:inputType="number"
                         android:padding="8dp"
                         android:textColor="#000000"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/measurementPeriodLabel"
                         app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText" />
@@ -349,11 +322,11 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
                         android:text="@string/config_type"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
@@ -364,8 +337,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
-                        android:padding="8dp"
                         android:fontFamily="@font/roboto_bold"
+                        android:padding="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/configType"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
@@ -376,11 +349,11 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
                         android:text="@string/installation_point"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/installationPointSpinner"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/configTypeSpinner" />
@@ -391,8 +364,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
-                        android:padding="8dp"
                         android:fontFamily="@font/roboto_bold"
+                        android:padding="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/installationPoint"
                         app:layout_constraintTop_toBottomOf="@id/configTypeSpinner" />
@@ -403,11 +376,11 @@
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
                         android:text="@string/stateNumber"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toStartOf="@id/stateNumber"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/installationPointSpinner" />
@@ -419,9 +392,9 @@
                         android:layout_marginTop="8dp"
                         android:autofillHints="postalCode"
                         android:background="@android:drawable/edit_text"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center"
                         android:hint="@string/stateNumber"
-                        android:fontFamily="@font/roboto_bold"
                         android:inputType="text"
                         android:maxLength="10"
                         android:padding="8dp"
@@ -437,16 +410,16 @@
 
                     <Button
                         android:id="@+id/saveConfigurationButton"
+                        style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:backgroundTint="?attr/colorPrimary"
                         android:elevation="4dp"
+                        android:fontFamily="@font/roboto_bold"
                         android:paddingStart="24dp"
                         android:paddingEnd="24dp"
                         android:text="@string/save_button"
-                        android:fontFamily="@font/roboto_bold"
-                        style="@style/Widget.MaterialComponents.Button"
                         android:textAllCaps="false"
                         android:textColor="@android:color/white"
                         app:cornerRadius="12dp"
@@ -483,12 +456,12 @@
                         android:id="@+id/calibrationTitleTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
                         android:gravity="center"
                         android:text="@string/calibration_table"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:fontFamily="@font/roboto_bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -507,80 +480,87 @@
                         android:id="@+id/guidelineStart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintGuide_begin="16dp"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_begin="16dp" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guidelineEnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintGuide_end="16dp"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_end="16dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/saveTableButton"
-                        android:layout_width="130dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/save_button"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textAllCaps="false"
                         style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:minHeight="56dp"
+                        android:text="@string/save_button"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
                         app:cornerRadius="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
-                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
                         app:layout_constraintEnd_toStartOf="@id/readFromSensorButton"
                         app:layout_constraintHorizontal_chainStyle="spread"
-                        android:layout_marginEnd="8dp" />
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/readFromSensorButton"
                         style="@style/Widget.MaterialComponents.Button"
-                        android:layout_width="130dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:minHeight="48dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:minHeight="56dp"
                         android:text="@string/read_from_sensor"
-                        android:fontFamily="@font/roboto_bold"
+                        android:textAlignment="center"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toEndOf="@id/saveTableButton"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
-                        tools:ignore="TextSizeCheck" />
+                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView" />
 
                     <!-- Row 2 (аналогично): -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/saveToFileButton"
-                        android:layout_width="130dp"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:minHeight="48dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/roboto_bold"
+                        android:maxLines="2"
+                        android:minHeight="56dp"
                         android:text="@string/save_to_file"
                         android:textAllCaps="false"
-                        style="@style/Widget.MaterialComponents.Button"
                         app:cornerRadius="12dp"
-                        android:fontFamily="@font/roboto_bold"
-                        app:layout_constraintTop_toBottomOf="@id/saveTableButton"
-                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
                         app:layout_constraintEnd_toStartOf="@id/readFromFileButton"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="8dp" />
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/saveTableButton" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/readFromFileButton"
-                        android:layout_width="130dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/read_from_file"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textAllCaps="false"
                         style="@style/Widget.MaterialComponents.Button"
-                        app:cornerRadius="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton"
-                        app:layout_constraintStart_toEndOf="@id/saveToFileButton"
-                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginStart="8dp" />
+                        android:ellipsize="end"
+                        android:fontFamily="@font/roboto_bold"
+                        android:maxLines="2"
+                        android:minHeight="56dp"
+                        android:text="@string/read_from_file"
+                        android:textAllCaps="false"
+                        app:cornerRadius="12dp"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toEndOf="@id/saveToFileButton"
+                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

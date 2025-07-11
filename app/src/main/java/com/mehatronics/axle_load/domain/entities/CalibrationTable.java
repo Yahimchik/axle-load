@@ -7,8 +7,8 @@ import java.util.UUID;
 
 public class CalibrationTable {
     private UUID id;
-    private final int detector;
-    private final float multiplier;
+    private  int detector;
+    private  float multiplier;
     private final boolean isLast;
 
     public CalibrationTable(int detector, float multiplier) {
@@ -44,6 +44,14 @@ public class CalibrationTable {
 
     public float getMultiplier() {
         return multiplier;
+    }
+
+    public void setDetector(int detector) {
+        this.detector = detector;
+    }
+
+    public void setMultiplier(float multiplier) {
+        this.multiplier = multiplier;
     }
 
     @NonNull

@@ -64,12 +64,8 @@ public class SensorConfigAdapter {
                 () -> cache.stateNumber, val -> cache.stateNumber = val);
     }
 
-    private boolean isValid() {
-        return isValidInternal();
-    }
-
     private void validateAndToggleSaveButton() {
-        boolean valid = isValid();
+        boolean valid = isValidInternal();
         saveButton.setEnabled(valid);
     }
 

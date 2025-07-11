@@ -1,5 +1,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
@@ -18,33 +19,44 @@
         android:background="@android:color/transparent">
 
         <!-- Column for "Weight" -->
-        <TextView
+        <EditText
             android:id="@+id/weightValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints=""
             android:text="@string/weight"
-            android:fontFamily="@font/roboto_bold"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:inputType="number"
+            android:digits="0123456789"
+            android:maxLength="5"
+            android:hint="0–99999"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:fontFamily="@font/roboto_bold"
+            />
 
         <!-- Column for "Pressure" -->
-        <TextView
+        <EditText
             android:id="@+id/pressureValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints=""
             android:text="@string/pressure"
-            android:fontFamily="@font/roboto_bold"
+            android:digits="0123456789."
+            android:hint="0.000 – 99.999"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:maxLines="1" />
+            android:inputType="numberDecimal"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:fontFamily="@font/roboto_bold"/>
 
         <!-- FrameLayout to hold the buttons -->
         <FrameLayout

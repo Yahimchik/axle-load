@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#102ACA</color>
+    <color name="bright_sky_blue">#39C4E6</color>
 
     <color name="background_color">#454343</color>
     <color name="button_background">#B80707</color>

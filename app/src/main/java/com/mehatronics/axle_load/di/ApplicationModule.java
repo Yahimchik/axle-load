@@ -8,20 +8,17 @@ import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
-import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.factory.impl.DefaultCommandStateFactory;
 import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.FirstAuthStrategy;
-import com.mehatronics.axle_load.domain.strategy.impl.NineAuthStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.SecondAuthStrategy;
+import com.mehatronics.axle_load.domain.strategy.impl.UserPasswordStrategy;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.localization.impl.AndroidResourceProvider;
 import com.mehatronics.axle_load.ui.activity.impl.DDSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DPSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DSSActivity;
-import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
 import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 
@@ -32,11 +29,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ActivityComponent;
-import dagger.hilt.android.components.FragmentComponent;
 import dagger.hilt.android.qualifiers.ActivityContext;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.android.scopes.ActivityScoped;
-import dagger.hilt.android.scopes.FragmentScoped;
 import dagger.hilt.components.SingletonComponent;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.StringKey;
@@ -152,13 +147,10 @@ public class ApplicationModule {
             return strategy;
         }
 
-        /**
-         * Предоставляет стратегию обработки команды "80-9".
-         */
         @Provides
         @IntoMap
         @StringKey("80-9")
-        public CommandStrategy provideNineFiftyCommandStrategy(NineAuthStrategy strategy) {
+        public CommandStrategy provideUserPasswordCommandStrategy(UserPasswordStrategy strategy) {
             return strategy;
         }
     }
@@ -195,18 +187,16 @@ public class ApplicationModule {
         }
     }
 
-    @Module
-    @InstallIn(FragmentComponent.class)
-    public static class BinderModule {
-
-        @Provides
-        @FragmentScoped
-
-
-        public DeviceDetailsBinder provideDeviceDetailsBinder(DeviceDetailsFormatter formatter, SensorConfigFormatter configFormatter) {
-            return new DeviceDetailsBinder(formatter, configFormatter);
-        }
-    }
+//    @Module
+//    @InstallIn(FragmentComponent.class)
+//    public static class BinderModule {
+//
+//        @Provides
+//        @FragmentScoped
+//        public DeviceDetailsBinder provideDeviceDetailsBinder(DeviceDetailsFormatter formatter, SensorConfigFormatter configFormatter) {
+//            return new DeviceDetailsBinder(formatter, configFormatter);
+//        }
+//    }
 }
 
 

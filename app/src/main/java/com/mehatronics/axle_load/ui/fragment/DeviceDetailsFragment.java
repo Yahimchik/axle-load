@@ -57,6 +57,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_device_details, container, false);
         detailsBinder.init(view, viewModel);
+        detailsBinder.setupPopupMenu(view, viewModel::resetPassword, viewModel::setNewPassword);
 
         observeView();
         setupSaveButton();
@@ -77,9 +78,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         });
 
         Button finishButton = view.findViewById(R.id.finishButton);
-        viewModel.getSelectionModeLiveData().observe(getViewLifecycleOwner(), isSelection -> {
-            finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE);
-        });
+        viewModel.getSelectionModeLiveData().observe(getViewLifecycleOwner(), isSelection
+                -> finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE));
 
         finishButton.setOnClickListener(v -> {
             String lastMac = viewModel.getLastFinishedMac().getValue();
