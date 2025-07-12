@@ -5,6 +5,8 @@ import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_DETECTORS;
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_MULTIPLIER;
 
+import android.bluetooth.BluetoothGatt;
+
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
@@ -217,8 +219,9 @@ public class ByteUtils {
      * @param bytes Массив байт.
      * @return Объект {@link SensorConfig}.
      */
-    public static SensorConfig convertBytesToConfiguration(byte[] bytes) {
+    public static SensorConfig convertBytesToConfiguration(BluetoothGatt gatt, byte[] bytes) {
         return new SensorConfig.Builder()
+                .setMac(gatt.getDevice().getAddress())
                 .setFlagSystem(parseIntFromBytes(bytes, 7))
                 .setConfigSystem(parseIntFromBytes(bytes, 11))
                 .setMultiplier(Float.intBitsToFloat(parseIntFromBytes(bytes, 15)))

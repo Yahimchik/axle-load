@@ -14,6 +14,7 @@ import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -40,7 +41,6 @@ public class BluetoothConnectionManager implements ConnectionHandler {
 
     @Override
     public void connect(Device device) {
-        disconnect();
         gattCallbackHandler.resetState();
         Log.d("MyTag", "Connecting to device...");
         BluetoothDevice bluetoothDevice = device.getDevice();
@@ -79,6 +79,14 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         }
     }
 
+    public void setPasswordListener(PasswordDialogListener listener) {
+        gattCallbackHandler.setPasswordDialogListener(listener);
+    }
+
+    public void clearPasswordDialogShown() {
+        gattCallbackHandler.clearPasswordDialogShown();
+    }
+
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return gattCallbackHandler.getDeviceDetailsLiveData();
     }
@@ -94,7 +102,6 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     public void clearDetails() {
         gattCallbackHandler.clearDetails();
     }
-
 
     public void saveConfiguration() {
         gattCallbackHandler.setConfigurationSaved(true);

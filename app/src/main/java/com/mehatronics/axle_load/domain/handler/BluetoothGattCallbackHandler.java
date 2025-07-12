@@ -21,6 +21,7 @@ import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.impl.CommandAfterAuth;
 import com.mehatronics.axle_load.domain.state.impl.FirstAuthCommandState;
+import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private final GattDataMapper gattDataMapper;
     private ConnectionHandler connectionHandler;
     private CommandStateHandler stateHandler;
+    private boolean passwordDialogShown = false;
+
 
     /**
      * Constructs the BluetoothGattCallbackHandler with injected dependencies.
@@ -64,6 +67,27 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         this.gattWriteService = gattWriteService;
         this.gattDataMapper = gattDataMapper;
         this.stateHandler = stateHandler;
+    }
+
+    public String getCurrentMac(){
+      return   gattReadService.getCurrentMac();
+    }
+
+    private PasswordDialogListener passwordDialogListener;
+
+    public void setPasswordDialogListener(PasswordDialogListener listener) {
+        this.passwordDialogListener = listener;
+    }
+
+    public void notifyPasswordRequired() {
+        if (!passwordDialogShown && passwordDialogListener != null) {
+            passwordDialogShown = true;
+            passwordDialogListener.onPasswordRequired();
+        }
+    }
+
+    public void clearPasswordDialogShown() {
+        passwordDialogShown = false;
     }
 
     public void setReconnectDelegate(ConnectionHandler connectionHandler) {

@@ -10,6 +10,7 @@ import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.manager.BluetoothConnectionManager;
 import com.mehatronics.axle_load.domain.manager.CalibrationTableManager;
+import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import java.util.List;
 
@@ -69,6 +70,11 @@ public class BluetoothRepository {
         bleScannerService.clearScannedDevices();
     }
 
+    public void removeDeviceByAddress(Device device) {
+        bleScannerService.removeDeviceByAddress(device.getDevice().getAddress());
+
+    }
+
     /**
      * Запускает сканирование BLE-устройств заданного типа.
      *
@@ -119,6 +125,7 @@ public class BluetoothRepository {
      */
     public void connectToDevice(Device device) {
         bluetoothConnectionManager.connect(device);
+        bleScannerService.removeDeviceByAddress(device.getMacAddress());
     }
 
     /**
@@ -199,5 +206,13 @@ public class BluetoothRepository {
      */
     public int convertMultiplier() {
         return calibrationTableManager.convertMultiplier();
+    }
+
+    public void setPasswordListener(PasswordDialogListener listener) {
+        bluetoothConnectionManager.setPasswordListener(listener);
+    }
+
+    public void clearPasswordDialogShown() {
+        bluetoothConnectionManager.clearPasswordDialogShown();
     }
 }

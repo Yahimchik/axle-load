@@ -61,6 +61,7 @@
     <string name="no">No</string>
 
     <string name="pressure">Pressure: </string>
+    <string name="password">Password</string>
 
     <string name="read_from_file">READ FROM FILE</string>
     <string name="read_from_sensor">READ FROM SENSOR</string>

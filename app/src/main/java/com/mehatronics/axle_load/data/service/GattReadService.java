@@ -118,4 +118,6 @@ public interface GattReadService {
      * @return true, если чтение всех характеристик активно
      */
     boolean isReadingAll();
+
+    String getCurrentMac();
 }

@@ -15,12 +15,14 @@ import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
+import com.mehatronics.axle_load.domain.entities.PasswordHolder;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
+import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
@@ -315,5 +317,29 @@ public class DeviceViewModel extends ViewModel {
 
     public void setNewPassword(View view){
 
+    }
+
+    private final MutableLiveData<Event<Void>> showPasswordDialogEvent = new MutableLiveData<>();
+
+    public LiveData<Event<Void>> getShowPasswordDialogEvent() {
+        return showPasswordDialogEvent;
+    }
+
+    public void requestPasswordInput() {
+        showPasswordDialogEvent.setValue(new Event<>(null));
+    }
+
+    public void submitPassword(String password) {
+        PasswordHolder.getInstance().setPassword(password, true);
+        PasswordHolder.getInstance().setPasswordSet(true);
+        bluetoothRepository.clearPasswordDialogShown();
+    }
+
+    public void setPasswordListener(PasswordDialogListener listener) {
+        bluetoothRepository.setPasswordListener(listener);
+    }
+
+    public void clearPasswordDialogShown() {
+        bluetoothRepository.clearPasswordDialogShown();
     }
 }

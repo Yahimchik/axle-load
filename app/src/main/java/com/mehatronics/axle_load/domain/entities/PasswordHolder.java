@@ -1,23 +1,22 @@
 package com.mehatronics.axle_load.domain.entities;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 public class PasswordHolder {
 
     private static final PasswordHolder INSTANCE = new PasswordHolder();
 
     private String password = "";
     private boolean shouldSendPassword = false;
+    private boolean isPasswordSet = false;
 
-    private PasswordHolder() {} // приватный конструктор
+    private PasswordHolder() {
+    }
 
     public static PasswordHolder getInstance() {
         return INSTANCE;
     }
 
     public void setPassword(String password, boolean send) {
-        this.password = password != null ? password : "";
+        this.password = password;
         this.shouldSendPassword = send;
     }
 
@@ -29,7 +28,16 @@ public class PasswordHolder {
         return shouldSendPassword;
     }
 
+    public boolean isPasswordSet() {
+        return isPasswordSet;
+    }
+
+    public void setPasswordSet(boolean passwordSet) {
+        isPasswordSet = passwordSet;
+    }
+
     public void clear() {
+        isPasswordSet = false;
         this.password = "";
         this.shouldSendPassword = false;
     }

@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.domain.entities;
 import androidx.annotation.NonNull;
 
 public class SensorConfig {
+    private String mac;
     private int flagSystem;
     private int configSystem;
     private float multiplier;
@@ -18,6 +19,7 @@ public class SensorConfig {
     private String stateNumber;
 
     public SensorConfig(Builder builder) {
+        this.mac = builder.mac;
         this.flagSystem = builder.flagSystem;
         this.configSystem = builder.configSystem;
         this.multiplier = builder.multiplier;
@@ -31,6 +33,10 @@ public class SensorConfig {
         this.configType = builder.configType;
         this.installationPoint = builder.installationPoint;
         this.stateNumber = builder.stateNumber;
+    }
+
+    public String getMac() {
+        return mac;
     }
 
     public void setFlagSystem(int flagSystem) {
@@ -141,7 +147,8 @@ public class SensorConfig {
     @Override
     public String toString() {
         return "SensorConfig{" +
-                "flagSystem=" + flagSystem +
+                "mac='" + mac + '\'' +
+                ", flagSystem=" + flagSystem +
                 ", configSystem=" + configSystem +
                 ", multiplier=" + multiplier +
                 ", offset=" + offset +
@@ -158,6 +165,7 @@ public class SensorConfig {
     }
 
     public static class Builder {
+        private String mac;
         private int flagSystem;
         private int configSystem;
         private float multiplier;
@@ -171,6 +179,11 @@ public class SensorConfig {
         private int configType;
         private int installationPoint;
         private String stateNumber;
+
+        public Builder setMac(String mac){
+            this.mac = mac;
+            return this;
+        }
 
         public Builder setFlagSystem(int flagSystem) {
             this.flagSystem = flagSystem;

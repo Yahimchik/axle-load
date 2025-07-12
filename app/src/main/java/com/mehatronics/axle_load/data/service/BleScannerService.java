@@ -12,6 +12,8 @@ public interface BleScannerService {
 
     void clearScannedDevices();
 
+    void removeDeviceByAddress(String address);
+
     void startScan(DeviceType deviceType);
 
     void stopScan();

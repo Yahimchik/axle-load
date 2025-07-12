@@ -43,6 +43,16 @@ public class BleScannerServiceImpl implements BleScannerService {
         scannedDevices.setValue(new ArrayList<>());
     }
 
+    public void removeDeviceByAddress(String address) {
+        List<Device> currentList = new ArrayList<>(Objects.requireNonNull(scannedDevices.getValue()));
+        boolean removed = currentList.removeIf(device ->
+                device.getDevice().getAddress().equals(address));
+        if (removed) {
+            scannedDevices.postValue(currentList);
+            Log.d("MyTag", "Device removed from scan list: " + address);
+        }
+    }
+
     public void startScan(DeviceType deviceType) {
         if (bleScanner != null) {
             try {

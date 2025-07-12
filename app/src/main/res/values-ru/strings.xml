@@ -54,6 +54,7 @@
     <string name="no">Нет</string>
 
     <string name="pressure">Давление:</string>
+    <string name="password">Пароль</string>
 
     <string name="read_from_file">ПРОЧИТАТЬ ИЗ ФАЙЛА</string>
     <string name="read_from_sensor">ПРОЧИТАТЬ ИЗ ДАТЧИКА</string>

@@ -23,16 +23,13 @@ public class UserPasswordStrategy implements CommandStrategy {
             return;
         }
 
-        String password = PasswordHolder.getInstance().getPassword();
         for (int i = 4; i < 14; i++) {
             buffer[i] = 0x20;
         }
 
-        char[] chars = password.toCharArray();
+        char[] chars = PasswordHolder.getInstance().getPassword().toCharArray();
         for (int i = 0; i < chars.length && i < 10; i++) {
             buffer[4 + i] = (byte) chars[i];
         }
-
-        PasswordHolder.getInstance().clear(); // сбросить после отправки
     }
 }

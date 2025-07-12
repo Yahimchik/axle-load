@@ -1,13 +1,13 @@
 package com.mehatronics.axle_load.data.service.impl;
 
-import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
-import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
-import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
 import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
 import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -17,11 +17,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
-import com.mehatronics.axle_load.domain.entities.CalibrationTable;
-import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
-import com.mehatronics.axle_load.domain.entities.SensorConfig;
-import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.data.service.GattReadService;
+import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
+import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +101,12 @@ public class GattReadServiceImpl implements GattReadService {
         this.gattDataMapper = gattDataMapper;
     }
 
+    private String currentMac;
+
+    public String getCurrentMac() {
+        return currentMac;
+    }
+
     /**
      * Получить текущий номер страницы таблицы калибровки.
      *
@@ -166,7 +172,8 @@ public class GattReadServiceImpl implements GattReadService {
         if (isRieadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                 && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
             isRieadingConfigComplete = false;
-            sensorConfigLiveData.postValue(convertBytesToConfiguration(bytes));
+            currentMac = gatt.getDevice().getAddress();
+            sensorConfigLiveData.postValue(convertBytesToConfiguration(gatt, bytes));
         }
 
         if (isReadingTableComplete && isMatchingCommand(bytes, 0, FIRST_COMMAND)) {
@@ -187,6 +194,7 @@ public class GattReadServiceImpl implements GattReadService {
      * Перезапускает чтение таблицы калибровки:
      * очищает текущие данные и сбрасывает номер страницы.
      */
+    @Override
     public void rereadCalibrationTable() {
         isReadingTableComplete = true;
         tablePage = 0;
@@ -198,6 +206,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param gatt объект BluetoothGatt
      */
+    @Override
     public void readNextAfterWrite(BluetoothGatt gatt) {
         var service = gatt.getService(USER_SERVICE_DPS);
         var readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_DPS);
@@ -215,6 +224,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @return LiveData с DeviceDetails
      */
+    @Override
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return deviceDetailsLiveData;
     }
@@ -224,6 +234,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param details данные DeviceDetails
      */
+    @Override
     public void setDeviceDetailsLiveData(DeviceDetails details) {
         deviceDetailsLiveData.setValue(details);
     }
@@ -233,6 +244,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @return LiveData с SensorConfig
      */
+    @Override
     public LiveData<SensorConfig> getSensorConfigureLiveData() {
         return sensorConfigLiveData;
     }
@@ -240,6 +252,7 @@ public class GattReadServiceImpl implements GattReadService {
     /**
      * Очищает данные деталей устройства.
      */
+    @Override
     public void clearDetails() {
         deviceDetailsLiveData.setValue(null);
     }
@@ -249,6 +262,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param value состояние сохранения конфигурации
      */
+    @Override
     public void setConfigurationSaved(boolean value) {
         isConfigurationSaved = value;
     }
@@ -258,6 +272,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param value состояние сохранения таблицы
      */
+    @Override
     public void setTableSaved(boolean value) {
         isTableSaved = value;
     }
@@ -267,6 +282,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @return true, если таблица сохранена
      */
+    @Override
     public boolean isTableSaved() {
         return isTableSaved;
     }
@@ -276,6 +292,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @return true, если конфигурация сохранена
      */
+    @Override
     public boolean isConfigurationSaved() {
         return isConfigurationSaved;
     }
@@ -285,6 +302,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param isConnected true, если устройство подключено
      */
+    @Override
     public void updateState(boolean isConnected) {
         this.isConnected = isConnected;
         values.clear();
@@ -297,6 +315,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @return true, если чтение всех характеристик активно
      */
+    @Override
     public boolean isReadingAll() {
         return isReadingAll;
     }

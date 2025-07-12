@@ -31,4 +31,13 @@
         <item name="android:textColor">@android:color/black</item>
     </style>
 
+    <style name="RoundedAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.DialogRoundedCorners</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.DialogRoundedCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>  <!-- Большое скругление -->
+    </style>
+
 </resources>
