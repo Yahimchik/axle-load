@@ -11,19 +11,19 @@
 
 
     <!-- Заголовок -->
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:fontFamily="@font/roboto_bold"
-        android:text="@string/configuration_settings"
-        android:textColor="@android:color/white"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/textViewTitle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="24dp"-->
+<!--        android:fontFamily="@font/roboto_bold"-->
+<!--        android:text="@string/configuration_settings"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        android:textSize="26sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <!-- Поле ввода -->
     <EditText
@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="16dp"
+        android:autofillHints=""
         android:background="@drawable/edittext_background"
         android:fontFamily="@font/roboto_bold"
         android:gravity="center"
@@ -43,8 +44,8 @@
         android:textColorHint="#B0BEC5"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
+        app:layout_constraintStart_toStartOf="parent"/>
+        <!--app:layout_constraintTop_toBottomOf="@id/textViewTitle" -->
 
 
     <!-- Большая Кнопка -->
@@ -86,13 +87,32 @@
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/button_background"
         android:fontFamily="@font/roboto_bold"
-        android:text="Save"
+        android:text="@string/configure_sensors"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:cornerRadius="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonConfigure"
+        app:strokeColor="@color/white"
+        app:strokeWidth="2dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/finishButton"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/button_background"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/finish_button"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        android:textSize="20sp"
+        app:cornerRadius="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonSave"
         app:strokeColor="@color/white"
         app:strokeWidth="2dp" />
 

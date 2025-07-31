@@ -132,6 +132,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
 
                 observeDeviceSelection(viewModel::setDeviceToAxis);
                 observe(viewModel.getAxisList(), binder::updateSaveButtonState);
+                observe(viewModel.getAllDevicesSaved(), binder::setFinishButtonVisible);
 
                 viewModel.method(getOwner());
             }

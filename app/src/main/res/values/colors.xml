@@ -20,4 +20,6 @@
 
     <color name="card_background_color">#333333</color>
     <color name="grean">#25E02C</color>
+
+    <color name="dividerColor">#FFB0B0B0</color> <!-- Светло-серый -->
 </resources>

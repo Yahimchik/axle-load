@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -51,6 +52,7 @@ public class DeviceViewModel extends ViewModel {
     private final BluetoothRepository bluetoothRepository;
     private final DeviceRepository deviceRepository;
     private final SaveCalibrationTableUseCase saveUseCase;
+    private final MediatorLiveData<Boolean> allDevicesSaved = new MediatorLiveData<>();
 
     /**
      * Конструктор с внедрением зависимостей.
@@ -65,6 +67,9 @@ public class DeviceViewModel extends ViewModel {
         this.bluetoothRepository = bluetoothRepository;
         this.deviceRepository = deviceRepository;
         this.saveUseCase = saveUseCase;
+
+        allDevicesSaved.addSource(getAxisList(), list -> checkAllSaved());
+        allDevicesSaved.addSource(getFinishedMacs(), macs -> checkAllSaved());
     }
 
     /**
@@ -204,6 +209,10 @@ public class DeviceViewModel extends ViewModel {
         return deviceRepository.getAxisList();
     }
 
+    public int getAxisCount(){
+        return deviceRepository.getAxisCount();
+    }
+
     public LiveData<String> getMessage() {
         return deviceRepository.getMessage();
     }
@@ -266,8 +275,10 @@ public class DeviceViewModel extends ViewModel {
                 .flatMap(axis -> axis.getSideDeviceMap()
                         .values()
                         .stream()
-                ).collect(Collectors.toSet()))));
+                ).collect(Collectors.toList()))));
     }
+
+
 
     public LiveData<Boolean> getSavedStateLiveData() {
         return deviceRepository.getSavedStateLiveData();
@@ -341,5 +352,34 @@ public class DeviceViewModel extends ViewModel {
 
     public void clearPasswordDialogShown() {
         bluetoothRepository.clearPasswordDialogShown();
+    }
+
+    private void checkAllSaved() {
+        List<AxisModel> axes = getAxisList().getValue();
+        Set<String> finished = getFinishedMacs().getValue();
+
+        if (axes == null || finished == null) {
+            allDevicesSaved.setValue(false);
+            return;
+        }
+
+        // Собираем все выбранные MAC адреса из каждой оси
+        Set<String> selectedMacs = axes.stream()
+                .flatMap(axis -> axis.getSideDeviceMap().values().stream())
+                .filter(mac -> mac != null && !mac.isEmpty())
+                .collect(Collectors.toSet());
+
+        boolean saved = !axes.isEmpty()
+                && axes.stream().allMatch(axis ->
+                axis.getSideDeviceMap().values().stream().anyMatch(mac -> mac != null && !mac.isEmpty())
+        )
+                && finished.containsAll(selectedMacs)
+                && selectedMacs.containsAll(finished); // Чтобы не было лишних сохранённых
+
+        allDevicesSaved.setValue(saved);
+    }
+
+    public LiveData<Boolean> getAllDevicesSaved() {
+        return allDevicesSaved;
     }
 }

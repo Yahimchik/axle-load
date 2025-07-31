@@ -16,6 +16,7 @@
     <string name="choose_sensor_type">Выберите тип датчика</string>
     <string name="config_type">Тип конфигурации</string>
     <string name="configuration_settings">Настроить ОСИ</string>
+    <string name="configure_sensors">Настроить датчики</string>
     <string name="configure_reset">Настройки оси %1$s сброшены</string>
     <string name="configure_the_settings">Настройки</string>
     <string name="connection_failed">Не удалось подключится к устройству</string>

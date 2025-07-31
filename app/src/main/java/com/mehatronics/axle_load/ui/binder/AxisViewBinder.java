@@ -24,21 +24,26 @@ public class AxisViewBinder implements BaseBinder {
     private final EditText editTextAxisCount;
     private final Button buttonConfigure;
     private final Button saveButton;
+    private final Button finishButton;
     private final AxisAdapter adapter;
     private final MessageCallback messageCallback;
     private final ResourceProvider provider;
+    private final Runnable onFinishClicked;
 
     private AxisViewBinder(builder builder) {
         this.adapter = new AxisAdapter(builder.clickListener, builder.resetListener);
         this.editTextAxisCount = builder.root.findViewById(R.id.editTextAxisCount);
         this.buttonConfigure = builder.root.findViewById(R.id.buttonConfigure);
         this.saveButton = builder.root.findViewById(R.id.buttonSave);
+        this.finishButton = builder.root.findViewById(R.id.finishButton);
         this.messageCallback = builder.messageCallback;
         this.provider = builder.resourceProvider;
+        this.onFinishClicked = builder.onFinishClicked;
         initRecyclerView(builder.root, R.id.recyclerViewAxes, adapter);
 
         onClickConfig(builder.onConfigureClicked);
         onSave();
+        onFinish();
     }
 
     public void addFinishedMac(Set<String> mac) {
@@ -51,6 +56,10 @@ public class AxisViewBinder implements BaseBinder {
 
     public void submitList(List<AxisModel> list) {
         adapter.submitList(list);
+    }
+
+    public void setFinishButtonVisible(boolean visible) {
+        finishButton.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void updateSaveButtonState(List<AxisModel> axes) {
@@ -86,6 +95,14 @@ public class AxisViewBinder implements BaseBinder {
                 );
     }
 
+    private void onFinish() {
+        finishButton.setOnClickListener(v -> {
+            if (onFinishClicked != null) {
+                onFinishClicked.run();
+            }
+        });
+    }
+
     public static class builder {
         private View root;
         private OnAxisClickListener clickListener;
@@ -93,6 +110,12 @@ public class AxisViewBinder implements BaseBinder {
         private Consumer<String> onConfigureClicked;
         private MessageCallback messageCallback;
         private ResourceProvider resourceProvider;
+        private Runnable onFinishClicked;
+
+        public builder onFinishClick(Runnable listener) {
+            this.onFinishClicked = listener;
+            return this;
+        }
 
         public builder withMessageCallback(MessageCallback callback) {
             this.messageCallback = callback;

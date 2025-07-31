@@ -14,6 +14,8 @@ import java.util.Set;
 public interface AxisService {
     LiveData<List<AxisModel>> getAxisList();
 
+    int getAxisCount();
+
     LiveData<String> getMessage();
 
     void setDeviceToAxis(int axisNumber, AxisSide side, String mac);

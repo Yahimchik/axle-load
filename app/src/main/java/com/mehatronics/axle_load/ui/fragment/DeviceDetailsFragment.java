@@ -95,9 +95,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
 
-        viewModel.setPasswordListener(() -> {
-            requireActivity().runOnUiThread(() -> viewModel.requestPasswordInput());
-        });
+        viewModel.setPasswordListener(() -> requireActivity().runOnUiThread(viewModel::requestPasswordInput));
 
         viewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         viewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);

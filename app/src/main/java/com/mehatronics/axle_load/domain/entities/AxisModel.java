@@ -11,15 +11,7 @@ import java.util.Objects;
 public class AxisModel {
     private final int number;
     private final Map<AxisSide, String> sideDeviceMap = new LinkedHashMap<>();
-    private boolean invalid; // ← Добавить это поле
 
-    public boolean isInvalid() {
-        return invalid;
-    }
-
-    public void setInvalid(boolean invalid) {
-        this.invalid = invalid;
-    }
     public AxisModel(int number) {
         this.number = number;
     }
@@ -61,4 +53,3 @@ public class AxisModel {
                 '}';
     }
 }
-

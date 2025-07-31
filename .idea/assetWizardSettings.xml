@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/add_circle_outline/baseline_add_circle_outline_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialiconsoutlined/align_horizontal_left/outline_align_horizontal_left_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="baseline_add_circle_outline_24" />
-                            <entry key="sourceFile" value="D:\WORK\SVG\pngtree-car-rear-axle-auto-automobile-png-image_5169815.svg" />
+                            <entry key="outputName" value="outline_align_horizontal_left_24" />
+                            <entry key="sourceFile" value="D:\DOWNLOAD\IMAGES\noun-car-chassis.svg" />
                           </map>
                         </option>
                       </PersistentState>

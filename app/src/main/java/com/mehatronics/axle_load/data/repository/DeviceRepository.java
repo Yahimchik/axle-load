@@ -32,6 +32,10 @@ public class DeviceRepository {
         return axisService.getAxisList();
     }
 
+    public int getAxisCount(){
+        return axisService.getAxisCount();
+    }
+
     public LiveData<String> getMessage() {
         return axisService.getMessage();
     }
