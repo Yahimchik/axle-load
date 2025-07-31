@@ -17,6 +17,7 @@ import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -91,7 +92,7 @@ public class AxisViewBinder implements BaseBinder {
                         axis.getSideDeviceMap()
                                 .values()
                                 .stream()
-                                .anyMatch(mac -> mac != null)
+                                .anyMatch(Objects::nonNull) // mac != null
                 );
     }
 
@@ -140,7 +141,7 @@ public class AxisViewBinder implements BaseBinder {
         }
 
         public AxisViewBinder build() {
-            if (root == null || clickListener == null || resetListener == null || /*connectListener == null ||*/ onConfigureClicked == null) {
+            if (root == null || clickListener == null || resetListener == null || onConfigureClicked == null) {
                 throw new IllegalStateException("AxisViewManager: all fields must be set before building");
             }
             return new AxisViewBinder(this);

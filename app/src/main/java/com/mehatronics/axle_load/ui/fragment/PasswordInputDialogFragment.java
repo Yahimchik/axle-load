@@ -15,11 +15,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
+
+import javax.inject.Inject;
 
 public class PasswordInputDialogFragment extends DialogFragment {
     public static final String TAG = "PasswordInputDialog";
     private PasswordListener listener;
+    private final ResourceProvider resourceProvider;
+
+    @Inject
+    public PasswordInputDialogFragment(ResourceProvider resourceProvider) {
+        this.resourceProvider = resourceProvider;
+    }
 
     public void setPasswordListener(PasswordListener listener) {
         this.listener = listener;
@@ -32,10 +41,10 @@ public class PasswordInputDialogFragment extends DialogFragment {
         EditText input = dialogView.findViewById(R.id.password_input);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Введите пароль")
+        builder.setTitle(resourceProvider.getString(R.string.enter_password))
                 .setView(dialogView)
-                .setPositiveButton("OK", null)
-                .setNegativeButton("Отмена", (dialog, which) -> {
+                .setPositiveButton(resourceProvider.getString(R.string.ok), null)
+                .setNegativeButton(resourceProvider.getString(R.string.cancel), (dialog, which) -> {
                     if (listener != null) listener.onPasswordCancelled();
                 });
 
@@ -48,7 +57,7 @@ public class PasswordInputDialogFragment extends DialogFragment {
             okButton.setOnClickListener(v -> {
                 String password = input.getText().toString().trim();
                 if (password.isEmpty()) {
-                    input.setError("Пароль не может быть пустым");
+                    input.setError(resourceProvider.getString(R.string.password_cannot_be_empty));
                 } else {
                     if (listener != null) listener.onPasswordSubmitted(password);
                     dismiss();

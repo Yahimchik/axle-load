@@ -3,13 +3,15 @@ package com.mehatronics.axle_load.data.service;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.domain.entities.device.Device;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
 import java.util.Set;
 
 public interface SensorService {
-    void setSnackBarCallback(MessageCallback messageCallback);
+
+    void setDeviceName(String name);
+
+    String getDeviceName();
 
     LiveData<List<Device>> getScannedDevicesLiveData();
 

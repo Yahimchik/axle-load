@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mehatronics.axle_load.AxleOverviewFragment;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.enums.ScreenType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
@@ -43,7 +42,6 @@ public class ConfigureFragment extends BaseSensorFragment {
                 .withMessageCallback(this)
                 .withResourceProvider(provider)
                 .onFinishClick(() -> {
-                    // Навигация на AxleOverviewFragment
                     navigator.showFragment(new AxleOverviewFragment());
                 })
                 .build();

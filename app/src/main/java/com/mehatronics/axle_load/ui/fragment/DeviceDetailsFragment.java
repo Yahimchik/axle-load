@@ -14,10 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
-import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
@@ -30,9 +28,11 @@ import dagger.hilt.android.AndroidEntryPoint;
  * Использует {@link DeviceViewModel} для получения и обновления данных.
  */
 @AndroidEntryPoint
-public class DeviceDetailsFragment extends Fragment implements MessageCallback {
+public class DeviceDetailsFragment extends Fragment /*implements MessageCallback*/ {
     @Inject
     protected DeviceDetailsBinder detailsBinder;
+    @Inject
+    protected PasswordInputDialogFragment dialog;
     private DeviceViewModel viewModel;
     private View view;
 
@@ -123,7 +123,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         if (isPasswordDialogVisible) return;
         isPasswordDialogVisible = true;
 
-        PasswordInputDialogFragment dialog = new PasswordInputDialogFragment();
         dialog.setPasswordListener(new PasswordListener() {
             @Override
             public void onPasswordSubmitted(String password) {
@@ -146,7 +145,10 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     }
 
     private void closeFragment() {
-        requireActivity().getSupportFragmentManager().popBackStack();
+        requireActivity().getSupportFragmentManager().popBackStack(
+                DeviceDetailsFragment.class.getSimpleName(),
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+        );
     }
 
     /**
@@ -197,12 +199,15 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         viewModel.clearPassword();
         isPasswordDialogVisible = false;
 
+        showMessage(getString(R.string.disconnect_from, viewModel.getDeviceName()));
+
         viewModel.clearPasswordDialogShown();
         viewModel.requestPasswordInput();
 
-        if (getActivity() instanceof BluetoothHandlerContract) {
-            ((BluetoothHandlerContract) getActivity()).onFragmentClosed();
-        }
+        viewModel.markAsSaved();
+        viewModel.setSelectionMode(false);
+
+        closeFragment();
         Log.d("MyTag", "Device details fragment is closed");
     }
 
@@ -217,8 +222,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      *
      * @param message Текст сообщения.
      */
-    @Override
     public void showMessage(String message) {
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+        View root = requireActivity().findViewById(android.R.id.content);
+        Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
     }
 }

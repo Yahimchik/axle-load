@@ -1,21 +1,23 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static com.mehatronics.axle_load.R.string.selected;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_NUMBER;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_SIDE;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
@@ -31,6 +33,7 @@ import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
 import com.mehatronics.axle_load.ui.binder.BaseBinder;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
+import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
@@ -38,6 +41,8 @@ import javax.inject.Inject;
 public abstract class BaseSensorFragment extends Fragment implements MessageCallback {
     @Inject
     protected SensorSelectionService manager;
+    @Inject
+    protected SnackbarManager snackbarManager;
     @Inject
     protected FragmentNavigator navigator;
 
@@ -68,7 +73,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show();
+        snackbarManager.showMessage(requireView(), message);
     }
 
     protected <T> void observe(LiveData<T> liveData, Observer<T> observer) {
@@ -81,10 +86,6 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
 
     protected void observeDeviceSelection(OnDeviceSelectionCallback callback) {
         manager.observeSelectedDevice(getParentFragmentManager(), getOwner(), callback);
-    }
-
-    protected void setupSnackBarCallback(MessageCallback callback) {
-        viewModel.setSnackBarCallback(callback);
     }
 
     protected int getAxisNumber() {
@@ -102,8 +103,10 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
         }
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     protected void onSelected(Device device) {
         viewModel.markMacAsSelected(device);
+        showMessage(getString(selected, device.getDevice().getName()));
         manager.returnSelectedDevice(
                 getParentFragmentManager(),
                 requireActivity(),

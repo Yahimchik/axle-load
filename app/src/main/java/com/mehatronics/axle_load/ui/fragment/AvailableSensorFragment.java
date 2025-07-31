@@ -24,7 +24,6 @@ public class AvailableSensorFragment extends BaseSensorFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupSnackBarCallback(this);
     }
 
     @Override

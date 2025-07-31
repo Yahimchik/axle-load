@@ -1,17 +1,10 @@
 package com.mehatronics.axle_load.data.service.impl;
 
-import static com.mehatronics.axle_load.R.string.selected;
-
-import android.Manifest;
-
-import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.service.SensorService;
 import com.mehatronics.axle_load.domain.entities.device.Device;
-import com.mehatronics.axle_load.localization.ResourceProvider;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,19 +21,23 @@ public class SensorServiceImpl implements SensorService {
     private final MutableLiveData<Boolean> savedStateLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> lastFinishedMac = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isSelectionMode = new MutableLiveData<>(false);
+    private final MutableLiveData<String> deviceNameLiveData = new MutableLiveData<>();
     private final Map<String, Device> processedDevices = new HashMap<>();
     private final Set<String> selectedMacs = new HashSet<>();
-    private final ResourceProvider resourceProvider;
-    private MessageCallback messageCallback;
 
     @Inject
-    public SensorServiceImpl(ResourceProvider resourceProvider) {
-        this.resourceProvider = resourceProvider;
+    public SensorServiceImpl() {
+    }
+
+
+    @Override
+    public void setDeviceName(String name) {
+        deviceNameLiveData.setValue(name);
     }
 
     @Override
-    public void setSnackBarCallback(MessageCallback messageCallback) {
-        this.messageCallback = messageCallback;
+    public String getDeviceName() {
+        return deviceNameLiveData.getValue();
     }
 
     @Override
@@ -66,13 +63,9 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void markMacAsSelected(Device device) {
         device.setSelected(true);
-        String name = device.getDevice().getName();
         String mac = device.getDevice().getAddress();
-
-        messageCallback.showMessage(resourceProvider.getString(selected, name));
         selectedMacs.add(mac);
     }
 

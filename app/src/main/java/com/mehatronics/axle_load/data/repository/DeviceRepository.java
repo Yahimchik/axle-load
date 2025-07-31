@@ -7,7 +7,6 @@ import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
 import java.util.Set;
@@ -33,7 +32,9 @@ public interface DeviceRepository {
 
     Set<String> getMacsForAxis(int axisNumber);
 
-    void setSnackBarCallback(MessageCallback messageCallback);
+    void setDeviceName(String name);
+
+    String getDeviceName();
 
     LiveData<List<Device>> getScannedDevicesLiveData();
 

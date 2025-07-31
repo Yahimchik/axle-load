@@ -19,8 +19,10 @@ import com.mehatronics.axle_load.helper.LocaleHelper;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.binder.DeviceListBinder;
+import com.mehatronics.axle_load.ui.fragment.ConfigureFragment;
 import com.mehatronics.axle_load.ui.fragment.DeviceDetailsFragment;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
+import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
@@ -33,6 +35,8 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     protected FragmentNavigator navigator;
     @Inject
     protected ResourceProvider provider;
+    @Inject
+    protected SnackbarManager snackbarManager;
     private DeviceViewModel viewModel;
     private BluetoothHandler handler;
     private DeviceListBinder binder;
@@ -70,11 +74,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFragmentClosed() {
-        handler.onDeviceDetailsFragmentClosed();
-    }
-
-    @Override
     public void showFragment() {
         navigator.showFragment(new DeviceDetailsFragment());
     }
@@ -96,12 +95,12 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
 
     @Override
     public void showMessage(String message) {
-        Snackbar.make(findViewById(content), message, Snackbar.LENGTH_LONG).show();
+        snackbarManager.showMessage(findViewById(content), message);
     }
 
     @Override
     public void initConfigureButton() {
-        navigator.initConfigureButton(findViewById(buttonGoToAxes));
+        findViewById(buttonGoToAxes).setOnClickListener(v -> navigator.showFragment(new ConfigureFragment()));
     }
 
     @Override

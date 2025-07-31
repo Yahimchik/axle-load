@@ -1,7 +1,6 @@
 package com.mehatronics.axle_load.domain.handler;
 
 import static com.mehatronics.axle_load.R.string.connection_failed;
-import static com.mehatronics.axle_load.R.string.disconnect_from;
 import static com.mehatronics.axle_load.R.string.selected;
 import static java.lang.Boolean.TRUE;
 
@@ -23,7 +22,6 @@ public class BluetoothHandler {
     private boolean userClosedDeviceDetails = false;
     private boolean isDeviceDetailsFragmentOpen = false;
     private boolean shouldOpenFragmentAfterConnect = false;
-    private String deviceName;
 
     public BluetoothHandler(builder builder) {
         this.viewModel = builder.deviceViewModel;
@@ -56,7 +54,7 @@ public class BluetoothHandler {
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onConnect(int axis, AxisSide side) {
         String mac = viewModel.getMacForAxisSide(axis, side);
-        if (mac == null){
+        if (mac == null) {
             contract.showMessage(provider.getString(R.string.error_sensor_not_selected));
             return;
         }
@@ -79,24 +77,12 @@ public class BluetoothHandler {
         viewModel.markAsUnsaved();
     }
 
-    public void onDeviceDetailsFragmentClosed() {
-        userClosedDeviceDetails = true;
-        isDeviceDetailsFragmentOpen = false;
-
-        viewModel.disconnect();
-        viewModel.clearDetails();
-
-        contract.showMessage(provider.getString(disconnect_from, deviceName));
-
-        viewModel.markAsSaved();
-        viewModel.setSelectionMode(false);
-    }
-
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
         contract.loadingManagerShowLoading(false);
 
         if (deviceDetails != null && isConnected()) {
-            deviceName = deviceDetails.getDeviceName();
+
+            viewModel.setDeviceName(deviceDetails.getDeviceName());
 
             if (shouldOpenFragmentAfterConnect && !userClosedDeviceDetails && !isDeviceDetailsFragmentOpen) {
                 contract.showFragment();
@@ -111,13 +97,19 @@ public class BluetoothHandler {
     }
 
     public void handleConnectionState(Boolean isConnected) {
+        if (Boolean.FALSE.equals(isConnected)) {
+            isDeviceDetailsFragmentOpen = false;
+            userClosedDeviceDetails = false;
+            shouldOpenFragmentAfterConnect = false;
+        }
+
         if (!isConnected && contract.isAttemptingToConnect()) {
             contract.showMessage(provider.getString(connection_failed));
             contract.loadingManagerShowLoading(false);
             contract.setIsAttemptingToConnect(false);
         }
 
-        if (isConnected) {
+        if (Boolean.TRUE.equals(isConnected)) {
             contract.setIsAttemptingToConnect(false);
             shouldOpenFragmentAfterConnect = true;
         }

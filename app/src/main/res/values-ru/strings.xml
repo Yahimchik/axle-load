@@ -11,6 +11,7 @@
     <string name="battery">Батарея:</string>
 
     <string name="calibration_table">Тарировочная таблица</string>
+    <string name="cancel">Отмена</string>
     <string name="change_langauge">Сменить язык</string>
     <string name="choose_sensor">Выберите датчик</string>
     <string name="choose_sensor_type">Выберите тип датчика</string>
@@ -33,6 +34,7 @@
     <string name="disconnect_from">Отключение от %1$s</string>
 
     <string name="enter_number_of_axes">Введите количество осей (1 – 8)</string>
+    <string name="enter_password">Введите пароль</string>
     <string name="error_axis_out_of_range">Введите число от 1 до 8</string>
     <string name="error_empty_axis_count">Введите количество осей</string>
     <string name="error_invalid_number">Введите корректное число</string>
@@ -54,9 +56,12 @@
 
     <string name="no">Нет</string>
 
+    <string name="ok">ОК</string>
+
     <string name="pressure">Давление:</string>
     <string name="password">Пароль</string>
 
+    <string name="password_cannot_be_empty">Пароль не может быть пустым</string>
     <string name="read_from_file">ПРОЧИТАТЬ ИЗ ФАЙЛА</string>
     <string name="read_from_sensor">ПРОЧИТАТЬ ИЗ ДАТЧИКА</string>
     <string name="reset">Сбросить</string>

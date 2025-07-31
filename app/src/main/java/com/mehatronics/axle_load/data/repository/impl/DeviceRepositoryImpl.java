@@ -10,7 +10,6 @@ import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
 import java.util.Set;
@@ -80,8 +79,13 @@ public class DeviceRepositoryImpl implements DeviceRepository {
     }
 
     @Override
-    public void setSnackBarCallback(MessageCallback messageCallback) {
-        sensorService.setSnackBarCallback(messageCallback);
+    public void setDeviceName(String name) {
+        sensorService.setDeviceName(name);
+    }
+
+    @Override
+    public String getDeviceName() {
+        return sensorService.getDeviceName();
     }
 
     @Override

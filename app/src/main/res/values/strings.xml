@@ -16,6 +16,7 @@
     <string name="battery">Battery: </string>
 
     <string name="calibration_table">Calibration Table</string>
+    <string name="cancel">Cancel</string>
     <string name="change_langauge">Change language</string>
     <string name="choose_sensor">Choose sensor</string>
     <string name="choose_sensor_type">Chose Sensor Type</string>
@@ -40,6 +41,7 @@
     <string name="disconnect_from">Disconnect from %1$s</string>
 
     <string name="enter_number_of_axes">Enter number of axes</string>
+    <string name="enter_password">Enter password</string>
     <string name="error_axis_out_of_range">Please enter a number between 1 and 8</string>
     <string name="error_empty_axis_count">Please enter the number of axes</string>
     <string name="error_invalid_number">Please enter a valid number</string>
@@ -61,8 +63,11 @@
 
     <string name="no">No</string>
 
+    <string name="ok">OK</string>
+
     <string name="pressure">Pressure: </string>
     <string name="password">Password</string>
+    <string name="password_cannot_be_empty">Password can`t be empty</string>
 
     <string name="read_from_file">READ FROM FILE</string>
     <string name="read_from_sensor">READ FROM SENSOR</string>
@@ -84,6 +89,4 @@
     <string name="wheel_right">Right wheel of axle %1$d</string>
 
     <string name="yes">Yes</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

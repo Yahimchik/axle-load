@@ -24,7 +24,6 @@ import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 import com.mehatronics.axle_load.domain.usecase.SubmitPasswordUseCase;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
-import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
 import java.util.Set;
@@ -590,12 +589,11 @@ public class DeviceViewModel extends ViewModel {
         deviceRepository.markAsUnsaved();
     }
 
-    /**
-     * Устанавливает callback для отображения сообщений Snackbar.
-     *
-     * @param messageCallback Callback для сообщений
-     */
-    public void setSnackBarCallback(MessageCallback messageCallback) {
-        deviceRepository.setSnackBarCallback(messageCallback);
+    public void setDeviceName(String name) {
+        deviceRepository.setDeviceName(name);
+    }
+
+    public String getDeviceName() {
+        return deviceRepository.getDeviceName();
     }
 }
