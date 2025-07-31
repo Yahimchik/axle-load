@@ -4,6 +4,7 @@ import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerV
 import static com.mehatronics.axle_load.ui.adapter.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.widget.PopupMenu;
@@ -31,6 +32,7 @@ public class DeviceDetailsBinder {
     private SensorConfigAdapter sensorConfigAdapter;
     private SensorInfoAdapter sensorInfoAdapter;
     private TableAdapter tableAdapter;
+    private Button finishButton;
     private final DeviceDetailsFormatter formatter;
     private final SensorConfigFormatter configFormatter;
 
@@ -40,11 +42,20 @@ public class DeviceDetailsBinder {
         this.configFormatter = configFormatter;
     }
 
-    public void init(View view, DeviceViewModel deviceViewModel) {
+    public void init(View view, DeviceViewModel vm) {
         sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter);
         sensorInfoAdapter = new SensorInfoAdapter(view, formatter);
-        tableAdapter = new TableAdapter(deviceViewModel::addPoint, deviceViewModel::deletePoint);
+        tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
+        finishButton = view.findViewById(R.id.finishButton);
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
+    }
+
+    public void setVisibility(boolean isSelection) {
+        finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE);
+    }
+
+    public void finishButtonOnClick(View.OnClickListener listener) {
+        finishButton.setOnClickListener(listener);
     }
 
     public void setupPopupMenu(View view, View.OnClickListener resetClickListener, View.OnClickListener setNewClickListener) {

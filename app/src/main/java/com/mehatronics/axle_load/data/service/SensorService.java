@@ -38,4 +38,9 @@ public interface SensorService {
     LiveData<String> getLastConfiguredMac();
 
     LiveData<Set<String>> getConfiguredMacs();
+
+    LiveData<Boolean> getSelectionModeLiveData();
+
+
+    void setSelectionMode(boolean isSelection);
 }

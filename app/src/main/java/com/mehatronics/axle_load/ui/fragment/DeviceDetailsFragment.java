@@ -1,22 +1,21 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.domain.entities.PasswordHolder;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
+import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
@@ -82,94 +81,72 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
             viewModel.updateVirtualPoint(deviceDetails);
         });
 
-        Button finishButton = view.findViewById(R.id.finishButton);
-        viewModel.getSelectionModeLiveData().observe(getViewLifecycleOwner(), isSelection
-                -> finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE));
-
-        finishButton.setOnClickListener(v -> {
-            String lastMac = viewModel.getLastFinishedMac().getValue();
-            if (lastMac != null) {
-                viewModel.addFinishedMac(lastMac);
-            }
-
-            requireActivity().getSupportFragmentManager().popBackStack();
-        });
+        observeSelectionMode();
 
         viewModel.setPasswordListener(() -> requireActivity().runOnUiThread(viewModel::requestPasswordInput));
 
         viewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         viewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
 
-        viewModel.getShowPasswordDialogEvent().observe(getViewLifecycleOwner(), event -> {
-            if (event != null) {
-                if (PasswordHolder.getInstance().isPasswordSet()
-                        && !isPasswordDialogVisible
-                        && isAdded()
-                        && getView() != null
-                        && !isRemoving()
-                        && !requireActivity().isFinishing()) {
-                    showPasswordInputDialog();
-                } else {
-                    Log.d("MyTag", "Диалог не открыт — пароль уже установлен или уже показывается, или фрагмент неактивен");
-                }
+        observePasswordDialogEvent();
+    }
+
+    private void observeSelectionMode() {
+        viewModel.getSelectionModeLiveData().observe(getViewLifecycleOwner(), detailsBinder::setVisibility);
+
+        detailsBinder.finishButtonOnClick(v -> {
+            String lastMac = viewModel.getLastFinishedMac().getValue();
+            if (lastMac != null) {
+                viewModel.addFinishedMac(lastMac);
+            }
+
+            closeFragment();
+        });
+    }
+
+    private void observePasswordDialogEvent() {
+        viewModel.getShowPasswordDialogEvent().observe(getViewLifecycleOwner(), unused -> {
+            if (viewModel.isPasswordSet()
+                    && !isPasswordDialogVisible
+                    && isAdded()
+                    && getView() != null
+                    && !isRemoving()
+                    && !requireActivity().isFinishing()) {
+                showPasswordInputDialog();
+            } else {
+                Log.d("MyTag", "Диалог не открыт — пароль уже установлен или уже показывается, или фрагмент неактивен");
             }
         });
     }
 
     private void showPasswordInputDialog() {
         if (isPasswordDialogVisible) return;
-
         isPasswordDialogVisible = true;
-        View dialogView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.dialog_password_input, null);
 
-        EditText input = dialogView.findViewById(R.id.password_input);
-
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle("Введите пароль")
-                .setView(dialogView)
-                .setPositiveButton("OK", null)
-                .setNegativeButton("Отмена", null)
-                .setOnCancelListener(d -> {
-                    isPasswordDialogVisible = false;
-                    viewModel.clearPasswordDialogShown();
-                })
-                .create();
-
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-
-        dialog.setOnDismissListener(d1 -> {
-            isPasswordDialogVisible = false;
-            viewModel.clearPasswordDialogShown();
-        });
-
-        dialog.setOnShowListener(d -> {
-            Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            Button cancelButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-            okButton.setOnClickListener(v -> {
-                String password = input.getText().toString().trim();
-                if (password.isEmpty()) {
-                    input.setError("Пароль не может быть пустым");
-                    isPasswordDialogVisible = false;
-                } else {
-                    viewModel.submitPassword(password);
-                    isPasswordDialogVisible = false;
-                    dialog.dismiss();
-                }
-            });
-
-            cancelButton.setOnClickListener(v -> {
+        PasswordInputDialogFragment dialog = new PasswordInputDialogFragment();
+        dialog.setPasswordListener(new PasswordListener() {
+            @Override
+            public void onPasswordSubmitted(String password) {
+                viewModel.submitPassword(password);
                 isPasswordDialogVisible = false;
-                PasswordHolder.getInstance().clear();
-                viewModel.clearPasswordDialogShown();
-                dialog.dismiss();
-                requireActivity().getSupportFragmentManager().popBackStack();
-            });
-        });
+            }
 
-        dialog.show();
+            @Override
+            public void onPasswordCancelled() {
+                viewModel.clearPassword();
+                isPasswordDialogVisible = false;
+
+                viewModel.clearPasswordDialogShown();
+                viewModel.requestPasswordInput();
+
+                closeFragment();
+            }
+        });
+        dialog.show(getParentFragmentManager(), TAG);
+    }
+
+    private void closeFragment() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 
     /**
@@ -213,9 +190,16 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      */
     private void cleanUpOnClose() {
         detailsBinder = null;
+
         viewModel.clearDetails();
         viewModel.disconnect();
-        PasswordHolder.getInstance().clear();
+
+        viewModel.clearPassword();
+        isPasswordDialogVisible = false;
+
+        viewModel.clearPasswordDialogShown();
+        viewModel.requestPasswordInput();
+
         if (getActivity() instanceof BluetoothHandlerContract) {
             ((BluetoothHandlerContract) getActivity()).onFragmentClosed();
         }
@@ -227,7 +211,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         super.onDestroyView();
         cleanUpOnClose();
     }
-
 
     /**
      * Отображает сообщение в Snackbar.

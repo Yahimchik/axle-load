@@ -2,8 +2,6 @@ package com.mehatronics.axle_load.data.repository;
 
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.data.service.AxisService;
-import com.mehatronics.axle_load.data.service.SensorService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
@@ -14,113 +12,56 @@ import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+public interface DeviceRepository {
+    LiveData<List<AxisModel>> getAxisList();
 
-@Singleton
-public class DeviceRepository {
-    private final AxisService axisService;
-    private final SensorService sensorService;
+    int getAxisCount();
 
-    @Inject
-    public DeviceRepository(AxisService axisService, SensorService sensorService) {
-        this.axisService = axisService;
-        this.sensorService = sensorService;
-    }
+    LiveData<String> getMessage();
 
-    public LiveData<List<AxisModel>> getAxisList() {
-        return axisService.getAxisList();
-    }
+    void setDeviceToAxis(int axisNumber, AxisSide side, String mac);
 
-    public int getAxisCount(){
-        return axisService.getAxisCount();
-    }
+    void resetDevicesForAxis(int axisNumber);
 
-    public LiveData<String> getMessage() {
-        return axisService.getMessage();
-    }
+    String getMacForAxisSide(int axisNumber, AxisSide side);
 
-    public void setDeviceToAxis(int axisNumber, AxisSide side, String mac) {
-        axisService.setDeviceToAxis(axisNumber, side, mac);
-    }
+    void onConfigureClicked(String input);
 
-    public void resetDevicesForAxis(int axisNumber) {
-        axisService.resetDevicesForAxis(axisNumber);
-    }
+    LiveData<Event<InstalationPoint>> getAxisClick();
 
-    public String getMacForAxisSide(int axisNumber, AxisSide side) {
-        return axisService.getMacForAxisSide(axisNumber, side);
-    }
+    void onWheelClicked(int axisNumber, AxisSide side);
 
-    public void onConfigureClicked(String input) {
-        axisService.onConfigureClicked(input);
-    }
+    Set<String> getMacsForAxis(int axisNumber);
 
-    public LiveData<Event<InstalationPoint>> getAxisClick() {
-        return axisService.getAxisClick();
-    }
+    void setSnackBarCallback(MessageCallback messageCallback);
 
-    public void onWheelClicked(int axisNumber, AxisSide side) {
-        axisService.onWheelClicked(axisNumber, side);
-    }
+    LiveData<List<Device>> getScannedDevicesLiveData();
 
-    public Set<String> getMacsForAxis(int axisNumber) {
-        return axisService.getMacsForAxis(axisNumber);
-    }
+    void updateScannedDevices(List<Device> newDevices);
 
-    public void setSnackBarCallback(MessageCallback messageCallback) {
-        sensorService.setSnackBarCallback(messageCallback);
-    }
+    void markMacAsSelected(Device device);
 
-    public LiveData<List<Device>> getScannedDevicesLiveData() {
-        return sensorService.getScannedDevicesLiveData();
-    }
+    void resetSelectedDevices();
 
-    public void updateScannedDevices(List<Device> newDevices) {
-        sensorService.updateScannedDevices(newDevices);
-    }
+    void resetSelectedDevicesByMacs(Set<String> macs);
 
-    public void markMacAsSelected(Device device) {
-        sensorService.markMacAsSelected(device);
-    }
+    LiveData<Boolean> getSavedStateLiveData();
 
-    public void resetSelectedDevices() {
-        sensorService.resetSelectedDevices();
-    }
+    void markAsSaved();
 
-    public void resetSelectedDevicesByMacs(Set<String> macs) {
-        sensorService.resetSelectedDevicesByMacs(macs);
-    }
+    void markAsUnsaved();
 
-    public LiveData<Boolean> getSavedStateLiveData() {
-        return sensorService.getSavedStateLiveData();
-    }
+    void clearMacs();
 
-    public void markAsSaved() {
-        sensorService.markAsSaved();
-    }
+    LiveData<Set<String>> getConfiguredMacs();
 
-    public void markAsUnsaved() {
-        sensorService.markAsUnsaved();
-    }
+    void addConfiguredMac(String mac);
 
-    public void clearMacs() {
-        sensorService.clearMacs();
-    }
+    void setLastConfiguredMac(String mac);
 
-    public LiveData<Set<String>> getConfiguredMacs() {
-        return sensorService.getConfiguredMacs();
-    }
+    LiveData<String> getLastConfiguredMac();
 
-    public void addConfiguredMac(String mac) {
-        sensorService.addConfiguredMac(mac);
-    }
+    LiveData<Boolean> getSelectionModeLiveData();
 
-    public void setLastConfiguredMac(String mac) {
-        sensorService.setLastConfiguredMac(mac);
-    }
-
-    public LiveData<String> getLastConfiguredMac() {
-        return sensorService.getLastConfiguredMac();
-    }
+    void setSelectionMode(boolean isSelection);
 }

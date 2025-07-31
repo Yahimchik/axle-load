@@ -1,28 +1,28 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
-
 import android.util.Log;
 import android.view.View;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.repository.BluetoothRepository;
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
+import com.mehatronics.axle_load.data.repository.impl.DeviceRepositoryImpl;
+import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
-import com.mehatronics.axle_load.domain.entities.PasswordHolder;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
+import com.mehatronics.axle_load.domain.usecase.SubmitPasswordUseCase;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
@@ -35,66 +35,85 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 /**
- * ViewModel для управления взаимодействием с устройством через Bluetooth.
- * Используется в архитектуре MVVM для предоставления данных и бизнес-логики представлению.
- * <p>
- * Этот класс обрабатывает:
+ * ViewModel, отвечающая за управление подключением к Bluetooth-устройствам,
+ * конфигурацией сенсоров, таблицей калибровки, управлением паролем и состоянием UI.
+ * Используется в архитектуре MVVM для взаимодействия между UI и слоями данных.
+ *
+ * <p>Основные обязанности:</p>
  * <ul>
- *     <li>Подключение и отключение устройств</li>
- *     <li>Сканирование устройств по типу</li>
- *     <li>Получение и очистку информации об устройстве</li>
- *     <li>Чтение и изменение таблицы калибровки</li>
- *     <li>Сохранение конфигурации сенсоров</li>
+ *     <li>Сканирование и подключение к Bluetooth-устройствам</li>
+ *     <li>Работа с таблицей калибровки и конфигурацией сенсоров</li>
+ *     <li>Назначение устройств на оси и стороны</li>
+ *     <li>Проверка и установка пароля</li>
+ *     <li>Отслеживание состояния конфигурации и сохранения</li>
  * </ul>
  */
 @HiltViewModel
 public class DeviceViewModel extends ViewModel {
-    private final BluetoothRepository bluetoothRepository;
-    private final DeviceRepository deviceRepository;
+    private final SubmitPasswordUseCase submitPasswordUseCase;
     private final SaveCalibrationTableUseCase saveUseCase;
+    private final BluetoothRepository bluetoothRepository;
+    private final PasswordRepository passwordRepository;
+    private final DeviceRepository deviceRepository;
+
     private final MediatorLiveData<Boolean> allDevicesSaved = new MediatorLiveData<>();
 
     /**
      * Конструктор с внедрением зависимостей.
      *
-     * @param bluetoothRepository Репозиторий для работы с Bluetooth-устройствами
-     * @param saveUseCase         UseCase для сохранения таблицы калибровки
+     * @param bluetoothRepository   Репозиторий Bluetooth
+     * @param deviceRepository      Репозиторий устройств и осей
+     * @param saveUseCase           UseCase сохранения таблицы калибровки
+     * @param submitPasswordUseCase UseCase отправки пароля
+     * @param passwordRepository    Репозиторий пароля
      */
     @Inject
-    public DeviceViewModel(BluetoothRepository bluetoothRepository, DeviceRepository deviceRepository,
-                           SaveCalibrationTableUseCase saveUseCase
+    public DeviceViewModel(
+            BluetoothRepository bluetoothRepository,
+            DeviceRepositoryImpl deviceRepository,
+            SaveCalibrationTableUseCase saveUseCase,
+            SubmitPasswordUseCase submitPasswordUseCase,
+            PasswordRepository passwordRepository
     ) {
         this.bluetoothRepository = bluetoothRepository;
         this.deviceRepository = deviceRepository;
         this.saveUseCase = saveUseCase;
+        this.submitPasswordUseCase = submitPasswordUseCase;
+        this.passwordRepository = passwordRepository;
 
         allDevicesSaved.addSource(getAxisList(), list -> checkAllSaved());
         allDevicesSaved.addSource(getFinishedMacs(), macs -> checkAllSaved());
     }
 
+    // === Bluetooth Device Management ===
+
     /**
-     * @return LiveData, указывающая на состояние подключения к устройству
+     * Возвращает LiveData с состоянием подключения к Bluetooth-устройству.
+     *
+     * @return LiveData с булевым значением подключения
      */
     public LiveData<Boolean> isConnectedLiveData() {
         return bluetoothRepository.isConnectedLiveData();
     }
 
     /**
-     * @return LiveData со списком найденных Bluetooth-устройств
+     * Возвращает LiveData со списком найденных Bluetooth-устройств.
+     *
+     * @return LiveData со списком устройств
      */
     public LiveData<List<Device>> getScannedDevices() {
         return bluetoothRepository.getScannedDevices();
     }
 
     /**
-     * Очищает список отсканированных устройств
+     * Очищает список отсканированных устройств.
      */
     public void clearScannedDevices() {
         bluetoothRepository.clearScannedDevices();
     }
 
     /**
-     * Запускает сканирование Bluetooth-устройств по указанному типу
+     * Запускает сканирование Bluetooth-устройств указанного типа.
      *
      * @param deviceType Тип устройства для сканирования
      */
@@ -103,28 +122,14 @@ public class DeviceViewModel extends ViewModel {
     }
 
     /**
-     * Останавливает сканирование Bluetooth-устройств
+     * Останавливает сканирование Bluetooth-устройств.
      */
     public void stopScan() {
         bluetoothRepository.stopScan();
     }
 
     /**
-     * @return LiveData с подробной информацией о подключенном устройстве
-     */
-    public LiveData<DeviceDetails> getDeviceDetails() {
-        return bluetoothRepository.getDeviceDetailsLiveData();
-    }
-
-    /**
-     * @return LiveData с текущей конфигурацией сенсора
-     */
-    public LiveData<SensorConfig> getSensorConfigure() {
-        return bluetoothRepository.getSensorConfigureLiveData();
-    }
-
-    /**
-     * Подключается к выбранному устройству
+     * Подключается к выбранному Bluetooth-устройству.
      *
      * @param device Устройство для подключения
      */
@@ -133,62 +138,41 @@ public class DeviceViewModel extends ViewModel {
     }
 
     /**
-     * Отключается от текущего устройства
+     * Отключается от текущего устройства.
      */
     public void disconnect() {
         bluetoothRepository.disconnect();
     }
 
     /**
-     * Очищает информацию о текущем устройстве
+     * Возвращает LiveData с деталями подключенного устройства.
+     *
+     * @return LiveData с DeviceDetails
+     */
+    public LiveData<DeviceDetails> getDeviceDetails() {
+        return bluetoothRepository.getDeviceDetailsLiveData();
+    }
+
+    /**
+     * Очищает информацию о текущем подключенном устройстве.
      */
     public void clearDetails() {
         bluetoothRepository.clearDetails();
     }
 
-    /**
-     * Повторно запрашивает таблицу калибровки с устройства
-     */
-    public void rereadCalibrationTable() {
-        bluetoothRepository.rereadCalibrationTable();
-    }
+    // === Sensor & Calibration Configuration ===
 
     /**
-     * @return LiveData со списком точек таблицы калибровки
-     */
-    public LiveData<List<CalibrationTable>> getCalibrationTable() {
-        return bluetoothRepository.getCalibrationTable();
-    }
-
-    /**
-     * Обновляет виртуальную точку в таблице калибровки
+     * Возвращает LiveData с текущей конфигурацией сенсора.
      *
-     * @param deviceDetails Детали устройства, содержащие информацию о виртуальной точке
+     * @return LiveData с SensorConfig
      */
-    public void updateVirtualPoint(DeviceDetails deviceDetails) {
-        bluetoothRepository.updateVirtualPoint(deviceDetails);
+    public LiveData<SensorConfig> getSensorConfigure() {
+        return bluetoothRepository.getSensorConfigureLiveData();
     }
 
     /**
-     * Удаляет указанную точку из таблицы калибровки
-     *
-     * @param item Точка калибровки для удаления
-     */
-    public void deletePoint(CalibrationTable item) {
-        bluetoothRepository.deletePoint(item);
-    }
-
-    /**
-     * Добавляет новую точку в таблицу калибровки
-     *
-     * @param newPoint Новая точка для добавления
-     */
-    public void addPoint(CalibrationTable newPoint) {
-        bluetoothRepository.addPoint(newPoint);
-    }
-
-    /**
-     * Сохраняет конфигурацию сенсора, если она доступна
+     * Сохраняет конфигурацию сенсора, если конфигурация установлена.
      */
     public void saveSensorConfiguration() {
         if (getSensorConfigure().getValue() != null) {
@@ -197,163 +181,151 @@ public class DeviceViewModel extends ViewModel {
     }
 
     /**
-     * Выполняет сохранение таблицы калибровки через соответствующий UseCase
+     * Повторно запрашивает таблицу калибровки с устройства.
+     */
+    public void rereadCalibrationTable() {
+        bluetoothRepository.rereadCalibrationTable();
+    }
+
+    /**
+     * Возвращает LiveData со списком точек таблицы калибровки.
      *
-     * @return Результат выполнения операции сохранения
+     * @return LiveData со списком CalibrationTable
+     */
+    public LiveData<List<CalibrationTable>> getCalibrationTable() {
+        return bluetoothRepository.getCalibrationTable();
+    }
+
+    /**
+     * Обновляет виртуальную точку в таблице калибровки на основе деталей устройства.
+     *
+     * @param deviceDetails Детали устройства
+     */
+    public void updateVirtualPoint(DeviceDetails deviceDetails) {
+        bluetoothRepository.updateVirtualPoint(deviceDetails);
+    }
+
+    /**
+     * Удаляет указанную точку из таблицы калибровки.
+     *
+     * @param item Точка калибровки для удаления
+     */
+    public void deletePoint(CalibrationTable item) {
+        bluetoothRepository.deletePoint(item);
+    }
+
+    /**
+     * Добавляет новую точку в таблицу калибровки.
+     *
+     * @param newPoint Новая точка калибровки
+     */
+    public void addPoint(CalibrationTable newPoint) {
+        bluetoothRepository.addPoint(newPoint);
+    }
+
+    /**
+     * Сохраняет таблицу калибровки через соответствующий UseCase.
+     *
+     * @return Результат сохранения (например, количество ошибок)
      */
     public int saveTable() {
         return saveUseCase.execute();
     }
 
+    /*=== Axis and Device Assignment ===*/
+
+    /**
+     * Возвращает LiveData со списком моделей осей.
+     *
+     * @return LiveData со списком AxisModel
+     */
     public LiveData<List<AxisModel>> getAxisList() {
         return deviceRepository.getAxisList();
     }
 
-    public int getAxisCount(){
+    /**
+     * Возвращает количество осей.
+     *
+     * @return Количество осей
+     */
+    public int getAxisCount() {
         return deviceRepository.getAxisCount();
     }
 
-    public LiveData<String> getMessage() {
-        return deviceRepository.getMessage();
-    }
-
+    /**
+     * Назначает устройство по MAC-адресу на ось и сторону.
+     *
+     * @param mac        MAC-адрес устройства
+     * @param axisNumber Номер оси
+     * @param side       Сторона оси (левая/правая) в виде строки
+     */
     public void setDeviceToAxis(String mac, int axisNumber, String side) {
         deviceRepository.setDeviceToAxis(axisNumber, AxisSide.valueOf(side), mac);
     }
 
+    /**
+     * Сбрасывает назначение устройств для указанной оси.
+     *
+     * @param axisNumber Номер оси
+     */
     public void resetDevicesForAxis(int axisNumber) {
         deviceRepository.resetDevicesForAxis(axisNumber);
     }
 
+    /**
+     * Получает MAC-адрес устройства для заданной оси и стороны.
+     *
+     * @param axisNumber Номер оси
+     * @param side       Сторона оси
+     * @return MAC-адрес устройства или null
+     */
     public String getMacForAxisSide(int axisNumber, AxisSide side) {
         return deviceRepository.getMacForAxisSide(axisNumber, side);
     }
 
-    public void onConfigureClicked(String input) {
-        deviceRepository.onConfigureClicked(input);
-    }
-
-    public LiveData<Event<InstalationPoint>> getAxisClick() {
-        return deviceRepository.getAxisClick();
-    }
-
+    /**
+     * Обработка клика по оси и стороне.
+     *
+     * @param axisNumber Номер оси
+     * @param side       Сторона оси
+     */
     public void onClick(int axisNumber, AxisSide side) {
         deviceRepository.onWheelClicked(axisNumber, side);
     }
 
+    /**
+     * Возвращает LiveData с событием клика по точке установки.
+     *
+     * @return LiveData с Event<InstalationPoint>
+     */
+    public LiveData<Event<InstalationPoint>> getAxisClick() {
+        return deviceRepository.getAxisClick();
+    }
+
+    /**
+     * Возвращает набор MAC-адресов для указанной оси.
+     *
+     * @param axisNumber Номер оси
+     * @return Множество MAC-адресов устройств
+     */
     public Set<String> getMacsForAxis(int axisNumber) {
         return deviceRepository.getMacsForAxis(axisNumber);
     }
 
-    public void setSnackBarCallback(MessageCallback messageCallback) {
-        deviceRepository.setSnackBarCallback(messageCallback);
+    /**
+     * Обрабатывает событие клика на кнопку конфигурации с заданным входным значением.
+     *
+     * @param input Входные данные для конфигурации
+     */
+    public void onConfigureClicked(String input) {
+        deviceRepository.onConfigureClicked(input);
     }
 
-    public LiveData<List<Device>> getScannedDevicesLiveData() {
-        return deviceRepository.getScannedDevicesLiveData();
-    }
+    // === Device Saving State Tracking ===
 
-    public void updateScannedDevices(List<Device> newDevices) {
-        deviceRepository.updateScannedDevices(newDevices);
-    }
-
-    public void markMacAsSelected(Device device) {
-        deviceRepository.markMacAsSelected(device);
-    }
-
-    public void resetSelectedDevices() {
-        deviceRepository.resetSelectedDevices();
-    }
-
-    public void resetSelectedDevicesByMacs(Set<String> macs) {
-        deviceRepository.resetSelectedDevicesByMacs(macs);
-    }
-
-    public void method(LifecycleOwner owner) {
-        getAxisList().observe(owner, list
-                -> Log.d("MyTag", String.valueOf(list.stream()
-                .flatMap(axis -> axis.getSideDeviceMap()
-                        .values()
-                        .stream()
-                ).collect(Collectors.toList()))));
-    }
-
-
-
-    public LiveData<Boolean> getSavedStateLiveData() {
-        return deviceRepository.getSavedStateLiveData();
-    }
-
-    public void markAsSaved() {
-        deviceRepository.markAsSaved();
-    }
-
-    public void markAsUnsaved() {
-        deviceRepository.markAsUnsaved();
-    }
-
-    private final MutableLiveData<Boolean> isSelectionMode = new MutableLiveData<>(false);
-
-    public LiveData<Boolean> getSelectionModeLiveData() {
-        return isSelectionMode;
-    }
-
-    public void setSelectionMode(boolean isSelection) {
-        isSelectionMode.setValue(isSelection);
-    }
-
-    public LiveData<Set<String>> getFinishedMacs() {
-        return deviceRepository.getConfiguredMacs();
-    }
-
-    public void clearMacs() {
-        deviceRepository.clearMacs();
-    }
-
-    public void addFinishedMac(String mac) {
-        deviceRepository.addConfiguredMac(mac);
-    }
-
-    public void setLastFinishedMac(String mac) {
-        deviceRepository.setLastConfiguredMac(mac);
-    }
-
-    public LiveData<String> getLastFinishedMac() {
-        return deviceRepository.getLastConfiguredMac();
-    }
-
-    public void resetPassword(View view){
-
-    }
-
-    public void setNewPassword(View view){
-
-    }
-
-    private final MutableLiveData<Event<Void>> showPasswordDialogEvent = new MutableLiveData<>();
-
-    public LiveData<Event<Void>> getShowPasswordDialogEvent() {
-        return showPasswordDialogEvent;
-    }
-
-    public void requestPasswordInput() {
-        showPasswordDialogEvent.setValue(new Event<>(null));
-    }
-
-    public void submitPassword(String password) {
-        PasswordHolder.getInstance().setPassword(password, true);
-        PasswordHolder.getInstance().setPasswordSet(true);
-        bluetoothRepository.clearPasswordDialogShown();
-    }
-
-    public void setPasswordListener(PasswordDialogListener listener) {
-        bluetoothRepository.setPasswordListener(listener);
-    }
-
-    public void clearPasswordDialogShown() {
-        bluetoothRepository.clearPasswordDialogShown();
-    }
-
+    /**
+     * Проверяет, что все назначенные устройства сохранены и обновляет состояние allDevicesSaved.
+     */
     private void checkAllSaved() {
         List<AxisModel> axes = getAxisList().getValue();
         Set<String> finished = getFinishedMacs().getValue();
@@ -363,7 +335,6 @@ public class DeviceViewModel extends ViewModel {
             return;
         }
 
-        // Собираем все выбранные MAC адреса из каждой оси
         Set<String> selectedMacs = axes.stream()
                 .flatMap(axis -> axis.getSideDeviceMap().values().stream())
                 .filter(mac -> mac != null && !mac.isEmpty())
@@ -374,12 +345,257 @@ public class DeviceViewModel extends ViewModel {
                 axis.getSideDeviceMap().values().stream().anyMatch(mac -> mac != null && !mac.isEmpty())
         )
                 && finished.containsAll(selectedMacs)
-                && selectedMacs.containsAll(finished); // Чтобы не было лишних сохранённых
+                && selectedMacs.containsAll(finished);
 
         allDevicesSaved.setValue(saved);
     }
 
+    /**
+     * Возвращает LiveData с состоянием, что все устройства сохранены.
+     *
+     * @return LiveData<Boolean>
+     */
     public LiveData<Boolean> getAllDevicesSaved() {
         return allDevicesSaved;
+    }
+
+    // === Password Handling ===
+
+    /**
+     * Возвращает LiveData события для показа диалога ввода пароля.
+     *
+     * @return LiveData<Void>
+     */
+    public LiveData<Void> getShowPasswordDialogEvent() {
+        return passwordRepository.getShowPasswordDialogEvent();
+    }
+
+    /**
+     * Запрашивает показ диалога для ввода пароля.
+     */
+    public void requestPasswordInput() {
+        passwordRepository.requestPasswordInput();
+    }
+
+    /**
+     * Отправляет введённый пароль через UseCase.
+     *
+     * @param password Введённый пароль
+     */
+    public void submitPassword(String password) {
+        submitPasswordUseCase.execute(password);
+        bluetoothRepository.clearPasswordDialogShown();
+    }
+
+    /**
+     * Проверяет, установлен ли пароль.
+     *
+     * @return true, если пароль установлен; false — иначе
+     */
+    public boolean isPasswordSet() {
+        return passwordRepository.isSet();
+    }
+
+    /**
+     * Очищает сохранённый пароль.
+     */
+    public void clearPassword() {
+        passwordRepository.clear();
+    }
+
+    /**
+     * Сбрасывает пароль и флаг установки.
+     *
+     * @param view Не используется, параметр для возможности использования в XML
+     */
+    public void resetPassword(View view) {
+        passwordRepository.clear();
+        passwordRepository.setFlag(false);
+    }
+
+    /**
+     * Инициирует установку нового пароля (вызывает диалог).
+     *
+     * @param view Не используется, параметр для возможности использования в XML
+     */
+    public void setNewPassword(View view) {
+        requestPasswordInput();
+    }
+
+    /**
+     * Устанавливает слушатель событий диалога ввода пароля.
+     *
+     * @param listener Слушатель PasswordDialogListener
+     */
+    public void setPasswordListener(PasswordDialogListener listener) {
+        bluetoothRepository.setPasswordListener(listener);
+    }
+
+    /**
+     * Очищает флаг, что диалог ввода пароля уже был показан.
+     */
+    public void clearPasswordDialogShown() {
+        bluetoothRepository.clearPasswordDialogShown();
+    }
+
+    // === UI and Debug Helpers ===
+
+    /**
+     * Вспомогательный метод для логирования списка MAC-адресов устройств на осях.
+     *
+     * @param owner LifecycleOwner для привязки наблюдателя
+     */
+    public void method(LifecycleOwner owner) {
+        getAxisList().observe(owner, list ->
+                Log.d("MyTag", String.valueOf(list.stream()
+                        .flatMap(axis -> axis.getSideDeviceMap()
+                                .values()
+                                .stream()
+                        ).collect(Collectors.toList()))));
+    }
+
+    /**
+     * Возвращает LiveData режима выбора устройств.
+     *
+     * @return LiveData<Boolean>
+     */
+    public LiveData<Boolean> getSelectionModeLiveData() {
+        return deviceRepository.getSelectionModeLiveData();
+    }
+
+    /**
+     * Устанавливает режим выбора устройств.
+     *
+     * @param isSelection true — режим выбора включён; false — выключен
+     */
+    public void setSelectionMode(boolean isSelection) {
+        deviceRepository.setSelectionMode(isSelection);
+    }
+
+    /**
+     * Возвращает LiveData с сообщениями для отображения.
+     *
+     * @return LiveData<String>
+     */
+    public LiveData<String> getMessage() {
+        return deviceRepository.getMessage();
+    }
+
+    /**
+     * Возвращает LiveData со списком отсканированных устройств из DeviceRepository.
+     *
+     * @return LiveData<List < Device>>
+     */
+    public LiveData<List<Device>> getScannedDevicesLiveData() {
+        return deviceRepository.getScannedDevicesLiveData();
+    }
+
+    /**
+     * Обновляет список отсканированных устройств.
+     *
+     * @param newDevices Новый список устройств
+     */
+    public void updateScannedDevices(List<Device> newDevices) {
+        deviceRepository.updateScannedDevices(newDevices);
+    }
+
+    /**
+     * Отмечает устройство как выбранное.
+     *
+     * @param device Выбранное устройство
+     */
+    public void markMacAsSelected(Device device) {
+        deviceRepository.markMacAsSelected(device);
+    }
+
+    /**
+     * Сбрасывает выбранные устройства.
+     */
+    public void resetSelectedDevices() {
+        deviceRepository.resetSelectedDevices();
+    }
+
+    /**
+     * Сбрасывает выбранные устройства по заданному набору MAC-адресов.
+     *
+     * @param macs Множество MAC-адресов
+     */
+    public void resetSelectedDevicesByMacs(Set<String> macs) {
+        deviceRepository.resetSelectedDevicesByMacs(macs);
+    }
+
+    /**
+     * Возвращает LiveData с множеством MAC-адресов уже сконфигурированных устройств.
+     *
+     * @return LiveData<Set < String>>
+     */
+    public LiveData<Set<String>> getFinishedMacs() {
+        return deviceRepository.getConfiguredMacs();
+    }
+
+    /**
+     * Добавляет MAC-адрес в список сконфигурированных устройств.
+     *
+     * @param mac MAC-адрес устройства
+     */
+    public void addFinishedMac(String mac) {
+        deviceRepository.addConfiguredMac(mac);
+    }
+
+    /**
+     * Очищает список сконфигурированных MAC-адресов.
+     */
+    public void clearMacs() {
+        deviceRepository.clearMacs();
+    }
+
+    /**
+     * Устанавливает последний сконфигурированный MAC-адрес.
+     *
+     * @param mac MAC-адрес
+     */
+    public void setLastFinishedMac(String mac) {
+        deviceRepository.setLastConfiguredMac(mac);
+    }
+
+    /**
+     * Возвращает LiveData с последним сконфигурированным MAC-адресом.
+     *
+     * @return LiveData<String>
+     */
+    public LiveData<String> getLastFinishedMac() {
+        return deviceRepository.getLastConfiguredMac();
+    }
+
+    /**
+     * Возвращает LiveData состояния сохранения устройства.
+     *
+     * @return LiveData<Boolean>
+     */
+    public LiveData<Boolean> getSavedStateLiveData() {
+        return deviceRepository.getSavedStateLiveData();
+    }
+
+    /**
+     * Отмечает устройство как сохранённое.
+     */
+    public void markAsSaved() {
+        deviceRepository.markAsSaved();
+    }
+
+    /**
+     * Отмечает устройство как не сохранённое.
+     */
+    public void markAsUnsaved() {
+        deviceRepository.markAsUnsaved();
+    }
+
+    /**
+     * Устанавливает callback для отображения сообщений Snackbar.
+     *
+     * @param messageCallback Callback для сообщений
+     */
+    public void setSnackBarCallback(MessageCallback messageCallback) {
+        deviceRepository.setSnackBarCallback(messageCallback);
     }
 }

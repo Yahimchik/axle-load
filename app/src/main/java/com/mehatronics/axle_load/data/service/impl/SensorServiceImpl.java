@@ -27,6 +27,7 @@ public class SensorServiceImpl implements SensorService {
     private final MutableLiveData<List<Device>> processedDevicesLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> savedStateLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> lastFinishedMac = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isSelectionMode = new MutableLiveData<>(false);
     private final Map<String, Device> processedDevices = new HashMap<>();
     private final Set<String> selectedMacs = new HashSet<>();
     private final ResourceProvider resourceProvider;
@@ -153,5 +154,15 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public LiveData<Set<String>> getConfiguredMacs() {
         return finishedMacs;
+    }
+
+    @Override
+    public LiveData<Boolean> getSelectionModeLiveData() {
+        return isSelectionMode;
+    }
+
+    @Override
+    public void setSelectionMode(boolean isSelection) {
+        isSelectionMode.setValue(isSelection);
     }
 }

@@ -2,7 +2,7 @@ package com.mehatronics.axle_load.domain.strategy.impl;
 
 import android.util.Log;
 
-import com.mehatronics.axle_load.domain.entities.PasswordHolder;
+import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
 
 import javax.inject.Inject;
@@ -11,14 +11,16 @@ import javax.inject.Singleton;
 @Singleton
 public class UserPasswordStrategy implements CommandStrategy {
 
-    @Inject
-    public UserPasswordStrategy() {
+    private final PasswordRepository passwordRepository;
 
+    @Inject
+    public UserPasswordStrategy(PasswordRepository passwordRepository) {
+        this.passwordRepository = passwordRepository;
     }
 
     @Override
     public void fillBuffer(byte[] buffer) {
-        if (!PasswordHolder.getInstance().shouldSendPassword()) {
+        if (!passwordRepository.shouldSendPassword()) {
             Log.d("MyTag", "Skip password buffer filling");
             return;
         }
@@ -27,7 +29,8 @@ public class UserPasswordStrategy implements CommandStrategy {
             buffer[i] = 0x20;
         }
 
-        char[] chars = PasswordHolder.getInstance().getPassword().toCharArray();
+        char[] chars = passwordRepository.get().toCharArray();
+
         for (int i = 0; i < chars.length && i < 10; i++) {
             buffer[4 + i] = (byte) chars[i];
         }

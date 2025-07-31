@@ -9,14 +9,15 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.data.service.impl.GattReadServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.GattWriteServiceImpl;
-import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.impl.CommandAfterAuth;
 import com.mehatronics.axle_load.domain.state.impl.FirstAuthCommandState;
@@ -35,12 +36,14 @@ import javax.inject.Inject;
  */
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
+    private final PasswordRepository passwordRepository;
     private final GattConnectionManager connectionManager;
     private final GattWriteService gattWriteService;
     private final GattReadService gattReadService;
     private final GattDataMapper gattDataMapper;
     private ConnectionHandler connectionHandler;
     private CommandStateHandler stateHandler;
+    private PasswordDialogListener passwordDialogListener;
     private boolean passwordDialogShown = false;
 
 
@@ -48,19 +51,21 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      * Constructs the BluetoothGattCallbackHandler with injected dependencies.
      *
      * @param connectionManager manages BLE connection state
-     * @param gattReadService processes GATT read operations and parsing
-     * @param gattWriteService    processes GATT write operations
+     * @param gattReadService   processes GATT read operations and parsing
+     * @param gattWriteService  processes GATT write operations
      * @param gattDataMapper    parses and serializes data to/from the BLE device
      * @param stateHandler      current command state handler for managing BLE commands
      */
     @Inject
     public BluetoothGattCallbackHandler(
+            PasswordRepository passwordRepository,
             GattConnectionManager connectionManager,
             GattReadService gattReadService,
             GattWriteService gattWriteService,
             GattDataMapper gattDataMapper,
             CommandStateHandler stateHandler
     ) {
+        this.passwordRepository = passwordRepository;
         this.connectionManager = connectionManager;
         this.gattReadService = gattReadService;
         this.gattWriteService = gattWriteService;
@@ -68,11 +73,14 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         this.stateHandler = stateHandler;
     }
 
-    public String getCurrentMac(){
-      return   gattReadService.getCurrentMac();
+    public PasswordRepository getPasswordRepository() {
+        return passwordRepository;
     }
 
-    private PasswordDialogListener passwordDialogListener;
+    public String getCurrentMac() {
+        return gattReadService.getCurrentMac();
+    }
+
 
     public void setPasswordDialogListener(PasswordDialogListener listener) {
         this.passwordDialogListener = listener;

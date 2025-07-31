@@ -2,6 +2,10 @@ package com.mehatronics.axle_load.di;
 
 import android.content.Context;
 
+import com.mehatronics.axle_load.data.repository.DeviceRepository;
+import com.mehatronics.axle_load.data.repository.PasswordRepository;
+import com.mehatronics.axle_load.data.repository.impl.DeviceRepositoryImpl;
+import com.mehatronics.axle_load.data.repository.impl.PasswordRepositoryImpl;
 import com.mehatronics.axle_load.data.service.AxisService;
 import com.mehatronics.axle_load.data.service.BleScannerService;
 import com.mehatronics.axle_load.data.service.GattReadService;
@@ -9,6 +13,7 @@ import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.data.service.PermissionHandlerService;
 import com.mehatronics.axle_load.data.service.PermissionObserverService;
 import com.mehatronics.axle_load.data.service.PermissionService;
+import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.data.service.SensorService;
 import com.mehatronics.axle_load.data.service.impl.AxisServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.BleScannerServiceImpl;
@@ -17,16 +22,17 @@ import com.mehatronics.axle_load.data.service.impl.GattWriteServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionHandlerServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionObserverServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionServiceImpl;
-import com.mehatronics.axle_load.data.service.impl.SensorServiceImpl;
-import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.data.service.impl.SensorSelectionServiceImpl;
+import com.mehatronics.axle_load.data.service.impl.SensorServiceImpl;
 import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCase;
 import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
+import com.mehatronics.axle_load.domain.usecase.SubmitPasswordUseCase;
 import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
 import com.mehatronics.axle_load.domain.usecase.impl.ChangeLanguageUseCaseImpl;
 import com.mehatronics.axle_load.domain.usecase.impl.PermissionUseCaseImpl;
 import com.mehatronics.axle_load.domain.usecase.impl.SaveCalibrationTableUseCaseImpl;
+import com.mehatronics.axle_load.domain.usecase.impl.SubmitPasswordUseCaseImpl;
 import com.mehatronics.axle_load.domain.usecase.impl.ValidateAxisCountUseCaseImpl;
 
 import javax.inject.Singleton;
@@ -98,4 +104,17 @@ public abstract class ServiceImplModule {
     @Binds
     @Singleton
     public abstract SensorSelectionService bindSensorSelectionManager(SensorSelectionServiceImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract PasswordRepository bindPasswordRepository(PasswordRepositoryImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract SubmitPasswordUseCase bindSubmitPasswordUseCase(SubmitPasswordUseCaseImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract DeviceRepository bindDeviceRepository(DeviceRepositoryImpl impl);
+
 }
