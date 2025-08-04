@@ -3,7 +3,6 @@ package com.mehatronics.axle_load.domain.state.impl;
 import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVENTY_SEVEN_COMMAND;
 
-import android.bluetooth.BluetoothGatt;
 import android.util.Log;
 
 import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
@@ -24,11 +23,10 @@ public class ConfigureCommandState implements CommandStateHandler {
      * Выполняет отправку конфигурации в BLE-устройство.
      * Если конфигурация успешно отправлена, переходит к финальному состоянию.
      *
-     * @param gatt    объект BluetoothGatt для взаимодействия с устройством
      * @param handler обработчик GATT, содержащий текущую конфигурацию и состояние
      */
     @Override
-    public void handle(BluetoothGatt gatt, BluetoothGattCallbackHandler handler) {
+    public void handle(BluetoothGattCallbackHandler handler) {
         handler.setCommand(SEVENTY_SEVEN_COMMAND, FIRST_COMMAND);
         handler.saveConfiguration();
         Log.d("MyTag", "Configuration sent");

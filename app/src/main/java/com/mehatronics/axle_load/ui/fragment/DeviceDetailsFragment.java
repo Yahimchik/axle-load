@@ -1,5 +1,10 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+import static com.mehatronics.axle_load.R.layout.fragment_device_details;
+import static com.mehatronics.axle_load.R.string.disconnect_from;
+import static com.mehatronics.axle_load.R.string.invalid_detector;
+import static com.mehatronics.axle_load.R.string.save_configuration;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
 
 import android.os.Bundle;
@@ -11,11 +16,13 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
+import com.mehatronics.axle_load.ui.notification.MessageCallback;
+import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import javax.inject.Inject;
@@ -28,13 +35,15 @@ import dagger.hilt.android.AndroidEntryPoint;
  * Использует {@link DeviceViewModel} для получения и обновления данных.
  */
 @AndroidEntryPoint
-public class DeviceDetailsFragment extends Fragment /*implements MessageCallback*/ {
+public class DeviceDetailsFragment extends Fragment implements MessageCallback {
+    @Inject
+    protected SnackbarManager snackbarManager;
     @Inject
     protected DeviceDetailsBinder detailsBinder;
     @Inject
     protected PasswordInputDialogFragment dialog;
     private DeviceViewModel viewModel;
-    private View view;
+    private LoadingManager loadingManager;
 
     /**
      * Инициализация ViewModel при создании фрагмента.
@@ -57,29 +66,34 @@ public class DeviceDetailsFragment extends Fragment /*implements MessageCallback
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_device_details, container, false);
+        var view = inflater.inflate(fragment_device_details, container, false);
         detailsBinder.init(view, viewModel);
         detailsBinder.setupPopupMenu(view, viewModel::resetPassword, viewModel::setNewPassword);
+        loadingManager = new LoadingManager(view);
 
         observeView();
-        setupSaveButton();
         setupResetTableBtn();
-        setupSaveTableButton();
 
         return view;
     }
 
-    private boolean isPasswordDialogVisible = false;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        cleanUpOnClose();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        snackbarManager.showMessage(getViewById(), message);
+    }
 
     /**
      * Подписка на изменения данных во ViewModel для обновления UI.
      * Обновляет детали устройства, таблицу калибровки и конфигурацию сенсора.
      */
     private void observeView() {
-        viewModel.getDeviceDetails().observe(getViewLifecycleOwner(), deviceDetails -> {
-            detailsBinder.bindInfo(deviceDetails);
-            viewModel.updateVirtualPoint(deviceDetails);
-        });
+        viewModel.getDeviceDetails().observe(getViewLifecycleOwner(), this::observeDetails);
 
         observeSelectionMode();
 
@@ -91,49 +105,59 @@ public class DeviceDetailsFragment extends Fragment /*implements MessageCallback
         observePasswordDialogEvent();
     }
 
-    private void observeSelectionMode() {
-        viewModel.getSelectionModeLiveData().observe(getViewLifecycleOwner(), detailsBinder::setVisibility);
+    private void observeDetails(DeviceDetails deviceDetails) {
+        detailsBinder.bindInfo(deviceDetails);
+        viewModel.updateVirtualPoint(deviceDetails);
+    }
 
+    private void observeSelectionMode() {
         detailsBinder.finishButtonOnClick(v -> {
-            String lastMac = viewModel.getLastFinishedMac().getValue();
-            if (lastMac != null) {
-                viewModel.addFinishedMac(lastMac);
+            loadingManager.showLoading(true);
+            int res = viewModel.saveTable();
+            if (res > 0) showMessage(getString(invalid_detector, res));
+            else{
+                SensorConfig config = viewModel.getSensorConfigure().getValue();
+                if (config != null) {
+                    detailsBinder.updateSensorConfig(config);
+                    viewModel.saveSensorConfiguration();
+                    showMessage(getString(save_configuration));
+                }
             }
 
-            closeFragment();
+            if (viewModel.isConfigurationSaved()){
+                loadingManager.showLoading(false);
+            }
+
+//            String lastMac = viewModel.getLastFinishedMac().getValue();
+//            if (lastMac != null) {
+//                viewModel.addFinishedMac(lastMac);
+//            }
+//            closeFragment();
         });
     }
 
     private void observePasswordDialogEvent() {
         viewModel.getShowPasswordDialogEvent().observe(getViewLifecycleOwner(), unused -> {
-            if (viewModel.isPasswordSet()
-                    && !isPasswordDialogVisible
-                    && isAdded()
-                    && getView() != null
-                    && !isRemoving()
-                    && !requireActivity().isFinishing()) {
-                showPasswordInputDialog();
-            } else {
-                Log.d("MyTag", "Диалог не открыт — пароль уже установлен или уже показывается, или фрагмент неактивен");
-            }
+            if (viewModel.isPasswordSet() && !isDialogVisible()) showPasswordInputDialog();
+            else Log.d("MyTag", "Диалог не открыт");
         });
     }
 
     private void showPasswordInputDialog() {
-        if (isPasswordDialogVisible) return;
-        isPasswordDialogVisible = true;
+        if (isDialogVisible()) return;
+        viewModel.setPasswordDialogVisible(true);
 
         dialog.setPasswordListener(new PasswordListener() {
             @Override
             public void onPasswordSubmitted(String password) {
                 viewModel.submitPassword(password);
-                isPasswordDialogVisible = false;
+                viewModel.setPasswordDialogVisible(false);
             }
 
             @Override
             public void onPasswordCancelled() {
                 viewModel.clearPassword();
-                isPasswordDialogVisible = false;
+                viewModel.setPasswordDialogVisible(false);
 
                 viewModel.clearPasswordDialogShown();
                 viewModel.requestPasswordInput();
@@ -144,10 +168,14 @@ public class DeviceDetailsFragment extends Fragment /*implements MessageCallback
         dialog.show(getParentFragmentManager(), TAG);
     }
 
+    private boolean isDialogVisible() {
+        return Boolean.TRUE.equals(viewModel.getIsPasswordDialogVisible().getValue());
+    }
+
     private void closeFragment() {
         requireActivity().getSupportFragmentManager().popBackStack(
                 DeviceDetailsFragment.class.getSimpleName(),
-                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+                POP_BACK_STACK_INCLUSIVE
         );
     }
 
@@ -158,31 +186,8 @@ public class DeviceDetailsFragment extends Fragment /*implements MessageCallback
         detailsBinder.setupReadFromSensorButton(v -> viewModel.rereadCalibrationTable());
     }
 
-    /**
-     * Настраивает кнопку сохранения таблицы калибровки.
-     * При сохранении выводит сообщение об успехе или ошибке.
-     */
-    private void setupSaveTableButton() {
-        detailsBinder.setupSaveTableButton(v -> {
-            int result = viewModel.saveTable();
-            if (result > 0) showMessage(getString(R.string.invalid_detector, result));
-            else showMessage(getString(R.string.save_configuration));
-        });
-    }
-
-    /**
-     * Настраивает кнопку сохранения конфигурации сенсора.
-     * Обновляет данные конфигурации и сохраняет их через ViewModel.
-     */
-    private void setupSaveButton() {
-        detailsBinder.setupSaveButton(v -> {
-            SensorConfig config = viewModel.getSensorConfigure().getValue();
-            if (config != null) {
-                detailsBinder.updateSensorConfig(config);
-                viewModel.saveSensorConfiguration();
-                showMessage(getString(R.string.save_configuration));
-            }
-        });
+    private View getViewById() {
+        return requireActivity().findViewById(android.R.id.content);
     }
 
     /**
@@ -197,9 +202,9 @@ public class DeviceDetailsFragment extends Fragment /*implements MessageCallback
         viewModel.disconnect();
 
         viewModel.clearPassword();
-        isPasswordDialogVisible = false;
+        viewModel.setPasswordDialogVisible(false);
 
-        showMessage(getString(R.string.disconnect_from, viewModel.getDeviceName()));
+        showMessage(getString(disconnect_from, viewModel.getDeviceName()));
 
         viewModel.clearPasswordDialogShown();
         viewModel.requestPasswordInput();
@@ -209,21 +214,5 @@ public class DeviceDetailsFragment extends Fragment /*implements MessageCallback
 
         closeFragment();
         Log.d("MyTag", "Device details fragment is closed");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        cleanUpOnClose();
-    }
-
-    /**
-     * Отображает сообщение в Snackbar.
-     *
-     * @param message Текст сообщения.
-     */
-    public void showMessage(String message) {
-        View root = requireActivity().findViewById(android.R.id.content);
-        Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
     }
 }

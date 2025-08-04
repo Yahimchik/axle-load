@@ -45,6 +45,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private CommandStateHandler stateHandler;
     private PasswordDialogListener passwordDialogListener;
     private boolean passwordDialogShown = false;
+    private boolean isWritePending = false;
 
 
     /**
@@ -148,6 +149,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         if (isStatusOk(status, BluetoothGatt.GATT_SUCCESS)) {
             gattReadService.handleRead(gatt, characteristic);
             if (!gattReadService.isReadingAll()) {
+                isWritePending = false;
                 writeToCharacteristic(gatt);
             }
         }
@@ -274,10 +276,13 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      * @param gatt the BluetoothGatt instance
      */
     public void writeToCharacteristic(BluetoothGatt gatt) {
+        if (isWritePending) return;  // блокируем повторные вызовы
         gattWriteService.clearBuffer();
-        stateHandler.handle(gatt, this);
+        stateHandler.handle(this);
         gattWriteService.write(gatt);
+        isWritePending = true;  // включаем флаг, что запись запущена
     }
+
 
     /**
      * Requests rereading of the calibration table after successful authentication.
@@ -358,13 +363,5 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     private void updateStateAfterConnect() {
         gattReadService.updateState(true);
         Log.d("MyTag", "Connected to device");
-    }
-
-    /**
-     * Resets internal state after disconnecting from device.
-     */
-    private void resetStateAfterDisconnect() {
-        gattReadService.updateState(false);
-        Log.d("MyTag", "Disconnected from device");
     }
 }

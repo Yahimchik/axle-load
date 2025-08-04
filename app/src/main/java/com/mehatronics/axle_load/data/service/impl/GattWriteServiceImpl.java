@@ -3,8 +3,11 @@ package com.mehatronics.axle_load.data.service.impl;
 import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
 import static com.mehatronics.axle_load.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
 
+import android.Manifest;
 import android.bluetooth.BluetoothGatt;
 import android.util.Log;
+
+import androidx.annotation.RequiresPermission;
 
 import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
@@ -44,6 +47,7 @@ public class GattWriteServiceImpl implements GattWriteService {
         Arrays.fill(buffer, (byte) 0);
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void write(BluetoothGatt gatt) {
         var service = gatt.getService(USER_SERVICE_DPS);
         if (service == null) return;
@@ -51,13 +55,10 @@ public class GattWriteServiceImpl implements GattWriteService {
         var characteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
         if (characteristic == null) return;
 
-        characteristic.setValue(buffer);
+        Log.d("MyTag", Arrays.toString(buffer));
 
-        try {
-            gatt.writeCharacteristic(characteristic);
-        } catch (SecurityException e) {
-            Log.d("MyTag", "Security exception: " + e.getMessage());
-        }
+        characteristic.setValue(buffer);
+        gatt.writeCharacteristic(characteristic);
     }
 
     private String key(int c1, int c2) {

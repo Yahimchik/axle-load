@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.data.repository.impl;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
@@ -11,6 +12,8 @@ import javax.inject.Singleton;
 @Singleton
 public class PasswordRepositoryImpl implements PasswordRepository {
     private final SingleLiveEvent<Void> showPasswordDialogEvent = new SingleLiveEvent<>();
+    private final MutableLiveData<Boolean> isPasswordDialogVisible = new MutableLiveData<>(false);
+
     private boolean shouldSendPassword = false;
     private boolean isSet = false;
     private String password;
@@ -65,5 +68,15 @@ public class PasswordRepositoryImpl implements PasswordRepository {
     @Override
     public void requestPasswordInput() {
         showPasswordDialogEvent.call();
+    }
+
+    @Override
+    public LiveData<Boolean> getIsPasswordDialogVisible() {
+        return isPasswordDialogVisible;
+    }
+
+    @Override
+    public void setPasswordDialogVisible(boolean visible) {
+        isPasswordDialogVisible.setValue(visible);
     }
 }

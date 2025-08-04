@@ -103,21 +103,6 @@ public class ApplicationModule {
         public static CommandStateHandler provideCommandStateHandler() {
             return new DefaultCommandStateFactory().createInitialState();
         }
-
-        /**
-         * Предоставляет BluetoothHandler для связи между устройством и активностью.
-         *
-         * @param deviceViewModel ViewModel, содержащая состояние устройства.
-         * @param activity        Активность, реализующая Bluetooth-логику.
-         */
-//        @Provides
-//        public static BluetoothHandler provideBluetoothConnectionManager(
-//                DeviceViewModel deviceViewModel,
-//                ConfigureViewModel configureViewModel,
-//                BaseBluetoothActivity activity,
-//                ResourceProvider resourceProvider) {
-//            return new BluetoothHandler(deviceViewModel,configureViewModel, activity, resourceProvider);
-//        }
     }
 
     /**
@@ -186,17 +171,6 @@ public class ApplicationModule {
             return new FragmentNavigator((AppCompatActivity) context);
         }
     }
-
-//    @Module
-//    @InstallIn(FragmentComponent.class)
-//    public static class BinderModule {
-//
-//        @Provides
-//        @FragmentScoped
-//        public DeviceDetailsBinder provideDeviceDetailsBinder(DeviceDetailsFormatter formatter, SensorConfigFormatter configFormatter) {
-//            return new DeviceDetailsBinder(formatter, configFormatter);
-//        }
-//    }
 }
 
 

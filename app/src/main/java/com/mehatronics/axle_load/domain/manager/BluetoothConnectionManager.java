@@ -108,6 +108,10 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
     }
 
+    public boolean isConfigurationSaved() {
+        return gattCallbackHandler.isConfigurationSaved();
+    }
+
     public void saveTable() {
         gattCallbackHandler.setTableSaved(true);
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);

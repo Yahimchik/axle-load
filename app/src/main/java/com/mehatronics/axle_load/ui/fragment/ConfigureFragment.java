@@ -1,14 +1,11 @@
 package com.mehatronics.axle_load.ui.fragment;
 
-import static com.mehatronics.axle_load.domain.entities.enums.ScreenType.CONFIGURE;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.domain.entities.enums.ScreenType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
 
@@ -35,21 +32,19 @@ public class ConfigureFragment extends BaseSensorFragment {
     }
 
     @Override
-    protected AxisViewBinder createBinder(View view) {
-        return new AxisViewBinder.builder()
-                .withRoot(view)
-                .onAction(handler)
-                .withMessageCallback(this)
-                .withResourceProvider(provider)
-                .onFinishClick(() -> {
-                    navigator.showFragment(new AxleOverviewFragment());
-                })
-                .build();
-    }
+    protected void createBinder(View view) {
+        var binder = new AxisViewBinder(view, handler, this, provider, navigator);
 
+        observe(viewModel.getAxisList(), binder::submitList);
+        observe(viewModel.getAxisClick(), this::handleAxisClickEvent);
 
-    @Override
-    protected ScreenType getScreenType() {
-        return CONFIGURE;
+        observe(viewModel.getSavedStateLiveData(), binder::setSavedState);
+        observe(viewModel.getFinishedMacs(), binder::addFinishedMac);
+
+        observeDeviceSelection(viewModel::setDeviceToAxis);
+        observe(viewModel.getAxisList(), binder::updateSaveButtonState);
+        observe(viewModel.getAllDevicesSaved(), binder::setFinishButtonVisible);
+
+        viewModel.method(getViewLifecycleOwner());
     }
 }

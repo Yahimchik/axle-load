@@ -1,5 +1,6 @@
 package com.mehatronics.axle_load.ui.adapter.sensor;
 
+import static android.R.layout.simple_spinner_item;
 import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
 import static com.mehatronics.axle_load.constants.StringConstants.LEFT;
 import static com.mehatronics.axle_load.constants.StringConstants.RIGHT;
@@ -56,12 +57,9 @@ public class SensorConfigAdapter {
 
         initSpinner();
 
-        addWatcher(messageDeliveryPeriod, SensorConfigAdapter::accept,
-                () -> cache.messageDeliveryPeriod, val -> cache.messageDeliveryPeriod = val);
-        addWatcher(measurementPeriod, SensorConfigAdapter::accept,
-                () -> cache.measurementPeriod, val -> cache.measurementPeriod = val);
-        addWatcher(stateNumber, SensorConfigAdapter::accept,
-                () -> cache.stateNumber, val -> cache.stateNumber = val);
+        addWatcher(messageDeliveryPeriod, SensorConfigAdapter::accept, () -> cache.messageDeliveryPeriod, val -> cache.messageDeliveryPeriod = val);
+        addWatcher(measurementPeriod, SensorConfigAdapter::accept, () -> cache.measurementPeriod, val -> cache.measurementPeriod = val);
+        addWatcher(stateNumber, SensorConfigAdapter::accept, () -> cache.stateNumber, val -> cache.stateNumber = val);
     }
 
     private void validateAndToggleSaveButton() {
@@ -135,7 +133,7 @@ public class SensorConfigAdapter {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 installationPointSpinner.getContext(),
-                android.R.layout.simple_spinner_item,
+                simple_spinner_item,
                 pointOptions
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

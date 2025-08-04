@@ -9,10 +9,12 @@ import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibratio
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
 
+import android.Manifest;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.util.Log;
 
+import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -52,6 +54,8 @@ public class GattReadServiceImpl implements GattReadService {
      * LiveData с конфигурацией сенсора, обновляется после получения данных конфигурации.
      */
     private final MutableLiveData<SensorConfig> sensorConfigLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+
     /**
      * Парсер данных GATT.
      */
@@ -132,6 +136,7 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param gatt объект BluetoothGatt для чтения характеристик
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void readAllCharacteristics(BluetoothGatt gatt) {
         characteristicsQueue.clear();
         for (var service : gatt.getServices()) {
@@ -155,6 +160,7 @@ public class GattReadServiceImpl implements GattReadService {
      * @param gatt           объект BluetoothGatt
      * @param characteristic прочитанная характеристика
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void handleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         byte[] bytes = characteristic.getValue();
 
@@ -206,16 +212,13 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param gatt объект BluetoothGatt
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     @Override
     public void readNextAfterWrite(BluetoothGatt gatt) {
         var service = gatt.getService(USER_SERVICE_DPS);
         var readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_DPS);
         if (readCharacteristic != null) {
-            try {
-                gatt.readCharacteristic(readCharacteristic);
-            } catch (SecurityException e) {
-                Log.d("MyTag", "Security exception: " + e.getMessage());
-            }
+            gatt.readCharacteristic(readCharacteristic);
         }
     }
 
@@ -325,15 +328,12 @@ public class GattReadServiceImpl implements GattReadService {
      *
      * @param gatt объект BluetoothGatt
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private void readNext(BluetoothGatt gatt) {
         if (!characteristicsQueue.isEmpty()) {
             BluetoothGattCharacteristic next = characteristicsQueue.poll();
             if (next != null) {
-                try {
-                    gatt.readCharacteristic(next);
-                } catch (SecurityException e) {
-                    Log.d("MyTag", "Security exception: " + e.getMessage());
-                }
+                gatt.readCharacteristic(next);
             }
         } else {
             isReadingAll = false;
@@ -351,5 +351,17 @@ public class GattReadServiceImpl implements GattReadService {
      */
     private boolean isMatchingCommand(byte[] bytes, int index, int command) {
         return (bytes[index] & ZERO_COMMAND_BINARY) == command;
+    }
+
+    public LiveData<Boolean> getIsLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean value) {
+        isLoading.setValue(value);
+    }
+
+    public void onOperationFinished() {
+        setLoading(false);
     }
 }

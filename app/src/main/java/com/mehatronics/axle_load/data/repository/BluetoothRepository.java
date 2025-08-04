@@ -128,6 +128,10 @@ public class BluetoothRepository {
         bleScannerService.removeDeviceByAddress(device.getMacAddress());
     }
 
+    public boolean isConfigurationSaved() {
+        return bluetoothConnectionManager.isConfigurationSaved();
+    }
+
     /**
      * Сохраняет текущую конфигурацию на устройстве.
      */

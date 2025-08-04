@@ -20,4 +20,8 @@ public interface PasswordRepository {
     LiveData<Void> getShowPasswordDialogEvent();
 
     void requestPasswordInput();
+
+    LiveData<Boolean> getIsPasswordDialogVisible();
+
+    void setPasswordDialogVisible(boolean visible);
 }

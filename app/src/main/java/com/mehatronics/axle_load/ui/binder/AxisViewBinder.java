@@ -12,8 +12,8 @@ import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
-import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
-import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
+import com.mehatronics.axle_load.ui.fragment.AxleOverviewFragment;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
 import java.util.List;
@@ -22,29 +22,63 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class AxisViewBinder implements BaseBinder {
+    private final FragmentNavigator navigator;
     private final EditText editTextAxisCount;
+
     private final Button buttonConfigure;
     private final Button saveButton;
     private final Button finishButton;
+
     private final AxisAdapter adapter;
-    private final MessageCallback messageCallback;
+    private final MessageCallback callback;
     private final ResourceProvider provider;
-    private final Runnable onFinishClicked;
 
-    private AxisViewBinder(builder builder) {
-        this.adapter = new AxisAdapter(builder.clickListener, builder.resetListener);
-        this.editTextAxisCount = builder.root.findViewById(R.id.editTextAxisCount);
-        this.buttonConfigure = builder.root.findViewById(R.id.buttonConfigure);
-        this.saveButton = builder.root.findViewById(R.id.buttonSave);
-        this.finishButton = builder.root.findViewById(R.id.finishButton);
-        this.messageCallback = builder.messageCallback;
-        this.provider = builder.resourceProvider;
-        this.onFinishClicked = builder.onFinishClicked;
-        initRecyclerView(builder.root, R.id.recyclerViewAxes, adapter);
+    public AxisViewBinder(
+            View root,
+            BluetoothHandler handler,
+            MessageCallback callback,
+            ResourceProvider resourceProvider,
+            FragmentNavigator navigator
+    ) {
 
-        onClickConfig(builder.onConfigureClicked);
-        onSave();
-        onFinish();
+        this.adapter = new AxisAdapter(handler::onClick, handler::onReset);
+        this.editTextAxisCount = root.findViewById(R.id.editTextAxisCount);
+        this.buttonConfigure = root.findViewById(R.id.buttonConfigure);
+        this.saveButton = root.findViewById(R.id.buttonSave);
+        this.finishButton = root.findViewById(R.id.finishButton);
+        this.callback = callback;
+        this.provider = resourceProvider;
+        this.navigator = navigator;
+
+        initRecyclerView(root, R.id.recyclerViewAxes, adapter);
+
+        setupClickListeners(handler::onConfigureClick);
+    }
+
+    private void setupClickListeners(Consumer<String> onConfigureClicked) {
+        buttonConfigure.setOnClickListener(v -> {
+            var input = editTextAxisCount.getText().toString().trim();
+            onConfigureClicked.accept(input);
+        });
+
+        saveButton.setOnClickListener(v -> {
+            if (isCanSave()) {
+                adapter.setSavedState(true);
+            } else {
+                callback.showMessage(provider.getString(error_select_at_least_one_sensor_per_axis));
+            }
+        });
+
+        finishButton.setOnClickListener(v -> navigator.showFragment(new AxleOverviewFragment()));
+    }
+
+    private boolean isCanSave() {
+        var axisList = adapter.getCurrentList();
+        return !axisList.isEmpty() && axisList.stream()
+                .allMatch(axis -> axis.getSideDeviceMap()
+                        .values()
+                        .stream()
+                        .anyMatch(Objects::nonNull));
     }
 
     public void addFinishedMac(Set<String> mac) {
@@ -66,85 +100,5 @@ public class AxisViewBinder implements BaseBinder {
     public void updateSaveButtonState(List<AxisModel> axes) {
         submitList(axes);
         saveButton.setEnabled(true);
-    }
-
-    private void onClickConfig(Consumer<String> onConfigureClicked) {
-        buttonConfigure.setOnClickListener(v -> {
-            var input = editTextAxisCount.getText().toString().trim();
-            onConfigureClicked.accept(input);
-        });
-    }
-
-    private void onSave() {
-        saveButton.setOnClickListener(v -> {
-            if (isCanSave()) {
-                adapter.setSavedState(true);
-            } else {
-                messageCallback.showMessage(provider.getString(error_select_at_least_one_sensor_per_axis));
-            }
-        });
-    }
-
-    private boolean isCanSave() {
-        var axisList = adapter.getCurrentList();
-        return !axisList.isEmpty() && axisList.stream()
-                .allMatch(axis ->
-                        axis.getSideDeviceMap()
-                                .values()
-                                .stream()
-                                .anyMatch(Objects::nonNull) // mac != null
-                );
-    }
-
-    private void onFinish() {
-        finishButton.setOnClickListener(v -> {
-            if (onFinishClicked != null) {
-                onFinishClicked.run();
-            }
-        });
-    }
-
-    public static class builder {
-        private View root;
-        private OnAxisClickListener clickListener;
-        private OnAxisResetListener resetListener;
-        private Consumer<String> onConfigureClicked;
-        private MessageCallback messageCallback;
-        private ResourceProvider resourceProvider;
-        private Runnable onFinishClicked;
-
-        public builder onFinishClick(Runnable listener) {
-            this.onFinishClicked = listener;
-            return this;
-        }
-
-        public builder withMessageCallback(MessageCallback callback) {
-            this.messageCallback = callback;
-            return this;
-        }
-
-        public builder withResourceProvider(ResourceProvider provider) {
-            this.resourceProvider = provider;
-            return this;
-        }
-
-        public builder withRoot(View root) {
-            this.root = root;
-            return this;
-        }
-
-        public builder onAction(BluetoothHandler handler) {
-            this.clickListener = handler::onClick;
-            this.resetListener = handler::onReset;
-            this.onConfigureClicked = handler::onConfigureClick;
-            return this;
-        }
-
-        public AxisViewBinder build() {
-            if (root == null || clickListener == null || resetListener == null || onConfigureClicked == null) {
-                throw new IllegalStateException("AxisViewManager: all fields must be set before building");
-            }
-            return new AxisViewBinder(this);
-        }
     }
 }

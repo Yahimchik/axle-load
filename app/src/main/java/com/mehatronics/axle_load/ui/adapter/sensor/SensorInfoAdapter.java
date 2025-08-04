@@ -11,25 +11,26 @@ import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 import java.util.function.Consumer;
 
 public class SensorInfoAdapter {
-    private final TextView deviceNameTextView;
-    private final TextView deviceMac;
+    private final DeviceDetailsFormatter formatter;
+
     private final TextView firmwareVersionTextView;
     private final TextView hardwareVersionTextView;
     private final TextView batteryLevelTextView;
-    private final TextView weightTextView;
+    private final TextView deviceNameTextView;
     private final TextView pressureTextView;
+    private final TextView weightTextView;
+    private final TextView deviceMac;
+
     private final Button readFromSensorButton;
     private final Button saveTableButton;
-
-    private String cachedDeviceName;
-    private String cachedDeviceMac;
+    private final Button finishButton;
     private String cachedFirmwareVersion;
     private String cachedHardwareVersion;
     private String cachedBatteryLevel;
-    private String cachedWeight;
+    private String cachedDeviceName;
+    private String cachedDeviceMac;
     private String cachedPressure;
-
-    private final DeviceDetailsFormatter formatter;
+    private String cachedWeight;
 
     public SensorInfoAdapter(View root, DeviceDetailsFormatter formatter) {
         deviceNameTextView = root.findViewById(R.id.deviceNameTextView);
@@ -41,38 +42,31 @@ public class SensorInfoAdapter {
         pressureTextView = root.findViewById(R.id.pressureValueTextView);
         readFromSensorButton = root.findViewById(R.id.readFromSensorButton);
         saveTableButton = root.findViewById(R.id.saveTableButton);
+        finishButton = root.findViewById(R.id.finishButton);
         this.formatter = formatter;
+    }
+
+    public void setVisibility(boolean isSelection) {
+        finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE);
+    }
+
+    public void finishButtonOnClick(View.OnClickListener listener) {
+        finishButton.setOnClickListener(listener);
     }
 
     public void bind(DeviceDetails newDetails) {
         if (newDetails == null) return;
-        updateTextIfChanged(deviceNameTextView, formatter.formatDeviceName(newDetails), cachedDeviceName,
-                val -> cachedDeviceName = val);
 
-        updateTextIfChanged(deviceMac, formatter.formatDeviceMac(newDetails), cachedDeviceMac,
-                val -> cachedDeviceMac = val);
+        updateTextIfChanged(deviceNameTextView, formatter.formatDeviceName(newDetails), cachedDeviceName, val -> cachedDeviceName = val);
+        updateTextIfChanged(deviceMac, formatter.formatDeviceMac(newDetails), cachedDeviceMac, val -> cachedDeviceMac = val);
 
-        updateTextIfChanged(firmwareVersionTextView, formatter.formatFirmwareVersion(newDetails), cachedFirmwareVersion,
-                val -> cachedFirmwareVersion = val);
+        updateTextIfChanged(firmwareVersionTextView, formatter.formatFirmwareVersion(newDetails), cachedFirmwareVersion, val -> cachedFirmwareVersion = val);
+        updateTextIfChanged(hardwareVersionTextView, formatter.formatHardwareVersion(newDetails), cachedHardwareVersion, val -> cachedHardwareVersion = val);
 
-        updateTextIfChanged(hardwareVersionTextView, formatter.formatHardwareVersion(newDetails), cachedHardwareVersion,
-                val -> cachedHardwareVersion = val);
+        updateTextIfChanged(batteryLevelTextView, formatter.formatBatteryLevel(newDetails), cachedBatteryLevel, val -> cachedBatteryLevel = val);
+        updateTextIfChanged(weightTextView, formatter.formatWeight(newDetails), cachedWeight, val -> cachedWeight = val);
 
-        updateTextIfChanged(batteryLevelTextView, formatter.formatBatteryLevel(newDetails), cachedBatteryLevel,
-                val -> cachedBatteryLevel = val);
-
-        updateTextIfChanged(weightTextView, formatter.formatWeight(newDetails), cachedWeight,
-                val -> cachedWeight = val);
-
-        updateTextIfChanged(pressureTextView, formatter.formatPressure(newDetails), cachedPressure,
-                val -> cachedPressure = val);
-    }
-
-    private void updateTextIfChanged(TextView view, String newValue, String cachedValue, Consumer<String> cacheSetter) {
-        if (!newValue.equals(cachedValue)) {
-            view.setText(newValue);
-            cacheSetter.accept(newValue);
-        }
+        updateTextIfChanged(pressureTextView, formatter.formatPressure(newDetails), cachedPressure, val -> cachedPressure = val);
     }
 
     public void setReadFromSensorButtonClickListener(View.OnClickListener listener) {
@@ -81,6 +75,13 @@ public class SensorInfoAdapter {
 
     public void setSaveTableButton(View.OnClickListener listener) {
         saveTableButton.setOnClickListener(listener);
+    }
+
+    private void updateTextIfChanged(TextView view, String newValue, String cachedValue, Consumer<String> cacheSetter) {
+        if (!newValue.equals(cachedValue)) {
+            view.setText(newValue);
+            cacheSetter.accept(newValue);
+        }
     }
 }
 

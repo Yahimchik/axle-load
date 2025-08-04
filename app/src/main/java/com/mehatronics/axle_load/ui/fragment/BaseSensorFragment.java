@@ -23,14 +23,9 @@ import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
-import com.mehatronics.axle_load.domain.entities.enums.ScreenType;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
-import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceSelectionCallback;
-import com.mehatronics.axle_load.ui.binder.AvailableListBinder;
-import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
-import com.mehatronics.axle_load.ui.binder.BaseBinder;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
@@ -40,13 +35,12 @@ import javax.inject.Inject;
 
 public abstract class BaseSensorFragment extends Fragment implements MessageCallback {
     @Inject
-    protected SensorSelectionService manager;
-    @Inject
-    protected SnackbarManager snackbarManager;
+    protected SensorSelectionService service;
     @Inject
     protected FragmentNavigator navigator;
+    @Inject
+    protected SnackbarManager manager;
 
-    protected BluetoothHandlerContract contract;
     protected DeviceViewModel viewModel;
     protected BluetoothHandler handler;
 
@@ -59,8 +53,6 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof BluetoothHandlerContract)
-            contract = (BluetoothHandlerContract) context;
         if (context instanceof BaseBluetoothActivity)
             handler = ((BaseBluetoothActivity) context).getBluetoothHandler();
     }
@@ -68,24 +60,21 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupObservers(view);
+        createBinder(view);
+        observe(viewModel.getMessage(), this::showMessage);
     }
 
     @Override
     public void showMessage(String message) {
-        snackbarManager.showMessage(requireView(), message);
+        manager.showMessage(requireView(), message);
     }
 
     protected <T> void observe(LiveData<T> liveData, Observer<T> observer) {
         liveData.observe(getOwner(), observer);
     }
 
-    protected LifecycleOwner getOwner() {
-        return getViewLifecycleOwner();
-    }
-
     protected void observeDeviceSelection(OnDeviceSelectionCallback callback) {
-        manager.observeSelectedDevice(getParentFragmentManager(), getOwner(), callback);
+        service.observeSelectedDevice(getParentFragmentManager(), getOwner(), callback);
     }
 
     protected int getAxisNumber() {
@@ -99,7 +88,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     protected void handleAxisClickEvent(Event<InstalationPoint> event) {
         InstalationPoint data = event.getContentIfNotHandled();
         if (data != null) {
-            manager.openSensorSelection(navigator, data, new AvailableSensorFragment());
+            service.openSensorSelection(navigator, data, new AvailableSensorFragment());
         }
     }
 
@@ -107,7 +96,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     protected void onSelected(Device device) {
         viewModel.markMacAsSelected(device);
         showMessage(getString(selected, device.getDevice().getName()));
-        manager.returnSelectedDevice(
+        service.returnSelectedDevice(
                 getParentFragmentManager(),
                 requireActivity(),
                 getAxisNumber(),
@@ -116,35 +105,9 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
         );
     }
 
-    protected abstract BaseBinder createBinder(View view);
+    protected abstract void createBinder(View view);
 
-    protected abstract ScreenType getScreenType();
-
-    private void setupObservers(View view) {
-        observe(viewModel.getMessage(), contract::showMessage);
-
-        switch (getScreenType()) {
-            case CONFIGURE -> {
-                var binder = (AxisViewBinder) createBinder(view);
-
-                observe(viewModel.getAxisList(), binder::submitList);
-                observe(viewModel.getAxisClick(), this::handleAxisClickEvent);
-
-                observe(viewModel.getSavedStateLiveData(), binder::setSavedState);
-                observe(viewModel.getFinishedMacs(), binder::addFinishedMac);
-
-                observeDeviceSelection(viewModel::setDeviceToAxis);
-                observe(viewModel.getAxisList(), binder::updateSaveButtonState);
-                observe(viewModel.getAllDevicesSaved(), binder::setFinishButtonVisible);
-
-                viewModel.method(getOwner());
-            }
-            case AVAILABLE -> {
-                var binder = (AvailableListBinder) createBinder(view);
-
-                observe(viewModel.getScannedDevices(), viewModel::updateScannedDevices);
-                observe(viewModel.getScannedDevicesLiveData(), binder::updateDevices);
-            }
-        }
+    private LifecycleOwner getOwner() {
+        return getViewLifecycleOwner();
     }
 }

@@ -10,5 +10,4 @@ public interface GattWriteService {
     void clearBuffer();
 
     void write(BluetoothGatt gatt);
-
 }

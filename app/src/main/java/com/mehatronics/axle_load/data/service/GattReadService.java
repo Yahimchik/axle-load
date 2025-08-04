@@ -5,8 +5,8 @@ import android.bluetooth.BluetoothGattCharacteristic;
 
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
 public interface GattReadService {
     int getTablePage();
@@ -120,4 +120,10 @@ public interface GattReadService {
     boolean isReadingAll();
 
     String getCurrentMac();
+
+    LiveData<Boolean> getIsLoading();
+
+    void setLoading(boolean value);
+
+    void onOperationFinished();
 }

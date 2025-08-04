@@ -179,6 +179,10 @@ public class DeviceViewModel extends ViewModel {
         }
     }
 
+    public boolean isConfigurationSaved() {
+        return bluetoothRepository.isConfigurationSaved();
+    }
+
     /**
      * Повторно запрашивает таблицу калибровки с устройства.
      */
@@ -359,6 +363,14 @@ public class DeviceViewModel extends ViewModel {
     }
 
     // === Password Handling ===
+
+    public LiveData<Boolean> getIsPasswordDialogVisible() {
+        return passwordRepository.getIsPasswordDialogVisible();
+    }
+
+    public void setPasswordDialogVisible(boolean visible) {
+        passwordRepository.setPasswordDialogVisible(visible);
+    }
 
     /**
      * Возвращает LiveData события для показа диалога ввода пароля.
