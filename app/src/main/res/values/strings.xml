@@ -1,24 +1,97 @@
 <resources>
-    <string name="app_name">axle-load</string>
-    <string name="DDS">DDS</string>
-    <string name="DPS">DPS</string>
-    <string name="DSS">DSS</string>
-    <string name="choose_sensor_type">Chose Sensor Type</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="device_name">Device Name</string>
-    <string name="device_mac">MAC: </string>
-    <string name="device_rssi">RSSI: </string>
-    <string name="device_type">Type: </string>
-    <string name="device_status">Status: </string>
-    <string name="device_manufacturer_data">Manufacturer data: </string>
+    <string name="DDS" translatable="false">DDS</string>
+    <string name="DPS" translatable="false">DPS</string>
+    <string name="DSS" translatable="false">DSS</string>
+
+    <string name="add" translatable="false">ADD POINT</string>
+    <string name="app_name">Axle Load</string>
     <string name="available_devices">Available devices: </string>
-    <string name="manufacturer">Manufacturer: </string>
-    <string name="model_type">Model type: </string>
-    <string name="serial_number">Serial Number: </string>
-    <string name="firmware_version">Firmware Version: </string>
-    <string name="hardware_version">Hardware Version: </string>
+    <string name="axle">AXLE</string>
+    <string name="axle_center">Axle center</string>
+    <string name="axle_left">Axle left</string>
+    <string name="axle_numbered">AXLE %1$d</string>
+    <string name="axle_right">Axle right</string>
+    <string name="axles_count">Choose the axles count</string>
+
     <string name="battery">Battery: </string>
-    <string name="weight">Weight: </string>
-    <string name="pressure">Pressure: </string>
+
+    <string name="calibration_table">Calibration Table</string>
+    <string name="cancel">Cancel</string>
+    <string name="change_langauge">Change language</string>
+    <string name="choose_sensor">Choose sensor</string>
+    <string name="choose_sensor_type">Chose Sensor Type</string>
+    <string name="config_type">Config Type</string>
+    <string name="configuration_settings">CONFIGURE AXES</string>
+    <string name="configure_sensors">CONFIGURE SENSORS</string>
+    <string name="configure_reset">Configure on axle %1$s reset</string>
+    <string name="configure_the_settings">Configure The Settings</string>
+    <string name="configure_loaded">Configure Loaded</string>
+    <string name="connection_failed">Failed to connect to device</string>
+
+    <string name="delete" translatable="false">DELETE</string>
+    <string name="device_mac" translatable="false">MAC: </string>
+    <string name="device_name">Device Name</string>
+    <string name="device_rssi">RSSI: </string>
+    <string name="device_status">Status: </string>
+    <string name="device_type">Type: </string>
+    <string name="dialog_bluetooth_message">Bluetooth must be enabled to use this app.</string>
+    <string name="dialog_bluetooth_title">Enable Bluetooth</string>
+    <string name="dialog_gps_message">GPS must be enabled to use this app.</string>
+    <string name="dialog_gps_title">Enable GPS</string>
     <string name="disconnect_button">Disconnect</string>
+    <string name="disconnect_from">Disconnect from %1$s</string>
+
+    <string name="enter_number_of_axes">Enter number of axes</string>
+    <string name="enter_password">Enter password</string>
+    <string name="error_axis_out_of_range">Please enter a number between 1 and 8</string>
+    <string name="error_empty_axis_count">Please enter the number of axes</string>
+    <string name="error_invalid_number">Please enter a valid number</string>
+    <string name="error_select_at_least_one_sensor_per_axis">Select at least one sensor per axis</string>
+    <string name="error_sensor_not_selected">Sensor not select</string>
+
+    <string name="firmware_version">Firmware Version: </string>
+    <string name="finish_button">FINISH</string>
+
+    <string name="hardware_version">Hardware Version: </string>
+
+    <string name="installation_point">Installation Point</string>
+    <string name="invalid_detector">Invalid detector at line %1$d</string>
+
+    <string name="manufacturer">Manufacturer: </string>
+    <string name="measurement_period">Measurement period (s)</string>
+    <string name="message_delivery_period">Message delivery period (s)</string>
+    <string name="model_type">Model type: </string>
+
+    <string name="no">No</string>
+
+    <string name="ok">OK</string>
+
+    <string name="pressure">Pressure: </string>
+    <string name="pressure_short">Press: </string>
+    <string name="password">Password</string>
+    <string name="password_cannot_be_empty">Password can`t be empty</string>
+
+    <string name="read_from_file">READ FROM FILE</string>
+    <string name="read_from_sensor">READ FROM SENSOR</string>
+    <string name="reset">Reset</string>
+    <string name="reset_password">RESET PASSWORD</string>
+
+    <string name="save_button">SAVE TO SENSOR</string>
+    <string name="save_configuration">Configuration sent</string>
+    <string name="save_to_file">SAVE TO FILE</string>
+    <string name="selected">Selected %1$s</string>
+    <string name="sensor_list">Sensors list</string>
+    <string name="serial_number">Serial Number: </string>
+    <string name="set_new_password">SET NEW PASSWORD</string>
+    <string name="stateNumber">State Number</string>
+    <string name="save_to_file_not_allowed_at">Saving is not supported on this version of Android</string>
+    <string name="saved_in">Saved in:</string>
+    <string name="error_reading_the_file">Error reading the file</string>
+
+    <string name="weight">Weight: </string>
+    <string name="wheel_center">Center of axle %1$d</string>
+    <string name="wheel_left">Left wheel of axle %1$d</string>
+    <string name="wheel_right">Right wheel of axle %1$d</string>
+
+    <string name="yes">Yes</string>
 </resources>

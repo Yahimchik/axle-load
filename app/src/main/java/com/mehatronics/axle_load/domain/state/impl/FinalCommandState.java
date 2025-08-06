@@ -1,0 +1,34 @@
+package com.mehatronics.axle_load.domain.state.impl;
+
+import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+
+import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
+import com.mehatronics.axle_load.domain.state.CommandStateHandler;
+
+/**
+ * Финальное состояние "FINAL" в паттерне "Состояние" (State),
+ * устанавливающее последнюю команду для BLE-устройства.
+ * <p>
+ * Если требуется отправка конфигурации, состояние переходит к {@link ConfigureCommandState}.
+ */
+public class FinalCommandState implements CommandStateHandler {
+
+    /**
+     * Устанавливает финальную команду (SEVEN_COMMAND и SECOND_COMMAND).
+     * Если ранее было указано, что конфигурация должна быть сохранена,
+     * переход в состояние {@link ConfigureCommandState}.
+     *
+     * @param handler обработчик GATT, содержащий данные конфигурации и текущее состояние
+     */
+    @Override
+    public void handle(BluetoothGattCallbackHandler handler) {
+        handler.setCommand(SEVEN_COMMAND, SECOND_COMMAND);
+
+        if (handler.isConfigurationSaved()) {
+            handler.setCommandState(new ConfigureCommandState());
+        } else if (handler.isTableSaved()) {
+            handler.setCommandState(new SaveTableCommand());
+        }
+    }
+}
