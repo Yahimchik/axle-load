@@ -43,6 +43,7 @@ public interface SensorService {
 
     LiveData<Boolean> getSelectionModeLiveData();
 
-
     void setSelectionMode(boolean isSelection);
+
+    void refreshScannedDevices();
 }

@@ -20,6 +20,7 @@
     <string name="configure_sensors">Настроить датчики</string>
     <string name="configure_reset">Настройки оси %1$s сброшены</string>
     <string name="configure_the_settings">Настройки</string>
+    <string name="configure_loaded">Настроить груженый</string>
     <string name="connection_failed">Не удалось подключится к устройству</string>
 
     <string name="device_name">Имя устройства</string>
@@ -77,6 +78,9 @@
     <string name="set_new_password">УТАНОВИТЬ НОВЫЙ ПАРОЛЬ</string>
     <string name="stateNumber">Гос. номер</string>
 
+    <string name="save_to_file_not_allowed_at">Сохранение не поддерживается на этой версии Android</string>
+    <string name="saved_in">Сохранено в:</string>
+    <string name="error_reading_the_file">Ошибка при чтении файла</string>
     <string name="weight">Вес:</string>
     <string name="wheel_center">Центр оси %1$d</string>
     <string name="wheel_left">Левое колесо оси %1$d</string>

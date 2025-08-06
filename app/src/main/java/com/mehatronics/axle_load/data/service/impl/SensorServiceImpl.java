@@ -158,4 +158,11 @@ public class SensorServiceImpl implements SensorService {
     public void setSelectionMode(boolean isSelection) {
         isSelectionMode.setValue(isSelection);
     }
+
+    public void refreshScannedDevices() {
+        List<Device> current = processedDevicesLiveData.getValue();
+        if (current != null) {
+            processedDevicesLiveData.setValue(new ArrayList<>(current)); // форс эмиссию
+        }
+    }
 }

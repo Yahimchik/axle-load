@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.data.repository.impl;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
@@ -11,8 +13,11 @@ import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,6 +36,29 @@ public class DeviceRepositoryImpl implements DeviceRepository {
     @Override
     public LiveData<List<AxisModel>> getAxisList() {
         return axisService.getAxisList();
+    }
+
+    public void setLoadedAxisList(List<AxisModel> list) {
+        axisService.setLoadedAxisList(list);
+        sensorService.resetSelectedDevices();
+
+        List<Device> scannedDevices = sensorService.getScannedDevicesLiveData().getValue();
+        if (scannedDevices == null) return;
+
+        Log.d("MyTag", String.valueOf(scannedDevices));
+
+        Set<String> targetMacs = list.stream()
+                .flatMap(model -> model.getSideDeviceMap().values().stream())
+                .collect(Collectors.toSet());
+
+        for (Device device : scannedDevices) {
+            String mac = device.getDevice().getAddress();
+            if (targetMacs.contains(mac)) {
+                sensorService.markMacAsSelected(device);
+            }
+        }
+
+        sensorService.refreshScannedDevices();
     }
 
     @Override
@@ -162,4 +190,9 @@ public class DeviceRepositoryImpl implements DeviceRepository {
     public void setSelectionMode(boolean isSelection) {
         sensorService.setSelectionMode(isSelection);
     }
+
+    public void refreshScannedDevices() {
+        sensorService.refreshScannedDevices();
+    }
+
 }

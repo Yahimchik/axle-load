@@ -25,6 +25,7 @@
     <string name="configure_sensors">CONFIGURE SENSORS</string>
     <string name="configure_reset">Configure on axle %1$s reset</string>
     <string name="configure_the_settings">Configure The Settings</string>
+    <string name="configure_loaded">Configure Loaded</string>
     <string name="connection_failed">Failed to connect to device</string>
 
     <string name="delete" translatable="false">DELETE</string>
@@ -83,6 +84,9 @@
     <string name="serial_number">Serial Number: </string>
     <string name="set_new_password">SET NEW PASSWORD</string>
     <string name="stateNumber">State Number</string>
+    <string name="save_to_file_not_allowed_at">Saving is not supported on this version of Android</string>
+    <string name="saved_in">Saved in:</string>
+    <string name="error_reading_the_file">Error reading the file</string>
 
     <string name="weight">Weight: </string>
     <string name="wheel_center">Center of axle %1$d</string>

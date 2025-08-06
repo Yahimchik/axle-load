@@ -25,6 +25,7 @@ import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
+import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceSelectionCallback;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
@@ -40,6 +41,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     protected FragmentNavigator navigator;
     @Inject
     protected SnackbarManager manager;
+    protected LoadingManager loadingManager;
 
     protected DeviceViewModel viewModel;
     protected BluetoothHandler handler;
@@ -61,6 +63,8 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         createBinder(view);
+        loadingManager = new LoadingManager(view);
+        navigator.setCurrentFragment(this);
         observe(viewModel.getMessage(), this::showMessage);
     }
 

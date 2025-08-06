@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.localization.ResourceProvider;
@@ -25,10 +26,12 @@ import java.util.function.Consumer;
 
 public class AxisViewBinder implements BaseBinder {
     private final FragmentNavigator navigator;
+    private final SaveToFileService service;
     private final EditText editTextAxisCount;
 
     private final Button saveButton;
     private final Button finishButton;
+    private final Button buttonConfigureLoaded;
 
     private final AxisAdapter adapter;
     private final MessageCallback callback;
@@ -36,16 +39,18 @@ public class AxisViewBinder implements BaseBinder {
 
     public AxisViewBinder(
             View root,
+            SaveToFileService service,
             BluetoothHandler handler,
             MessageCallback callback,
             ResourceProvider resourceProvider,
             FragmentNavigator navigator
     ) {
-
+        this.service = service;
         this.adapter = new AxisAdapter(handler::onClick, handler::onReset);
         this.editTextAxisCount = root.findViewById(R.id.editTextAxisCount);
         this.saveButton = root.findViewById(R.id.buttonSave);
         this.finishButton = root.findViewById(R.id.finishButton);
+        this.buttonConfigureLoaded = root.findViewById(R.id.buttonConfigureLoaded);
         this.callback = callback;
         this.provider = resourceProvider;
         this.navigator = navigator;
@@ -94,7 +99,12 @@ public class AxisViewBinder implements BaseBinder {
             }
         });
 
-        finishButton.setOnClickListener(v -> navigator.showFragment(new AxleOverviewFragment()));
+        finishButton.setOnClickListener(v -> {
+            service.saveAxisConfiguration(v.getContext(), "Конфигурация", "axis_configuration", adapter.getCurrentList());
+            navigator.showFragment(new AxleOverviewFragment());
+        });
+
+        buttonConfigureLoaded.setOnClickListener(v -> navigator.openDocumentPicker());
     }
 
     private boolean isCanSave() {

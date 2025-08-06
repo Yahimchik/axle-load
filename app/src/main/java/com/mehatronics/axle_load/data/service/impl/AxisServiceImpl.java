@@ -47,6 +47,10 @@ public class AxisServiceImpl implements AxisService {
         return axisList;
     }
 
+    public void setLoadedAxisList(List<AxisModel> list) {
+        axisList.setValue(list);
+    }
+
     @Override
     public int getAxisCount() {
         return Objects.requireNonNull(axisList.getValue()).size();

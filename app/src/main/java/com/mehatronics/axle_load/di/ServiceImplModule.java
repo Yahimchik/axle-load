@@ -13,6 +13,7 @@ import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.data.service.PermissionHandlerService;
 import com.mehatronics.axle_load.data.service.PermissionObserverService;
 import com.mehatronics.axle_load.data.service.PermissionService;
+import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.data.service.SensorService;
 import com.mehatronics.axle_load.data.service.impl.AxisServiceImpl;
@@ -22,6 +23,7 @@ import com.mehatronics.axle_load.data.service.impl.GattWriteServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionHandlerServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionObserverServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionServiceImpl;
+import com.mehatronics.axle_load.data.service.impl.SaveToFileServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.SensorSelectionServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.SensorServiceImpl;
 import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCase;
@@ -117,4 +119,7 @@ public abstract class ServiceImplModule {
     @Singleton
     public abstract DeviceRepository bindDeviceRepository(DeviceRepositoryImpl impl);
 
+    @Binds
+    @Singleton
+    public abstract SaveToFileService bindSaveToFileService(SaveToFileServiceImpl impl);
 }

@@ -255,6 +255,10 @@ public class DeviceViewModel extends ViewModel {
         return deviceRepository.getAxisList();
     }
 
+    public void setLoadedAxisList(List<AxisModel> list) {
+        deviceRepository.setLoadedAxisList(list);
+    }
+
     /**
      * Возвращает количество осей.
      *
@@ -644,5 +648,9 @@ public class DeviceViewModel extends ViewModel {
 
     public LiveData<List<AxisUiModel>> getUiAxisModels() {
         return uiAxisModels;
+    }
+
+    public void refreshScannedDevices() {
+        deviceRepository.refreshScannedDevices();
     }
 }
