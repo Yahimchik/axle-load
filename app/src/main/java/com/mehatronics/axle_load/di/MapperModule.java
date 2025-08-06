@@ -4,9 +4,11 @@ import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
 import com.mehatronics.axle_load.data.format.impl.DeviceDetailsFormatterImpl;
 import com.mehatronics.axle_load.data.format.impl.SensorConfigFormatterImpl;
+import com.mehatronics.axle_load.data.mapper.ConfiguredDeviceMapper;
 import com.mehatronics.axle_load.data.mapper.DateFormatMapper;
 import com.mehatronics.axle_load.data.mapper.DeviceMapper;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.mapper.impl.ConfiguredDeviceMapperImpl;
 import com.mehatronics.axle_load.data.mapper.impl.DateFormatMapperImpl;
 import com.mehatronics.axle_load.data.mapper.impl.DeviceMapperImpl;
 import com.mehatronics.axle_load.data.mapper.impl.GattDataMapperImpl;
@@ -41,4 +43,7 @@ public abstract class MapperModule {
     @Singleton
     public abstract SensorConfigFormatter bindSensorConfigFormatter(SensorConfigFormatterImpl impl);
 
+    @Binds
+    @Singleton
+    public abstract ConfiguredDeviceMapper bindConfiguredDeviceMapper(ConfiguredDeviceMapperImpl impl);
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/configureLayout"
@@ -9,138 +10,123 @@
     android:padding="24dp"
     tools:context=".ui.fragment.ConfigureFragment">
 
-
     <!-- Заголовок -->
-<!--    <TextView-->
-<!--        android:id="@+id/textViewTitle"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginBottom="24dp"-->
-<!--        android:fontFamily="@font/roboto_bold"-->
-<!--        android:text="@string/configuration_settings"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        android:textSize="26sp"-->
-<!--        android:textStyle="bold"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/configuration_settings"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:fontFamily="@font/roboto_bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- Поле ввода -->
-    <EditText
-        android:id="@+id/editTextAxisCount"
+    <!-- Обёртка поля ввода -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/inputCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp"
-        android:autofillHints=""
-        android:background="@drawable/edittext_background"
-        android:fontFamily="@font/roboto_bold"
-        android:gravity="center"
-        android:hint="@string/enter_number_of_axes"
-        android:inputType="number"
-        android:letterSpacing="0.02"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:textColorHint="#B0BEC5"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-        <!--app:layout_constraintTop_toBottomOf="@id/textViewTitle" -->
-
-
-    <!-- Большая Кнопка -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonConfigure"
-        style="@style/Widget.Material3.Button"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/button_background"
-        android:fontFamily="@font/roboto_bold"
-        android:text="@string/configuration_settings"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        app:cornerRadius="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/card_background_color"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextAxisCount"
-        app:strokeColor="@color/white"
-        app:strokeWidth="2dp" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <EditText
+            android:id="@+id/editTextAxisCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:hint="@string/enter_number_of_axes"
+            android:inputType="number"
+            android:padding="16dp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textColorHint="#B0BEC5"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="18sp"
+            android:background="@android:color/transparent"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Кнопка настройки -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonSave"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/configure_sensors"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/roboto_bold"
+        app:cornerRadius="16dp"
+        android:layout_marginTop="20dp"
+        app:iconPadding="8dp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/inputCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Кнопка завершения -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/finishButton"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/finish_button"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="12dp"
+        app:cornerRadius="16dp"
+        android:fontFamily="@font/roboto_bold"
+        app:layout_constraintTop_toBottomOf="@id/buttonSave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Список -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAxes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
+        android:paddingTop="12dp"
         android:paddingBottom="24dp"
-        android:scrollbars="vertical"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/finishButton"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonSave" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonSave"
-        style="@style/Widget.Material3.Button"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/button_background"
-        android:fontFamily="@font/roboto_bold"
-        android:text="@string/configure_sensors"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        app:cornerRadius="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonConfigure"
-        app:strokeColor="@color/white"
-        app:strokeWidth="2dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/finishButton"
-        style="@style/Widget.Material3.Button"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/button_background"
-        android:fontFamily="@font/roboto_bold"
-        android:text="@string/finish_button"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        android:textSize="20sp"
-        app:cornerRadius="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonSave"
-        app:strokeColor="@color/white"
-        app:strokeWidth="2dp" />
-
+    <!-- Полупрозрачный слой блокировки -->
     <View
         android:id="@+id/overlayView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:alpha="0.5"
-        android:background="@android:color/white"
         android:visibility="gone"
+        android:background="@android:color/white"
+        android:alpha="0.4"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Прогрессбар -->
+    <!-- Индикатор загрузки -->
     <ProgressBar
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="83dp"
-        android:layout_height="333dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

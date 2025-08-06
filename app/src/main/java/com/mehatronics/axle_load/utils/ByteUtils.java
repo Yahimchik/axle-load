@@ -268,7 +268,7 @@ public class ByteUtils {
      * @param index2 Индекс младшего байта.
      * @return Целое значение.
      */
-    private static int parseIntFromBytes(byte[] bytes, int index1, int index2) {
+    public static int parseIntFromBytes(byte[] bytes, int index1, int index2) {
         return ((bytes[index1] & ZERO_COMMAND_BINARY) << 8) |
                 (bytes[index2] & ZERO_COMMAND_BINARY);
     }

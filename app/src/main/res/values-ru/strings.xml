@@ -59,6 +59,7 @@
     <string name="ok">ОК</string>
 
     <string name="pressure">Давление:</string>
+    <string name="pressure_short">Дав:</string>
     <string name="password">Пароль</string>
 
     <string name="password_cannot_be_empty">Пароль не может быть пустым</string>

@@ -22,4 +22,10 @@
     <color name="grean">#25E02C</color>
 
     <color name="dividerColor">#FFB0B0B0</color> <!-- Светло-серый -->
+    <color name="card_background_color_conf">#121212</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="hint_gray">#B0BEC5</color>
+    <color name="alert_color">#FF5252</color>
+    <color name="card_border">#2C2C2C</color>
+
 </resources>

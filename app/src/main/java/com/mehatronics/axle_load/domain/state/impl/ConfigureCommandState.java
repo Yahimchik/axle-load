@@ -32,6 +32,7 @@ public class ConfigureCommandState implements CommandStateHandler {
         Log.d("MyTag", "Configuration sent");
 
         if (!handler.isConfigurationSaved()) {
+            handler.setConfigurationSavedLive(true);
             handler.setCommandState(new FinalCommandState());
         }
     }

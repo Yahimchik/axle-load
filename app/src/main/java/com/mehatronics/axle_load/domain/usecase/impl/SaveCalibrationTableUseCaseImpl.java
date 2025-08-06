@@ -6,27 +6,27 @@ import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 import javax.inject.Inject;
 
 /**
- * UseCase (слой бизнес-логики) для сохранения таблицы калибровки в устройство.
+ * Реализация UseCase (слоя бизнес-логики) для сохранения таблицы калибровки в устройство.
  *
- * <p>Этот класс инкапсулирует шаги, необходимые для сохранения таблицы:
+ * <p>Этот класс инкапсулирует следующие шаги:
  * <ul>
- *     <li>Выполняет предварительную проверку/конвертацию множителя (multiplier)</li>
- *     <li>Получает текущее состояние устройства и таблицу калибровки</li>
- *     <li>Применяет таблицу к объекту {@code DeviceDetails}</li>
- *     <li>Сохраняет данные в сенсор</li>
+ *     <li>Проверка и конвертация множителя</li>
+ *     <li>Получение текущих данных устройства и таблицы</li>
+ *     <li>Применение таблицы к {@code DeviceDetails}</li>
+ *     <li>Запуск сохранения таблицы на сенсоре</li>
  * </ul>
  * </p>
  *
- * <p>Возвращает код ошибки, если операция не может быть выполнена.</p>
+ * <p>Метод {@link #execute()} возвращает код выполнения операции, где 0 означает успех.</p>
  */
 public class SaveCalibrationTableUseCaseImpl implements SaveCalibrationTableUseCase {
 
     private final BluetoothRepository bluetoothRepository;
 
     /**
-     * Конструктор с внедрением зависимости BluetoothRepository.
+     * Конструктор, внедряющий {@link BluetoothRepository}.
      *
-     * @param bluetoothRepository Репозиторий для взаимодействия с Bluetooth-устройством
+     * @param bluetoothRepository Репозиторий для взаимодействия с BLE-устройством
      */
     @Inject
     public SaveCalibrationTableUseCaseImpl(BluetoothRepository bluetoothRepository) {
@@ -34,12 +34,20 @@ public class SaveCalibrationTableUseCaseImpl implements SaveCalibrationTableUseC
     }
 
     /**
-     * Выполняет операцию сохранения таблицы калибровки.
+     * Запускает процесс сохранения таблицы калибровки.
+     * <p>
+     * Шаги:
+     * <ol>
+     *     <li>Конвертирует множитель через {@code convertMultiplier()}</li>
+     *     <li>Получает текущие {@code DeviceDetails} и таблицу</li>
+     *     <li>Устанавливает таблицу в {@code DeviceDetails}</li>
+     *     <li>Сохраняет таблицу в сенсор через {@code saveTableToSensor()}</li>
+     * </ol>
      *
-     * @return Код ошибки:
+     * @return код ошибки:
      * <ul>
      *     <li>{@code 0} — успех</li>
-     *     <li>{@code > 0} — код ошибки, например, недопустимый множитель</li>
+     *     <li>{@code > 0} — ошибка (например, некорректный множитель)</li>
      * </ul>
      */
     @Override

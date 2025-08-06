@@ -7,12 +7,14 @@ import static com.mehatronics.axle_load.R.string.invalid_detector;
 import static com.mehatronics.axle_load.R.string.save_configuration;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -78,6 +80,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     }
 
     @Override
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onDestroyView() {
         super.onDestroyView();
         cleanUpOnClose();
@@ -110,30 +113,52 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
         viewModel.updateVirtualPoint(deviceDetails);
     }
 
+    private boolean isSavingStarted = false;
+
     private void observeSelectionMode() {
         detailsBinder.finishButtonOnClick(v -> {
             loadingManager.showLoading(true);
             int res = viewModel.saveTable();
-            if (res > 0) showMessage(getString(invalid_detector, res));
-            else{
-                SensorConfig config = viewModel.getSensorConfigure().getValue();
-                if (config != null) {
-                    detailsBinder.updateSensorConfig(config);
-                    viewModel.saveSensorConfiguration();
-                    showMessage(getString(save_configuration));
-                }
-            }
 
-            if (viewModel.isConfigurationSaved()){
+            if (res > 0) {
+                showMessage(getString(invalid_detector, res));
                 loadingManager.showLoading(false);
+                return;
             }
 
-//            String lastMac = viewModel.getLastFinishedMac().getValue();
-//            if (lastMac != null) {
-//                viewModel.addFinishedMac(lastMac);
-//            }
-//            closeFragment();
+            SensorConfig config = viewModel.getSensorConfigure().getValue();
+            if (config != null) {
+                detailsBinder.updateSensorConfig(config);
+                viewModel.saveSensorConfiguration();
+                isSavingStarted = true;
+            }
         });
+
+        viewModel.getConfigurationSavedLiveData().observe(getViewLifecycleOwner(), isSaved -> {
+            if (Boolean.TRUE.equals(isSaved) && isSavingStarted) {
+                isSavingStarted = false;
+                viewModel.setConfigurationSavedLive(false);
+
+                snackbarManager.showMessage(getViewById(), getString(save_configuration), () -> {
+                    loadingManager.showLoading(false);
+
+                    // Проверяем состояние selectionMode
+                    if (Boolean.TRUE.equals(viewModel.getSelectionModeLiveData().getValue())) {
+                        // Если режим выбора — закрываем фрагмент
+                        String lastMac = viewModel.getLastFinishedMac().getValue();
+                        if (lastMac != null) {
+                            viewModel.addFinishedMac(lastMac);
+                        }
+                        closeFragment();
+                    } else {
+                        // В другом режиме — просто показываем сообщение, ничего не закрываем
+                        Log.d("MyTag", "Snackbar shown, fragment remains open.");
+                    }
+                });
+            }
+        });
+
+
     }
 
     private void observePasswordDialogEvent() {
@@ -195,6 +220,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      * Сбрасывает биндер, очищает детали и отключается от устройства.
      * Если активити реализует BaseBluetoothActivity, сбрасывает состояние навигатора устройства.
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private void cleanUpOnClose() {
         detailsBinder = null;
 

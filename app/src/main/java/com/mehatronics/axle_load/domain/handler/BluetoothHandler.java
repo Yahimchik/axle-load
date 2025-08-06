@@ -19,14 +19,17 @@ public class BluetoothHandler {
     private final DeviceViewModel viewModel;
     private final BluetoothHandlerContract contract;
     private final ResourceProvider provider;
+
     private boolean userClosedDeviceDetails = false;
     private boolean isDeviceDetailsFragmentOpen = false;
     private boolean shouldOpenFragmentAfterConnect = false;
 
-    public BluetoothHandler(builder builder) {
-        this.viewModel = builder.deviceViewModel;
-        this.contract = builder.contract;
-        this.provider = builder.resourceProvider;
+    public BluetoothHandler(DeviceViewModel viewModel,
+                            BluetoothHandlerContract contract,
+                            ResourceProvider provider) {
+        this.viewModel = viewModel;
+        this.contract = contract;
+        this.provider = provider;
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -81,7 +84,6 @@ public class BluetoothHandler {
         contract.loadingManagerShowLoading(false);
 
         if (deviceDetails != null && isConnected()) {
-
             viewModel.setDeviceName(deviceDetails.getDeviceName());
 
             if (shouldOpenFragmentAfterConnect && !userClosedDeviceDetails && !isDeviceDetailsFragmentOpen) {
@@ -128,30 +130,5 @@ public class BluetoothHandler {
 
     private boolean isConnected() {
         return TRUE.equals(viewModel.isConnectedLiveData().getValue());
-    }
-
-    public static class builder {
-        private DeviceViewModel deviceViewModel;
-        private BluetoothHandlerContract contract;
-        private ResourceProvider resourceProvider;
-
-        public builder withModel(DeviceViewModel deviceViewModel) {
-            this.deviceViewModel = deviceViewModel;
-            return this;
-        }
-
-        public builder withContract(BluetoothHandlerContract contract) {
-            this.contract = contract;
-            return this;
-        }
-
-        public builder withResource(ResourceProvider provider) {
-            this.resourceProvider = provider;
-            return this;
-        }
-
-        public BluetoothHandler build() {
-            return new BluetoothHandler(this);
-        }
     }
 }

@@ -49,10 +49,6 @@ public class DeviceDetailsBinder {
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
     }
 
-    public void setVisibility(boolean isSelection) {
-        sensorInfoAdapter.setVisibility(isSelection);
-    }
-
     public void finishButtonOnClick(View.OnClickListener listener) {
         sensorInfoAdapter.finishButtonOnClick(listener);
     }
@@ -94,16 +90,8 @@ public class DeviceDetailsBinder {
         sensorConfigAdapter.bind(sensorConfig);
     }
 
-    public void setupSaveButton(View.OnClickListener listener) {
-        sensorConfigAdapter.setSaveClickListener(listener);
-    }
-
     public void setupReadFromSensorButton(View.OnClickListener listener) {
         sensorInfoAdapter.setReadFromSensorButtonClickListener(listener);
-    }
-
-    public void setupSaveTableButton(View.OnClickListener listener) {
-        sensorInfoAdapter.setSaveTableButton(listener);
     }
 
     public void updateSensorConfig(SensorConfig config) {

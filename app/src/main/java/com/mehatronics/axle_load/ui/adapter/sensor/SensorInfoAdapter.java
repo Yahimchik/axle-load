@@ -22,7 +22,6 @@ public class SensorInfoAdapter {
     private final TextView deviceMac;
 
     private final Button readFromSensorButton;
-    private final Button saveTableButton;
     private final Button finishButton;
     private String cachedFirmwareVersion;
     private String cachedHardwareVersion;
@@ -41,13 +40,8 @@ public class SensorInfoAdapter {
         weightTextView = root.findViewById(R.id.weightValueTextView);
         pressureTextView = root.findViewById(R.id.pressureValueTextView);
         readFromSensorButton = root.findViewById(R.id.readFromSensorButton);
-        saveTableButton = root.findViewById(R.id.saveTableButton);
         finishButton = root.findViewById(R.id.finishButton);
         this.formatter = formatter;
-    }
-
-    public void setVisibility(boolean isSelection) {
-        finishButton.setVisibility(Boolean.TRUE.equals(isSelection) ? View.VISIBLE : View.GONE);
     }
 
     public void finishButtonOnClick(View.OnClickListener listener) {
@@ -71,10 +65,6 @@ public class SensorInfoAdapter {
 
     public void setReadFromSensorButtonClickListener(View.OnClickListener listener) {
         readFromSensorButton.setOnClickListener(listener);
-    }
-
-    public void setSaveTableButton(View.OnClickListener listener) {
-        saveTableButton.setOnClickListener(listener);
     }
 
     private void updateTextIfChanged(TextView view, String newValue, String cachedValue, Consumer<String> cacheSetter) {

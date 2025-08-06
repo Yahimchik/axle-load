@@ -2,7 +2,7 @@
     android:id="@+id/truckScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/card_background_color"
     android:fillViewport="true"
     android:paddingHorizontal="16dp"
     android:paddingTop="24dp"
@@ -22,19 +22,16 @@
             android:text="Текущие значения"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="?android:textColorPrimary"
+            android:textColor="@color/white"
             android:letterSpacing="0.05"
             android:layout_marginBottom="24dp" />
 
         <!-- Контейнер для осей -->
-        <LinearLayout
-            android:id="@+id/axisContainer"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:divider="?android:attr/dividerVertical"
-            android:showDividers="middle"
-            android:dividerPadding="16dp" />
-
+            android:overScrollMode="never"
+            android:nestedScrollingEnabled="false" />
     </LinearLayout>
 </ScrollView>

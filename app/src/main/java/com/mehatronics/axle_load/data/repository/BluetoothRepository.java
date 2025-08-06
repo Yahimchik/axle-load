@@ -1,5 +1,8 @@
 package com.mehatronics.axle_load.data.repository;
 
+import android.Manifest;
+
+import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.service.BleScannerService;
@@ -123,13 +126,10 @@ public class BluetoothRepository {
      *
      * @param device Объект {@link Device}, к которому необходимо подключиться.
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void connectToDevice(Device device) {
         bluetoothConnectionManager.connect(device);
         bleScannerService.removeDeviceByAddress(device.getMacAddress());
-    }
-
-    public boolean isConfigurationSaved() {
-        return bluetoothConnectionManager.isConfigurationSaved();
     }
 
     /**
@@ -156,6 +156,7 @@ public class BluetoothRepository {
     /**
      * Разрывает соединение с устройством.
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void disconnect() {
         bluetoothConnectionManager.disconnect();
     }
@@ -218,5 +219,13 @@ public class BluetoothRepository {
 
     public void clearPasswordDialogShown() {
         bluetoothConnectionManager.clearPasswordDialogShown();
+    }
+
+    public void setConfigurationSavedLive(boolean value) {
+        bluetoothConnectionManager.setConfigurationSavedLive(value);
+    }
+
+    public LiveData<Boolean> getConfigurationSavedLiveData() {
+        return bluetoothConnectionManager.getConfigurationSavedLiveData();
     }
 }

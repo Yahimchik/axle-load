@@ -13,8 +13,6 @@ import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
-import com.mehatronics.axle_load.data.service.impl.GattReadServiceImpl;
-import com.mehatronics.axle_load.data.service.impl.GattWriteServiceImpl;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
@@ -26,36 +24,55 @@ import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 import javax.inject.Inject;
 
 /**
- * Handles Bluetooth GATT callback events and manages communication with the BLE device.
+ * Обработчик колбэков Bluetooth GATT.
  * <p>
- * This class manages the connection state changes, services discovery, characteristic read/write events,
- * and coordinates reading/writing operations via {@link GattReadServiceImpl} and {@link GattWriteServiceImpl}.
- * It also manages the command state machine using {@link CommandStateHandler}.
+ * Управляет событиями подключения, обнаружения сервисов, чтения и записи характеристик.
+ * Координирует работу сервисов чтения и записи ({@link GattReadService} и {@link GattWriteService}),
+ * а также управляет состояниями команд через {@link CommandStateHandler}.
  * <p>
- * Provides LiveData to observe device connection status, device details, and sensor configuration.
+ * Предоставляет LiveData для наблюдения за состоянием подключения, деталями устройства и конфигурацией сенсора.
  */
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
+    /** Репозиторий паролей для авторизации устройства */
     private final PasswordRepository passwordRepository;
+
+    /** Менеджер управления состоянием подключения BLE */
     private final GattConnectionManager connectionManager;
+
+    /** Сервис для записи данных в BLE-устройство */
     private final GattWriteService gattWriteService;
+
+    /** Сервис для чтения данных с BLE-устройства */
     private final GattReadService gattReadService;
+
+    /** Маппер для преобразования данных BLE в доменные объекты */
     private final GattDataMapper gattDataMapper;
+
+    /** Обработчик событий подключения и повторных подключений */
     private ConnectionHandler connectionHandler;
+
+    /** Текущий обработчик состояния команд */
     private CommandStateHandler stateHandler;
+
+    /** Слушатель событий диалога ввода пароля */
     private PasswordDialogListener passwordDialogListener;
+
+    /** Флаг, показывающий, был ли уже показан диалог ввода пароля */
     private boolean passwordDialogShown = false;
+
+    /** Флаг, указывающий, идет ли сейчас операция записи */
     private boolean isWritePending = false;
 
-
     /**
-     * Constructs the BluetoothGattCallbackHandler with injected dependencies.
+     * Конструктор с внедрением зависимостей.
      *
-     * @param connectionManager manages BLE connection state
-     * @param gattReadService   processes GATT read operations and parsing
-     * @param gattWriteService  processes GATT write operations
-     * @param gattDataMapper    parses and serializes data to/from the BLE device
-     * @param stateHandler      current command state handler for managing BLE commands
+     * @param passwordRepository репозиторий паролей
+     * @param connectionManager  менеджер подключения
+     * @param gattReadService    сервис чтения GATT
+     * @param gattWriteService   сервис записи GATT
+     * @param gattDataMapper     маппер данных
+     * @param stateHandler       обработчик состояния команд
      */
     @Inject
     public BluetoothGattCallbackHandler(
@@ -74,41 +91,14 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         this.stateHandler = stateHandler;
     }
 
-    public PasswordRepository getPasswordRepository() {
-        return passwordRepository;
-    }
-
-    public String getCurrentMac() {
-        return gattReadService.getCurrentMac();
-    }
-
-
-    public void setPasswordDialogListener(PasswordDialogListener listener) {
-        this.passwordDialogListener = listener;
-    }
-
-    public void notifyPasswordRequired() {
-        if (!passwordDialogShown && passwordDialogListener != null) {
-            passwordDialogShown = true;
-            passwordDialogListener.onPasswordRequired();
-        }
-    }
-
-    public void clearPasswordDialogShown() {
-        passwordDialogShown = false;
-    }
-
-    public void setReconnectDelegate(ConnectionHandler connectionHandler) {
-        this.connectionHandler = connectionHandler;
-    }
-
     /**
-     * Called when the connection state changes (connected/disconnected).
-     * Updates connection manager and internal state accordingly.
+     * Вызывается при изменении состояния подключения.
+     * При подключении обновляет состояние менеджера и внутренние флаги.
+     * При отключении инициирует переподключение.
      *
-     * @param gatt     the BluetoothGatt instance
-     * @param status   status of the connection change
-     * @param newState new connection state
+     * @param gatt     экземпляр BluetoothGatt
+     * @param status   статус изменения состояния
+     * @param newState новое состояние подключения
      */
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -122,11 +112,11 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Called when BLE services are discovered.
-     * Initiates reading all characteristics on success.
+     * Вызывается при обнаружении сервисов BLE-устройства.
+     * Если обнаружение успешно, запускает чтение всех характеристик.
      *
-     * @param gatt   the BluetoothGatt instance
-     * @param status status of the service discovery
+     * @param gatt   экземпляр BluetoothGatt
+     * @param status статус обнаружения сервисов
      */
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
@@ -137,12 +127,12 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Called when a characteristic read operation completes.
-     * Processes the read data and triggers next write if needed.
+     * Вызывается при завершении чтения характеристики.
+     * Обрабатывает полученные данные и запускает запись, если необходимо.
      *
-     * @param gatt           the BluetoothGatt instance
-     * @param characteristic the characteristic read
-     * @param status         status of the read operation
+     * @param gatt           экземпляр BluetoothGatt
+     * @param characteristic прочитанная характеристика
+     * @param status         статус операции чтения
      */
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -156,12 +146,13 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Called when a characteristic write operation completes.
-     * On success, continues reading after write if the characteristic matches.
+     * Вызывается при завершении записи характеристики.
+     * Если запись успешна и UUID характеристики совпадает с WRITE_CHARACTERISTIC_DPS,
+     * запускает чтение после записи.
      *
-     * @param gatt           the BluetoothGatt instance
-     * @param characteristic the characteristic written
-     * @param status         status of the write operation
+     * @param gatt           экземпляр BluetoothGatt
+     * @param characteristic записанная характеристика
+     * @param status         статус операции записи
      */
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
@@ -173,59 +164,115 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Returns the current page of the calibration table being handled.
+     * Получить репозиторий паролей.
      *
-     * @return the current table page index
+     * @return репозиторий паролей
+     */
+    public PasswordRepository getPasswordRepository() {
+        return passwordRepository;
+    }
+
+    /**
+     * Получить MAC-адрес текущего устройства.
+     *
+     * @return MAC-адрес в виде строки
+     */
+    public String getCurrentMac() {
+        return gattReadService.getCurrentMac();
+    }
+
+    /**
+     * Установить слушатель диалога ввода пароля.
+     *
+     * @param listener слушатель {@link PasswordDialogListener}
+     */
+    public void setPasswordDialogListener(PasswordDialogListener listener) {
+        this.passwordDialogListener = listener;
+    }
+
+    /**
+     * Уведомляет, что требуется ввод пароля.
+     * Показывает диалог только если он еще не был показан.
+     */
+    public void notifyPasswordRequired() {
+        if (!passwordDialogShown && passwordDialogListener != null) {
+            passwordDialogShown = true;
+            passwordDialogListener.onPasswordRequired();
+        }
+    }
+
+    /**
+     * Сбрасывает флаг отображения диалога ввода пароля,
+     * чтобы диалог мог быть показан повторно при необходимости.
+     */
+    public void clearPasswordDialogShown() {
+        passwordDialogShown = false;
+    }
+
+    /**
+     * Установить обработчик переподключения.
+     *
+     * @param connectionHandler обработчик {@link ConnectionHandler}
+     */
+    public void setReconnectDelegate(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
+    }
+
+    /**
+     * Получить текущую страницу таблицы калибровки.
+     *
+     * @return номер страницы
      */
     public int getTablePage() {
         return gattReadService.getTablePage();
     }
 
     /**
-     * Returns LiveData representing the connection status.
+     * Получить LiveData для отслеживания состояния подключения.
      *
-     * @return LiveData<Boolean> with connection status
+     * @return LiveData с булевым значением подключения
      */
     public LiveData<Boolean> isConnectedLiveData() {
         return connectionManager.getConnectionStatus();
     }
 
     /**
-     * Returns LiveData holding the current device details.
+     * Получить LiveData с деталями устройства.
      *
-     * @return LiveData<DeviceDetails> with device details
+     * @return LiveData с {@link DeviceDetails}
      */
     public LiveData<DeviceDetails> getDeviceDetailsLiveData() {
         return gattReadService.getDeviceDetailsLiveData();
     }
 
     /**
-     * Updates the current device details LiveData.
+     * Установить детали устройства в LiveData.
      *
-     * @param details the new device details
+     * @param details новые детали устройства
      */
     public void setDeviceDetailsLiveData(DeviceDetails details) {
         gattReadService.setDeviceDetailsLiveData(details);
     }
 
     /**
-     * Returns LiveData holding the current sensor configuration.
+     * Получить LiveData с конфигурацией сенсора.
      *
-     * @return LiveData<SensorConfig> with sensor configuration
+     * @return LiveData с {@link SensorConfig}
      */
     public LiveData<SensorConfig> getSensorConfigureLiveData() {
         return gattReadService.getSensorConfigureLiveData();
     }
 
     /**
-     * Clears device details from the internal processor.
+     * Очистить данные деталей устройства.
      */
     public void clearDetails() {
         gattReadService.clearDetails();
     }
 
     /**
-     * Resets internal state to the initial authorization command state and clears read processor state.
+     * Сбросить состояние до начального состояния авторизации
+     * и очистить состояние чтения.
      */
     public void resetState() {
         setCommandState(new FirstAuthCommandState());
@@ -233,60 +280,61 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Sets whether the configuration has been saved to the device.
+     * Установить флаг сохранения конфигурации.
      *
-     * @param value true if saved, false otherwise
+     * @param value true, если конфигурация сохранена
      */
     public void setConfigurationSaved(boolean value) {
         gattReadService.setConfigurationSaved(value);
     }
 
     /**
-     * Returns whether the configuration has been saved.
+     * Проверить, сохранена ли конфигурация.
      *
-     * @return true if configuration is saved, false otherwise
+     * @return true, если сохранена
      */
     public boolean isConfigurationSaved() {
         return gattReadService.isConfigurationSaved();
     }
 
     /**
-     * Sets whether the calibration table has been saved to the device.
+     * Установить флаг сохранения таблицы калибровки.
      *
-     * @param value true if saved, false otherwise
+     * @param value true, если таблица сохранена
      */
     public void setTableSaved(boolean value) {
         gattReadService.setTableSaved(value);
     }
 
     /**
-     * Returns whether the calibration table has been saved.
+     * Проверить, сохранена ли таблица калибровки.
      *
-     * @return true if the table is saved, false otherwise
+     * @return true, если сохранена
      */
     public boolean isTableSaved() {
         return gattReadService.isTableSaved();
     }
 
     /**
-     * Initiates writing data to the BLE device characteristic.
-     * Clears the write buffer, executes the current command state handler,
-     * then writes the data.
+     * Записать данные в характеристику BLE-устройства.
+     * <p>
+     * Если в данный момент идет запись, метод ничего не делает.
+     * Иначе очищает буфер записи, вызывает обработчик состояния команд
+     * для заполнения буфера, затем отправляет данные устройству.
      *
-     * @param gatt the BluetoothGatt instance
+     * @param gatt экземпляр BluetoothGatt
      */
     public void writeToCharacteristic(BluetoothGatt gatt) {
-        if (isWritePending) return;  // блокируем повторные вызовы
+        if (isWritePending) return;
         gattWriteService.clearBuffer();
         stateHandler.handle(this);
         gattWriteService.write(gatt);
-        isWritePending = true;  // включаем флаг, что запись запущена
+        isWritePending = true;
     }
 
-
     /**
-     * Requests rereading of the calibration table after successful authentication.
-     * Sets command state accordingly.
+     * Инициирует повторное чтение таблицы калибровки после авторизации.
+     * Устанавливает состояние команд в {@link CommandAfterAuth}.
      */
     public void rereadCalibrationTable() {
         setCommandState(new CommandAfterAuth());
@@ -294,8 +342,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Prepares and saves the current sensor configuration to the write buffer.
-     * Marks configuration as unsaved until written.
+     * Подготавливает и сохраняет текущую конфигурацию сенсора в буфер записи.
+     * Отмечает конфигурацию как несохраненную.
      */
     public void saveConfiguration() {
         var sensorConfig = gattReadService.getSensorConfigureLiveData().getValue();
@@ -307,8 +355,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Saves the current calibration table to the sensor.
-     * Updates the saved page and triggers reread if the page is invalid.
+     * Сохраняет текущую таблицу калибровки в устройство.
+     * Обновляет номер сохраненной страницы и при необходимости запускает повторное чтение.
      */
     public void saveTableToSensor() {
         var deviceDetails = getDeviceDetailsLiveData().getValue();
@@ -328,40 +376,58 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     /**
-     * Sets the command bytes that will be sent to the device.
+     * Устанавливает байты команды для отправки устройству.
      *
-     * @param commandFirst  first command byte
-     * @param commandSecond second command byte
+     * @param commandFirst  первый байт команды
+     * @param commandSecond второй байт команды
      */
     public void setCommand(int commandFirst, int commandSecond) {
         gattWriteService.setCommand(commandFirst, commandSecond);
     }
 
     /**
-     * Sets the current command state handler.
+     * Устанавливает текущий обработчик состояния команд.
      *
-     * @param newState the new CommandStateHandler instance
+     * @param newState новый обработчик {@link CommandStateHandler}
      */
     public void setCommandState(CommandStateHandler newState) {
         this.stateHandler = newState;
     }
 
     /**
-     * Checks if a given status code matches the expected status.
+     * Проверяет, равен ли фактический статус ожидаемому.
      *
-     * @param actual   the actual status code
-     * @param expected the expected status code
-     * @return true if equal, false otherwise
+     * @param actual   фактический статус
+     * @param expected ожидаемый статус
+     * @return true, если статусы совпадают
      */
     private boolean isStatusOk(int actual, int expected) {
         return actual == expected;
     }
 
     /**
-     * Updates internal state after connecting to device.
+     * Обновляет внутреннее состояние после успешного подключения.
      */
     private void updateStateAfterConnect() {
         gattReadService.updateState(true);
         Log.d("MyTag", "Connected to device");
+    }
+
+    /**
+     * Устанавливает LiveData-флаг сохранения конфигурации.
+     *
+     * @param value новое значение флага
+     */
+    public void setConfigurationSavedLive(boolean value) {
+        gattReadService.setConfigurationSavedLive(value);
+    }
+
+    /**
+     * Получает LiveData-флаг сохранения конфигурации.
+     *
+     * @return LiveData<Boolean> с состоянием сохранения конфигурации
+     */
+    public LiveData<Boolean> getConfigurationSavedLiveData() {
+        return gattReadService.getConfigurationSavedLiveData();
     }
 }

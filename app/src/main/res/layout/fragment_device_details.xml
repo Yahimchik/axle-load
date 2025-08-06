@@ -198,7 +198,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/roboto_bold"
-                        android:text="@string/finish_button"
+                        android:text="@string/save_button"
                         android:textAllCaps="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -471,6 +471,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:descendantFocusability="beforeDescendants"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/calibrationTitleTextView" />
@@ -490,31 +493,15 @@
                         android:orientation="vertical"
                         app:layout_constraintGuide_end="16dp" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/saveTableButton"
-                        style="@style/Widget.MaterialComponents.Button"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:ellipsize="end"
-                        android:maxLines="2"
-                        android:minHeight="56dp"
-                        android:text="@string/save_button"
-                        android:textAlignment="center"
-                        android:visibility="invisible"
-                        android:textAllCaps="false"
-                        app:cornerRadius="12dp"
-                        app:layout_constraintEnd_toStartOf="@id/readFromSensorButton"
-                        app:layout_constraintHorizontal_chainStyle="spread"
-                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView" />
+
+                    <!-- Удалили saveTableButton -->
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/readFromSensorButton"
                         style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:minHeight="56dp"
@@ -522,11 +509,10 @@
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp"
-                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                        app:layout_constraintStart_toEndOf="@id/saveTableButton"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView" />
+                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
 
-                    <!-- Row 2 (аналогично): -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/saveToFileButton"
                         style="@style/Widget.MaterialComponents.Button"
@@ -541,17 +527,17 @@
                         android:text="@string/save_to_file"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp"
-                        app:layout_constraintEnd_toStartOf="@id/readFromFileButton"
+                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                        app:layout_constraintTop_toBottomOf="@id/saveTableButton" />
+                        app:layout_constraintEnd_toStartOf="@id/readFromFileButton" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/readFromFileButton"
                         style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginStart="8dp"
                         android:ellipsize="end"
                         android:fontFamily="@font/roboto_bold"
                         android:maxLines="2"
@@ -559,9 +545,9 @@
                         android:text="@string/read_from_file"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp"
-                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton"
                         app:layout_constraintStart_toEndOf="@id/saveToFileButton"
-                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton" />
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

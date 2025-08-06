@@ -26,6 +26,7 @@
             android:layout_weight="1"
             android:autofillHints=""
             android:text="@string/weight"
+            android:imeOptions="actionDone"
             android:textColor="@android:color/white"
             android:textSize="15sp"
             android:inputType="number"
@@ -46,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:autofillHints=""
+            android:imeOptions="actionDone"
             android:text="@string/pressure"
             android:digits="0123456789."
             android:hint="0.000 – 99.999"
@@ -89,7 +91,6 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:tint="@android:color/holo_green_light" />
-            <!-- Initially visible -->
 
         </FrameLayout>
 

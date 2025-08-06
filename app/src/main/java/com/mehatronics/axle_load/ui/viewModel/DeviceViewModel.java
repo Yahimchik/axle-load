@@ -1,18 +1,23 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
+import android.Manifest;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
+import com.mehatronics.axle_load.data.mapper.ConfiguredDeviceMapper;
 import com.mehatronics.axle_load.data.repository.BluetoothRepository;
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
 import com.mehatronics.axle_load.data.repository.impl.DeviceRepositoryImpl;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
+import com.mehatronics.axle_load.domain.entities.AxisUiModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
@@ -54,6 +59,7 @@ public class DeviceViewModel extends ViewModel {
     private final BluetoothRepository bluetoothRepository;
     private final PasswordRepository passwordRepository;
     private final DeviceRepository deviceRepository;
+    private final ConfiguredDeviceMapper mapper;
 
     private final MediatorLiveData<Boolean> allDevicesSaved = new MediatorLiveData<>();
 
@@ -72,16 +78,21 @@ public class DeviceViewModel extends ViewModel {
             DeviceRepositoryImpl deviceRepository,
             SaveCalibrationTableUseCase saveUseCase,
             SubmitPasswordUseCase submitPasswordUseCase,
-            PasswordRepository passwordRepository
+            PasswordRepository passwordRepository,
+            ConfiguredDeviceMapper mapper
     ) {
         this.bluetoothRepository = bluetoothRepository;
         this.deviceRepository = deviceRepository;
         this.saveUseCase = saveUseCase;
         this.submitPasswordUseCase = submitPasswordUseCase;
         this.passwordRepository = passwordRepository;
+        this.mapper = mapper;
 
         allDevicesSaved.addSource(getAxisList(), list -> checkAllSaved());
         allDevicesSaved.addSource(getFinishedMacs(), macs -> checkAllSaved());
+
+        uiAxisModels.addSource(getAxisList(), axisList -> combine(axisList, getScannedDevices().getValue()));
+        uiAxisModels.addSource(getScannedDevices(), devices -> combine(getAxisList().getValue(), devices));
     }
 
     // === Bluetooth Device Management ===
@@ -132,6 +143,7 @@ public class DeviceViewModel extends ViewModel {
      *
      * @param device Устройство для подключения
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void connectToDevice(Device device) {
         bluetoothRepository.connectToDevice(device);
     }
@@ -139,6 +151,7 @@ public class DeviceViewModel extends ViewModel {
     /**
      * Отключается от текущего устройства.
      */
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void disconnect() {
         bluetoothRepository.disconnect();
     }
@@ -177,10 +190,6 @@ public class DeviceViewModel extends ViewModel {
         if (getSensorConfigure().getValue() != null) {
             bluetoothRepository.saveConfiguration();
         }
-    }
-
-    public boolean isConfigurationSaved() {
-        return bluetoothRepository.isConfigurationSaved();
     }
 
     /**
@@ -607,5 +616,33 @@ public class DeviceViewModel extends ViewModel {
 
     public String getDeviceName() {
         return deviceRepository.getDeviceName();
+    }
+
+    public void setConfigurationSavedLive(boolean value) {
+        bluetoothRepository.setConfigurationSavedLive(value);
+    }
+
+    public LiveData<Boolean> getConfigurationSavedLiveData() {
+        return bluetoothRepository.getConfigurationSavedLiveData();
+    }
+
+    private final MediatorLiveData<List<AxisUiModel>> uiAxisModels = new MediatorLiveData<>();
+
+    private void combine(List<AxisModel> axisList, List<Device> scannedDevices) {
+        if (axisList == null || scannedDevices == null) return;
+
+        List<ConfiguredDeviceDTO> dtos = scannedDevices.stream()
+                .map(mapper::convertToConfiguredDevice)
+                .collect(Collectors.toList());
+
+        List<AxisUiModel> uiModels = axisList.stream()
+                .map(axis -> mapper.toUiModel(axis, dtos))
+                .collect(Collectors.toList());
+
+        uiAxisModels.setValue(uiModels);
+    }
+
+    public LiveData<List<AxisUiModel>> getUiAxisModels() {
+        return uiAxisModels;
     }
 }

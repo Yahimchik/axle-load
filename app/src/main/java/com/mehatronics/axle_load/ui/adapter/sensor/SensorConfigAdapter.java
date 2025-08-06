@@ -195,10 +195,6 @@ public class SensorConfigAdapter {
         config.setInstallationPoint(cache.installationPoint);
     }
 
-    public void setSaveClickListener(View.OnClickListener listener) {
-        saveButton.setOnClickListener(listener);
-    }
-
     private String getInstallationPointDescription(int installationPoint) {
         int axle = (installationPoint - 1) / 2 + 1;
         String position = (installationPoint - 1) % 2 == 0 ? LEFT : RIGHT;

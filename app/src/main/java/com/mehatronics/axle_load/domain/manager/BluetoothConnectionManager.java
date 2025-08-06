@@ -2,18 +2,20 @@ package com.mehatronics.axle_load.domain.manager;
 
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_RECONNECT_ATTEMPTS;
 
+import android.Manifest;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
-import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
-import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
+import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import javax.inject.Inject;
@@ -40,14 +42,16 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     }
 
     @Override
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void connect(Device device) {
         gattCallbackHandler.resetState();
         Log.d("MyTag", "Connecting to device...");
         BluetoothDevice bluetoothDevice = device.getDevice();
-        safeConnectGatt(bluetoothDevice, "Security exception: ");
+        safeConnectGatt(bluetoothDevice);
     }
 
     @Override
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void reconnect(BluetoothDevice device) {
         if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
             return;
@@ -56,7 +60,7 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         reconnectAttempts++;
 
         Log.d("MyTag", "Reconnecting to device...");
-        safeConnectGatt(device, "Reconnect Security exception: ");
+        safeConnectGatt(device);
     }
 
     @Override
@@ -66,16 +70,13 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     }
 
     @Override
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void disconnect() {
         if (bluetoothGatt != null) {
-            try {
-                bluetoothGatt.disconnect();
-                bluetoothGatt.close();
-                bluetoothGatt = null;
-                Log.d("MyTag", "Disconnected from device");
-            } catch (SecurityException e) {
-                Log.d("MyTag", "Security exception: " + e.getMessage());
-            }
+            bluetoothGatt.disconnect();
+            bluetoothGatt.close();
+            bluetoothGatt = null;
+            Log.d("MyTag", "Disconnected from device");
         }
     }
 
@@ -108,10 +109,6 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
     }
 
-    public boolean isConfigurationSaved() {
-        return gattCallbackHandler.isConfigurationSaved();
-    }
-
     public void saveTable() {
         gattCallbackHandler.setTableSaved(true);
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
@@ -125,11 +122,16 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         return gattCallbackHandler.isConnectedLiveData();
     }
 
-    private void safeConnectGatt(BluetoothDevice bluetoothDevice, String msg) {
-        try {
-            bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallbackHandler);
-        } catch (SecurityException e) {
-            Log.d("MyTag", msg + e.getMessage());
-        }
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private void safeConnectGatt(BluetoothDevice bluetoothDevice) {
+        bluetoothGatt = bluetoothDevice.connectGatt(context, false, gattCallbackHandler);
+    }
+
+    public void setConfigurationSavedLive(boolean value) {
+        gattCallbackHandler.setConfigurationSavedLive(value);
+    }
+
+    public LiveData<Boolean> getConfigurationSavedLiveData() {
+        return gattCallbackHandler.getConfigurationSavedLiveData();
     }
 }

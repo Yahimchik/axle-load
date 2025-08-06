@@ -8,11 +8,21 @@ import androidx.lifecycle.LiveData;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
+/**
+ * Сервис для чтения характеристик BLE-устройства и управления полученными данными.
+ * Обеспечивает чтение конфигурации устройства, калибровочной таблицы и других параметров.
+ */
 public interface GattReadService {
+
+    /**
+     * Возвращает текущий номер страницы таблицы калибровки.
+     *
+     * @return номер страницы
+     */
     int getTablePage();
 
     /**
-     * Установить номер страницы таблицы калибровки.
+     * Устанавливает номер страницы таблицы калибровки.
      *
      * @param tablePage номер страницы
      */
@@ -20,110 +30,122 @@ public interface GattReadService {
 
     /**
      * Инициализирует чтение всех доступных характеристик устройства.
-     * Заполняет очередь характеристик, у которых есть право на чтение,
-     * устанавливает соответствующие флаги и начинает чтение.
+     * Заполняет очередь характеристик с флагом чтения и начинает последовательное чтение.
      *
-     * @param gatt объект BluetoothGatt для чтения характеристик
+     * @param gatt объект BluetoothGatt для доступа к BLE-устройству
      */
     void readAllCharacteristics(BluetoothGatt gatt);
 
     /**
-     * Обрабатывает данные, полученные после чтения характеристики.
-     * Анализирует команды, обновляет состояние чтения и публикует данные
-     * в LiveData.
+     * Обрабатывает полученную характеристику после её чтения.
+     * Определяет, какие данные были прочитаны, и обновляет соответствующее состояние.
      *
      * @param gatt           объект BluetoothGatt
-     * @param characteristic прочитанная характеристика
+     * @param characteristic характеристика, данные которой были прочитаны
      */
     void handleRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic);
 
     /**
-     * Перезапускает чтение таблицы калибровки:
-     * очищает текущие данные и сбрасывает номер страницы.
+     * Перезапускает процесс чтения таблицы калибровки с первой страницы.
+     * Используется для полного обновления таблицы.
      */
     void rereadCalibrationTable();
 
     /**
-     * Запускает чтение характеристики после записи для обновления данных.
+     * Запускает следующее чтение характеристики после завершения записи.
+     * Полезно, когда требуется немедленно обновить значения после изменения.
      *
      * @param gatt объект BluetoothGatt
      */
     void readNextAfterWrite(BluetoothGatt gatt);
 
     /**
-     * Возвращает LiveData с деталями устройства.
+     * Возвращает LiveData с информацией о текущем подключенном устройстве.
      *
-     * @return LiveData с DeviceDetails
+     * @return LiveData с {@link DeviceDetails}
      */
     LiveData<DeviceDetails> getDeviceDetailsLiveData();
 
     /**
-     * Устанавливает данные деталей устройства вручную.
+     * Устанавливает вручную данные устройства.
      *
-     * @param details данные DeviceDetails
+     * @param details объект {@link DeviceDetails}
      */
     void setDeviceDetailsLiveData(DeviceDetails details);
 
     /**
-     * Возвращает LiveData с конфигурацией сенсора.
+     * Возвращает LiveData с текущей конфигурацией сенсора.
      *
-     * @return LiveData с SensorConfig
+     * @return LiveData с {@link SensorConfig}
      */
     LiveData<SensorConfig> getSensorConfigureLiveData();
 
     /**
-     * Очищает данные деталей устройства.
+     * Очищает данные об устройстве (например, после отключения).
      */
     void clearDetails();
 
     /**
      * Устанавливает флаг сохранения конфигурации.
      *
-     * @param value состояние сохранения конфигурации
+     * @param value true — если конфигурация успешно сохранена
      */
     void setConfigurationSaved(boolean value);
 
     /**
      * Устанавливает флаг сохранения таблицы калибровки.
      *
-     * @param value состояние сохранения таблицы
+     * @param value true — если таблица успешно сохранена
      */
     void setTableSaved(boolean value);
 
     /**
-     * Проверяет, сохранена ли таблица калибровки.
+     * Возвращает флаг, отражающий, была ли таблица калибровки сохранена.
      *
-     * @return true, если таблица сохранена
+     * @return true — если таблица сохранена
      */
     boolean isTableSaved();
 
     /**
-     * Проверяет, сохранена ли конфигурация сенсора.
+     * Возвращает флаг, отражающий, была ли конфигурация устройства сохранена.
      *
-     * @return true, если конфигурация сохранена
+     * @return true — если конфигурация сохранена
      */
     boolean isConfigurationSaved();
 
     /**
-     * Обновляет состояние подключения устройства и очищает накопленные данные.
+     * Обновляет внутреннее состояние подключения и очищает текущие данные.
      *
-     * @param isConnected true, если устройство подключено
+     * @param isConnected true — если устройство подключено
      */
     void updateState(boolean isConnected);
 
     /**
-     * Проверяет, идёт
-     * ли в данный момент чтение всех характеристик.
+     * Проверяет, выполняется ли в данный момент полное чтение характеристик.
      *
-     * @return true, если чтение всех характеристик активно
+     * @return true — если чтение всех характеристик активно
      */
     boolean isReadingAll();
 
+    /**
+     * Возвращает MAC-адрес текущего подключенного устройства.
+     *
+     * @return строка с MAC-адресом
+     */
     String getCurrentMac();
 
-    LiveData<Boolean> getIsLoading();
+    /**
+     * Устанавливает флаг успешного сохранения конфигурации
+     * и обновляет соответствующее LiveData.
+     *
+     * @param value true — если конфигурация успешно сохранена
+     */
+    void setConfigurationSavedLive(boolean value);
 
-    void setLoading(boolean value);
-
-    void onOperationFinished();
+    /**
+     * Возвращает LiveData, отслеживающее сохранение конфигурации.
+     *
+     * @return LiveData с флагом сохранения
+     */
+    LiveData<Boolean> getConfigurationSavedLiveData();
 }
