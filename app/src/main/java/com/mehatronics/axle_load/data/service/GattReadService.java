@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
@@ -148,4 +149,12 @@ public interface GattReadService {
      * @return LiveData с флагом сохранения
      */
     LiveData<Boolean> getConfigurationSavedLiveData();
+
+    void resetPassword(boolean value);
+
+    boolean isResetPassword();
+
+    void setPassword(boolean value);
+
+    boolean isPasswordSet();
 }

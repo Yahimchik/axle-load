@@ -5,10 +5,15 @@ import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_NUMBER;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_SIDE;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -18,12 +23,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.data.service.SensorSelectionService;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceSelectionCallback;
@@ -31,6 +39,9 @@ import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -41,7 +52,12 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     protected FragmentNavigator navigator;
     @Inject
     protected SnackbarManager manager;
+    @Inject
+    protected SaveToFileService saveToFileService;
+    @Inject
+    protected ResourceProvider provider;
     protected LoadingManager loadingManager;
+    protected ActivityResultLauncher<Intent> pickFileLauncher;
 
     protected DeviceViewModel viewModel;
     protected BluetoothHandler handler;
@@ -49,6 +65,25 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        pickFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null) {
+                            List<AxisModel> loaded = saveToFileService.loadAxisConfigurationFromUri(requireContext(), uri);
+                            if (loaded != null && !loaded.isEmpty()) {
+                                viewModel.setLoadedAxisList(loaded);
+                                loadingManager.showLoading(true);
+                                waitUntilDevicesScanned(loaded);
+                            } else {
+                                showMessage("Не удалось загрузить конфигурацию");
+                            }
+                        }
+                    }
+                }
+        );
         viewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
@@ -64,7 +99,6 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
         super.onViewCreated(view, savedInstanceState);
         createBinder(view);
         loadingManager = new LoadingManager(view);
-        navigator.setCurrentFragment(this);
         observe(viewModel.getMessage(), this::showMessage);
     }
 
@@ -114,4 +148,45 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     private LifecycleOwner getOwner() {
         return getViewLifecycleOwner();
     }
+
+    private void waitUntilDevicesScanned(List<AxisModel> axisList) {
+        var targetMacs = axisList.stream()
+                .flatMap(model -> model.getSideDeviceMap().values().stream())
+                .collect(Collectors.toSet());
+
+        var liveData = viewModel.getScannedDevices();
+        var observer = new Observer<List<Device>>() {
+            @Override
+            public void onChanged(List<Device> scannedDevices) {
+                if (scannedDevices == null) return;
+
+                var foundMacs = scannedDevices.stream()
+                        .map(device -> device.getDevice().getAddress())
+                        .collect(Collectors.toSet());
+
+                if (foundMacs.containsAll(targetMacs)) {
+                    for (Device device : scannedDevices) {
+                        String mac = device.getDevice().getAddress();
+                        if (targetMacs.contains(mac)) {
+                            viewModel.markMacAsSelected(device);
+                        }
+                    }
+
+                    viewModel.refreshScannedDevices();
+
+                    loadingManager.showLoading(false);
+                    liveData.removeObserver(this);
+                }
+            }
+        };
+
+        liveData.observe(getViewLifecycleOwner(), observer);
+    }
+    public void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        pickFileLauncher.launch(intent);
+    }
+
 }

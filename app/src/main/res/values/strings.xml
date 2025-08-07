@@ -70,6 +70,8 @@
     <string name="pressure_short">Press: </string>
     <string name="password">Password</string>
     <string name="password_cannot_be_empty">Password can`t be empty</string>
+    <string name="password_old">Old password</string>
+    <string name="password_new">New password</string>
 
     <string name="read_from_file">READ FROM FILE</string>
     <string name="read_from_sensor">READ FROM SENSOR</string>
@@ -94,4 +96,6 @@
     <string name="wheel_right">Right wheel of axle %1$d</string>
 
     <string name="yes">Yes</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

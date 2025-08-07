@@ -64,6 +64,7 @@
     <string name="password">Пароль</string>
 
     <string name="password_cannot_be_empty">Пароль не может быть пустым</string>
+    <string name="password_new">Новый пароль</string>
     <string name="read_from_file">ПРОЧИТАТЬ ИЗ ФАЙЛА</string>
     <string name="read_from_sensor">ПРОЧИТАТЬ ИЗ ДАТЧИКА</string>
     <string name="reset">Сбросить</string>
@@ -87,4 +88,5 @@
     <string name="wheel_right">Правое колесо оси %1$d</string>
 
     <string name="yes">Да</string>
+    <string name="password_old">Старый пароль</string>
 </resources>

@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -133,5 +134,13 @@ public class BluetoothConnectionManager implements ConnectionHandler {
 
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return gattCallbackHandler.getConfigurationSavedLiveData();
+    }
+
+    public void resetPassword(boolean value) {
+        gattCallbackHandler.resetPassword(value);
+    }
+
+    public void setPassword(boolean value) {
+        gattCallbackHandler.setPassword(value);
     }
 }

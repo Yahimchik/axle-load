@@ -7,6 +7,7 @@ import static com.mehatronics.axle_load.constants.StringConstants.RIGHT;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import com.mehatronics.axle_load.domain.entities.SensorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -161,6 +163,7 @@ public class SensorConfigAdapter {
     }
 
     public void bind(SensorConfig config) {
+        Log.d("MyTag", "Flag: " + config.getFlagSystem());
         bindField(messageDeliveryPeriod, formatter.formatMessageDeliveryPeriod(config), val -> cache.messageDeliveryPeriod = val);
         bindField(measurementPeriod, formatter.formatMeasurementPeriod(config), val -> cache.measurementPeriod = val);
         bindField(stateNumber, formatter.formatStateNumber(config), val -> cache.stateNumber = val);

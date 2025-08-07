@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.factory.impl.DefaultCommandStateFactory;
 import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
+import com.mehatronics.axle_load.domain.strategy.impl.ConfigurePasswordStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.FirstAuthStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.SecondAuthStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.UserPasswordStrategy;
@@ -136,6 +137,13 @@ public class ApplicationModule {
         @IntoMap
         @StringKey("80-9")
         public CommandStrategy provideUserPasswordCommandStrategy(UserPasswordStrategy strategy) {
+            return strategy;
+        }
+
+        @Provides
+        @IntoMap
+        @StringKey("80-8")
+        public CommandStrategy provideResetPasswordStrategy(ConfigurePasswordStrategy strategy) {
             return strategy;
         }
     }

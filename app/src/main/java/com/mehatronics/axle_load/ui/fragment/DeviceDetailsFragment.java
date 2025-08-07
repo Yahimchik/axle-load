@@ -18,8 +18,11 @@ import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
@@ -44,8 +47,13 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     protected DeviceDetailsBinder detailsBinder;
     @Inject
     protected PasswordInputDialogFragment dialog;
+    @Inject
+    protected ResourceProvider provider;
+    @Inject
+    protected PasswordRepository passwordRepository;
     private DeviceViewModel viewModel;
     private LoadingManager loadingManager;
+    private View view;
 
     /**
      * Инициализация ViewModel при создании фрагмента.
@@ -68,9 +76,9 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        var view = inflater.inflate(fragment_device_details, container, false);
+        view = inflater.inflate(fragment_device_details, container, false);
         detailsBinder.init(view, viewModel);
-        detailsBinder.setupPopupMenu(view, viewModel::resetPassword, viewModel::setNewPassword);
+
         loadingManager = new LoadingManager(view);
 
         observeView();
@@ -100,12 +108,47 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
 
         observeSelectionMode();
 
+        detailsBinder.setupPopupMenu(view, item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.menu_reset_password) {
+                viewModel.resetPassword(true);
+                passwordRepository.setPasswordStandart(true);
+                return true;
+            } else if (itemId == R.id.menu_set_new_password) {
+                showChangePasswordDialog();
+                return true;
+            }
+            return false;
+        });
+
         viewModel.setPasswordListener(() -> requireActivity().runOnUiThread(viewModel::requestPasswordInput));
 
         viewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         viewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
 
         observePasswordDialogEvent();
+    }
+
+    private void showChangePasswordDialog() {
+        var dialogFragment = new ChangePasswordDialogFragment(provider, passwordRepository);
+
+        getParentFragmentManager().setFragmentResultListener(
+                ChangePasswordDialogFragment.REQUEST_KEY,
+                getViewLifecycleOwner(),
+                (requestKey, bundle) -> {
+                    if (bundle.getBoolean(ChangePasswordDialogFragment.KEY_CANCELLED, false)) {
+                        showMessage(getString(R.string.cancel));
+                    } else {
+                        String oldPassword = bundle.getString(ChangePasswordDialogFragment.KEY_OLD_PASSWORD);
+                        String newPassword = bundle.getString(ChangePasswordDialogFragment.KEY_NEW_PASSWORD);
+
+                        passwordRepository.setPassword(oldPassword);
+                        passwordRepository.setNewPassword(newPassword);
+                        viewModel.setPassword(true);
+                    }
+                });
+
+        dialogFragment.show(getParentFragmentManager(), ChangePasswordDialogFragment.TAG);
     }
 
     private void observeDetails(DeviceDetails deviceDetails) {
@@ -157,8 +200,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
                 });
             }
         });
-
-
     }
 
     private void observePasswordDialogEvent() {

@@ -36,6 +36,8 @@ public class AxisViewBinder implements BaseBinder {
     private final AxisAdapter adapter;
     private final MessageCallback callback;
     private final ResourceProvider provider;
+    private final Runnable onConfigureLoadedClick;
+
 
     public AxisViewBinder(
             View root,
@@ -43,7 +45,8 @@ public class AxisViewBinder implements BaseBinder {
             BluetoothHandler handler,
             MessageCallback callback,
             ResourceProvider resourceProvider,
-            FragmentNavigator navigator
+            FragmentNavigator navigator,
+            Runnable onConfigureLoadedClick
     ) {
         this.service = service;
         this.adapter = new AxisAdapter(handler::onClick, handler::onReset);
@@ -54,6 +57,7 @@ public class AxisViewBinder implements BaseBinder {
         this.callback = callback;
         this.provider = resourceProvider;
         this.navigator = navigator;
+        this.onConfigureLoadedClick = onConfigureLoadedClick;
 
         initRecyclerView(root, R.id.recyclerViewAxes, adapter);
 
@@ -104,7 +108,7 @@ public class AxisViewBinder implements BaseBinder {
             navigator.showFragment(new AxleOverviewFragment());
         });
 
-        buttonConfigureLoaded.setOnClickListener(v -> navigator.openDocumentPicker());
+        buttonConfigureLoaded.setOnClickListener(v -> onConfigureLoadedClick.run());
     }
 
     private boolean isCanSave() {

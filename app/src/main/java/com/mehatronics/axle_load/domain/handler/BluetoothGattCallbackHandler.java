@@ -34,34 +34,54 @@ import javax.inject.Inject;
  */
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
-    /** Репозиторий паролей для авторизации устройства */
+    /**
+     * Репозиторий паролей для авторизации устройства
+     */
     private final PasswordRepository passwordRepository;
 
-    /** Менеджер управления состоянием подключения BLE */
+    /**
+     * Менеджер управления состоянием подключения BLE
+     */
     private final GattConnectionManager connectionManager;
 
-    /** Сервис для записи данных в BLE-устройство */
+    /**
+     * Сервис для записи данных в BLE-устройство
+     */
     private final GattWriteService gattWriteService;
 
-    /** Сервис для чтения данных с BLE-устройства */
+    /**
+     * Сервис для чтения данных с BLE-устройства
+     */
     private final GattReadService gattReadService;
 
-    /** Маппер для преобразования данных BLE в доменные объекты */
+    /**
+     * Маппер для преобразования данных BLE в доменные объекты
+     */
     private final GattDataMapper gattDataMapper;
 
-    /** Обработчик событий подключения и повторных подключений */
+    /**
+     * Обработчик событий подключения и повторных подключений
+     */
     private ConnectionHandler connectionHandler;
 
-    /** Текущий обработчик состояния команд */
+    /**
+     * Текущий обработчик состояния команд
+     */
     private CommandStateHandler stateHandler;
 
-    /** Слушатель событий диалога ввода пароля */
+    /**
+     * Слушатель событий диалога ввода пароля
+     */
     private PasswordDialogListener passwordDialogListener;
 
-    /** Флаг, показывающий, был ли уже показан диалог ввода пароля */
+    /**
+     * Флаг, показывающий, был ли уже показан диалог ввода пароля
+     */
     private boolean passwordDialogShown = false;
 
-    /** Флаг, указывающий, идет ли сейчас операция записи */
+    /**
+     * Флаг, указывающий, идет ли сейчас операция записи
+     */
     private boolean isWritePending = false;
 
     /**
@@ -429,5 +449,21 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      */
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return gattReadService.getConfigurationSavedLiveData();
+    }
+
+    public void resetPassword(boolean value) {
+        gattReadService.resetPassword(value);
+    }
+
+    public boolean isResetPassword() {
+        return gattReadService.isResetPassword();
+    }
+
+    public void setPassword(boolean value) {
+        gattReadService.setPassword(value);
+    }
+
+    public boolean isPasswordSet() {
+        return gattReadService.isPasswordSet();
     }
 }

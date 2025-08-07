@@ -33,6 +33,7 @@ public class DeviceDetailsBinder {
     private TableAdapter tableAdapter;
     private final DeviceDetailsFormatter formatter;
     private final SensorConfigFormatter configFormatter;
+    private DeviceViewModel vm;
 
     @Inject
     public DeviceDetailsBinder(
@@ -46,6 +47,7 @@ public class DeviceDetailsBinder {
         sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter);
         sensorInfoAdapter = new SensorInfoAdapter(view, formatter);
         tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
+        this.vm = vm;
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
     }
 
@@ -53,22 +55,32 @@ public class DeviceDetailsBinder {
         sensorInfoAdapter.finishButtonOnClick(listener);
     }
 
-    public void setupPopupMenu(View view, View.OnClickListener resetClickListener, View.OnClickListener setNewClickListener) {
+//    public void setupPopupMenu(View view) {
+//        ImageButton overflowButton = view.findViewById(R.id.overflowButton);
+//        overflowButton.setOnClickListener(v -> {
+//            PopupMenu popup = new PopupMenu(v.getContext(), v);
+//            popup.getMenuInflater().inflate(R.menu.device_menu, popup.getMenu());
+//            popup.setOnMenuItemClickListener(item -> {
+//                int itemId = item.getItemId();
+//                if (itemId == R.id.menu_reset_password) {
+//                    vm.resetPassword(true);
+//                    return true;
+//                } else if (itemId == R.id.menu_set_new_password) {
+//                    vm.setPasswordDialogVisible(false);
+//                    return true;
+//                }
+//                return false;
+//            });
+//            popup.show();
+//        });
+//    }
+
+    public void setupPopupMenu(View view, PopupMenu.OnMenuItemClickListener listener) {
         ImageButton overflowButton = view.findViewById(R.id.overflowButton);
         overflowButton.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(v.getContext(), v);
             popup.getMenuInflater().inflate(R.menu.device_menu, popup.getMenu());
-            popup.setOnMenuItemClickListener(item -> {
-                int itemId = item.getItemId();
-                if (itemId == R.id.menu_reset_password) {
-                    resetClickListener.onClick(v);
-                    return true;
-                } else if (itemId == R.id.menu_set_new_password) {
-                    setNewClickListener.onClick(v);
-                    return true;
-                }
-                return false;
-            });
+            popup.setOnMenuItemClickListener(listener);
             popup.show();
         });
     }

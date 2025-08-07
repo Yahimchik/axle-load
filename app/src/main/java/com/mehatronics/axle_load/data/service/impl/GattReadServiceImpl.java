@@ -8,7 +8,6 @@ import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
-import static com.mehatronics.axle_load.utils.ByteUtils.parseIntFromBytes;
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
@@ -90,11 +89,8 @@ public class GattReadServiceImpl implements GattReadService {
      * Флаг: была ли сохранена конфигурация.
      */
     private boolean isConfigurationSaved = false;
-
-    /**
-     * Флаг: выполнен ли повторный запрос конфигурации.
-     */
-    private boolean retriedConfigRead = false;
+    private boolean isPasswordReset = false;
+    private boolean isPasswordSet = false;
 
     /**
      * Флаг: происходит ли чтение всех характеристик.
@@ -200,18 +196,6 @@ public class GattReadServiceImpl implements GattReadService {
 
         if (isRieadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                 && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
-
-            int battery = parseIntFromBytes(bytes, 21, 20);
-            if (battery == 0 && !retriedConfigRead) {
-                retriedConfigRead = true;
-                isReadingAll = true;
-                Log.w("MyTag", "Battery value suspicious (" + battery + "), retrying config read");
-                gatt.readCharacteristic(characteristic);
-                return;
-            }
-
-            isRieadingConfigComplete = false;
-            retriedConfigRead = false;
             currentMac = gatt.getDevice().getAddress();
             sensorConfigLiveData.postValue(convertBytesToConfiguration(gatt, bytes));
         }
@@ -224,8 +208,10 @@ public class GattReadServiceImpl implements GattReadService {
                 isReadingTableComplete = false;
             }
         }
+        Log.d("MyTag", Arrays.toString(bytes));
 
         if (isConnected && values.size() > 8) {
+
             deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
         }
     }
@@ -395,6 +381,26 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return configurationSavedLiveData;
+    }
+
+    @Override
+    public void resetPassword(boolean value) {
+        isPasswordReset = value;
+    }
+
+    @Override
+    public boolean isResetPassword() {
+        return isPasswordReset;
+    }
+
+    @Override
+    public void setPassword(boolean value) {
+        isPasswordSet = value;
+    }
+
+    @Override
+    public boolean isPasswordSet() {
+        return isPasswordSet;
     }
 
     /**

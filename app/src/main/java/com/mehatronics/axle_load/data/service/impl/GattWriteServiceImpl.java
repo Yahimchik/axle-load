@@ -5,6 +5,7 @@ import static com.mehatronics.axle_load.constants.UuidConstants.WRITE_CHARACTERI
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
+import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 

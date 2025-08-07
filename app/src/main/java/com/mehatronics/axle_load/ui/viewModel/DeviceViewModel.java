@@ -8,6 +8,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
@@ -75,7 +76,7 @@ public class DeviceViewModel extends ViewModel {
     @Inject
     public DeviceViewModel(
             BluetoothRepository bluetoothRepository,
-            DeviceRepositoryImpl deviceRepository,
+            DeviceRepository deviceRepository,
             SaveCalibrationTableUseCase saveUseCase,
             SubmitPasswordUseCase submitPasswordUseCase,
             PasswordRepository passwordRepository,
@@ -652,5 +653,13 @@ public class DeviceViewModel extends ViewModel {
 
     public void refreshScannedDevices() {
         deviceRepository.refreshScannedDevices();
+    }
+
+    public void resetPassword(boolean value) {
+        bluetoothRepository.resetPassword(value);
+    }
+
+    public void setPassword(boolean value) {
+        bluetoothRepository.setPassword(value);
     }
 }

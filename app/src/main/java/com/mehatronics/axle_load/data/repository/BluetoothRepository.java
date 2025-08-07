@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.service.BleScannerService;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
+import com.mehatronics.axle_load.domain.entities.Event;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -227,5 +228,13 @@ public class BluetoothRepository {
 
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return bluetoothConnectionManager.getConfigurationSavedLiveData();
+    }
+
+    public void resetPassword(boolean value) {
+        bluetoothConnectionManager.resetPassword(value);
+    }
+
+    public void setPassword(boolean value) {
+        bluetoothConnectionManager.setPassword(value);
     }
 }
