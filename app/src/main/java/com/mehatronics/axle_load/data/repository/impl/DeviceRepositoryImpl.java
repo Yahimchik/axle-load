@@ -13,9 +13,7 @@ import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,11 +57,6 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         }
 
         sensorService.refreshScannedDevices();
-    }
-
-    @Override
-    public int getAxisCount() {
-        return axisService.getAxisCount();
     }
 
     @Override

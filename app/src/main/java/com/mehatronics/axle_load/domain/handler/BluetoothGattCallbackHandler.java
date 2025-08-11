@@ -13,6 +13,7 @@ import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
@@ -465,5 +466,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
     public boolean isPasswordSet() {
         return gattReadService.isPasswordSet();
+    }
+
+    public void setListener(GattReadListener listener) {
+        stateHandler = new FirstAuthCommandState();
+        gattReadService.setListener(listener);
     }
 }

@@ -56,6 +56,7 @@
 
     <string name="installation_point">Installation Point</string>
     <string name="invalid_detector">Invalid detector at line %1$d</string>
+    <string name="invalid_password_for">Invalid password: %1$s</string>
 
     <string name="manufacturer">Manufacturer: </string>
     <string name="measurement_period">Measurement period (s)</string>
@@ -72,6 +73,8 @@
     <string name="password_cannot_be_empty">Password can`t be empty</string>
     <string name="password_old">Old password</string>
     <string name="password_new">New password</string>
+    <string name="password_reset_for">Password reset: %1$s</string>
+    <string name="password_set_for">Password is set: %1$s</string>
 
     <string name="read_from_file">READ FROM FILE</string>
     <string name="read_from_sensor">READ FROM SENSOR</string>
@@ -96,6 +99,4 @@
     <string name="wheel_right">Right wheel of axle %1$d</string>
 
     <string name="yes">Yes</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

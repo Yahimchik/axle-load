@@ -50,6 +50,7 @@
     <string name="installation_point">Точка установки</string>
     <string name="invalid_detector">Неверный детектор в строгке %1$d</string>
 
+    <string name="invalid_password_for">Неверный пароль: %1$s</string>
     <string name="manufacturer">Производитель:</string>
     <string name="measurement_period">Период вычислений</string>
     <string name="message_delivery_period">Период доставки сообщений</string>
@@ -65,6 +66,8 @@
 
     <string name="password_cannot_be_empty">Пароль не может быть пустым</string>
     <string name="password_new">Новый пароль</string>
+    <string name="password_reset_for">Пароль сброшен: %1$s</string>
+    <string name="password_set_for">Пароль установлен: %1$s</string>
     <string name="read_from_file">ПРОЧИТАТЬ ИЗ ФАЙЛА</string>
     <string name="read_from_sensor">ПРОЧИТАТЬ ИЗ ДАТЧИКА</string>
     <string name="reset">Сбросить</string>

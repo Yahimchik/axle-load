@@ -163,7 +163,6 @@ public class SensorConfigAdapter {
     }
 
     public void bind(SensorConfig config) {
-        Log.d("MyTag", "Flag: " + config.getFlagSystem());
         bindField(messageDeliveryPeriod, formatter.formatMessageDeliveryPeriod(config), val -> cache.messageDeliveryPeriod = val);
         bindField(measurementPeriod, formatter.formatMeasurementPeriod(config), val -> cache.measurementPeriod = val);
         bindField(stateNumber, formatter.formatStateNumber(config), val -> cache.stateNumber = val);

@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.domain.entities.Event;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -142,5 +142,9 @@ public class BluetoothConnectionManager implements ConnectionHandler {
 
     public void setPassword(boolean value) {
         gattCallbackHandler.setPassword(value);
+    }
+
+    public void setListener(GattReadListener listener) {
+        gattCallbackHandler.setListener(listener);
     }
 }

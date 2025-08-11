@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.domain.entities.Event;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
@@ -157,4 +157,6 @@ public interface GattReadService {
     void setPassword(boolean value);
 
     boolean isPasswordSet();
+
+    void setListener(GattReadListener listener);
 }

@@ -1,8 +1,10 @@
 package com.mehatronics.axle_load.data.service.impl;
 
 import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.NINE_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
 import static com.mehatronics.axle_load.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
 import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
@@ -24,6 +26,7 @@ import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +81,7 @@ public class GattReadServiceImpl implements GattReadService {
     /**
      * Флаг: завершено ли чтение конфигурации.
      */
-    private boolean isRieadingConfigComplete = false;
+    private boolean isReadingConfigComplete = false;
 
     /**
      * Флаг: завершено ли чтение калибровочной таблицы.
@@ -116,6 +119,7 @@ public class GattReadServiceImpl implements GattReadService {
      * MAC-адрес текущего устройства.
      */
     private String currentMac;
+    private GattReadListener listener;
 
     /**
      * Конструктор с внедрением зависимого маппера.
@@ -125,6 +129,10 @@ public class GattReadServiceImpl implements GattReadService {
     @Inject
     public GattReadServiceImpl(GattDataMapper gattDataMapper) {
         this.gattDataMapper = gattDataMapper;
+    }
+
+    public void setListener(GattReadListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -166,7 +174,7 @@ public class GattReadServiceImpl implements GattReadService {
             }
         }
         isReadingAll = true;
-        isRieadingConfigComplete = true;
+        isReadingConfigComplete = true;
         isReadingTableComplete = true;
         readNext(gatt);
     }
@@ -194,7 +202,11 @@ public class GattReadServiceImpl implements GattReadService {
             return;
         }
 
-        if (isRieadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
+        if (isMatchingCommand(bytes, 1, NINE_COMMAND) && isMatchingCommand(bytes, 4, ZERO_COMMAND_DECIMAL)) {
+            listener.onWrongPassword();
+        }
+
+        if (isReadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                 && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
             currentMac = gatt.getDevice().getAddress();
             sensorConfigLiveData.postValue(convertBytesToConfiguration(gatt, bytes));
@@ -208,10 +220,8 @@ public class GattReadServiceImpl implements GattReadService {
                 isReadingTableComplete = false;
             }
         }
-        Log.d("MyTag", Arrays.toString(bytes));
 
         if (isConnected && values.size() > 8) {
-
             deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
         }
     }
