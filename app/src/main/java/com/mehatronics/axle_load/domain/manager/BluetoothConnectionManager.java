@@ -47,8 +47,7 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     public void connect(Device device) {
         gattCallbackHandler.resetState();
         Log.d("MyTag", "Connecting to device...");
-        BluetoothDevice bluetoothDevice = device.getDevice();
-        safeConnectGatt(bluetoothDevice);
+        safeConnectGatt(device.getDevice());
     }
 
     @Override

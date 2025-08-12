@@ -72,11 +72,11 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri uri = result.getData().getData();
                         if (uri != null) {
-                            List<AxisModel> loaded = saveToFileService.loadAxisConfigurationFromUri(requireContext(), uri);
-                            if (loaded != null && !loaded.isEmpty()) {
-                                viewModel.setLoadedAxisList(loaded);
+                            List<AxisModel> loadedList = saveToFileService.loadListFromUri(requireContext(), uri, AxisModel.class);
+                            if (loadedList != null && !loadedList.isEmpty()) {
+                                viewModel.setLoadedAxisList(loadedList);
                                 loadingManager.showLoading(true);
-                                waitUntilDevicesScanned(loaded);
+                                waitUntilDevicesScanned(loadedList);
                             } else {
                                 showMessage("Не удалось загрузить конфигурацию");
                             }
@@ -188,5 +188,4 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         pickFileLauncher.launch(intent);
     }
-
 }

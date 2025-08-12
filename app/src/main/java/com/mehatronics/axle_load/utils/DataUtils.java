@@ -1,12 +1,12 @@
 package com.mehatronics.axle_load.utils;
 
-import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.PRESSURE;
-import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.WEIGHT;
-import static com.mehatronics.axle_load.utils.ByteUtils.convertByteToValue;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.constants.StringConstants.ZERO;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.PRESSURE;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.WEIGHT;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertByteToValue;
 
 import com.mehatronics.axle_load.domain.entities.enums.CharacteristicType;
 
@@ -47,7 +47,7 @@ public class DataUtils {
      * <p>Проверяются управляющие байты (0-й и 1-й), чтобы удостовериться, что данные валидны.
      *
      * @param bytes Массив байт с данными.
-     * @param type Тип характеристики: {@link CharacteristicType#WEIGHT} или {@link CharacteristicType#PRESSURE}.
+     * @param type  Тип характеристики: {@link CharacteristicType#WEIGHT} или {@link CharacteristicType#PRESSURE}.
      * @return Значение характеристики в виде строки или "0" при недопустимых данных.
      */
     public static String convertBytesToValue(byte[] bytes, CharacteristicType type) {
@@ -55,10 +55,10 @@ public class DataUtils {
             if ((bytes[1] & ZERO_COMMAND_BINARY) == SECOND_COMMAND) {
                 if (type.equals(WEIGHT)) {
                     return String.valueOf(convertByteToValue(bytes, 7, 6));
-                }
-
-                if (type.equals(PRESSURE)) {
+                } else if (type.equals(PRESSURE)) {
                     return String.valueOf(convertByteToValue(bytes, 5, 4) / 10f);
+                } else {
+                    return String.valueOf(bytes[12]);
                 }
             }
         }

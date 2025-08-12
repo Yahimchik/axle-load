@@ -3,8 +3,10 @@ package com.mehatronics.axle_load.di;
 import android.content.Context;
 
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.repository.impl.DeviceRepositoryImpl;
+import com.mehatronics.axle_load.data.repository.impl.DeviceTypeRepositoryImpl;
 import com.mehatronics.axle_load.data.repository.impl.PasswordRepositoryImpl;
 import com.mehatronics.axle_load.data.service.AxisService;
 import com.mehatronics.axle_load.data.service.BleScannerService;
@@ -122,4 +124,8 @@ public abstract class ServiceImplModule {
     @Binds
     @Singleton
     public abstract SaveToFileService bindSaveToFileService(SaveToFileServiceImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract DeviceTypeRepository bindDeviceTypeRepository(DeviceTypeRepositoryImpl impl);
 }

@@ -8,6 +8,7 @@
     <string name="axle_right">ПРАВО</string>
     <string name="axles_count">Выберите количество осей</string>
 
+    <string name="axis_config">Axis_config</string>
     <string name="battery">Батарея:</string>
 
     <string name="calibration_table">Тарировочная таблица</string>
@@ -41,6 +42,7 @@
     <string name="error_invalid_number">Введите корректное число</string>
     <string name="error_select_at_least_one_sensor_per_axis">Выберите хотя бы один датчик на каждой оси</string>
     <string name="error_sensor_not_selected">Датчик не выбран</string>
+    <string name="error_reading_the_file">Неверный формат или файл</string>
 
     <string name="firmware_version">Версия прошивки:</string>
     <string name="finish_button">ЗАВЕРШИТЬ</string>
@@ -83,8 +85,9 @@
     <string name="stateNumber">Гос. номер</string>
 
     <string name="save_to_file_not_allowed_at">Сохранение не поддерживается на этой версии Android</string>
-    <string name="saved_in">Сохранено в:</string>
-    <string name="error_reading_the_file">Ошибка при чтении файла</string>
+    <string name="saved_in">Сохранено в: %1$</string>
+    <string name="tar_table">Тар таблица %1$s</string>
+    <string name="calibration">Тарировка</string>
     <string name="weight">Вес:</string>
     <string name="wheel_center">Центр оси %1$d</string>
     <string name="wheel_left">Левое колесо оси %1$d</string>
@@ -92,4 +95,5 @@
 
     <string name="yes">Да</string>
     <string name="password_old">Старый пароль</string>
+    <string name="configuration">Конфигурация</string>
 </resources>

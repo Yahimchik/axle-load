@@ -15,6 +15,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.BleScannerService;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
@@ -32,14 +33,16 @@ public class BleScannerServiceImpl implements BleScannerService {
     private final MutableLiveData<List<Device>> scannedDevices = new MutableLiveData<>(new ArrayList<>());
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable restartScanRunnable = this::restartScan;
+    private final DeviceTypeRepository repository;
     private BluetoothLeScanner bleScanner;
     private DeviceType deviceType;
 
     @Inject
-    public BleScannerServiceImpl(BluetoothAdapter bluetoothAdapter) {
+    public BleScannerServiceImpl(BluetoothAdapter bluetoothAdapter, DeviceTypeRepository repository) {
         if (bluetoothAdapter != null) {
             this.bleScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
+        this.repository = repository;
     }
 
     @Override
@@ -98,7 +101,7 @@ public class BleScannerServiceImpl implements BleScannerService {
             if (!isDeviceTypeValid(device)) {
                 return;
             }
-
+            repository.setDeviceType(deviceType);
             addOrUpdateDevice(new Device(device, result));
         }
     };
@@ -130,7 +133,7 @@ public class BleScannerServiceImpl implements BleScannerService {
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private boolean isDeviceTypeValid(BluetoothDevice device) {
-        return device.getName() != null && device.getName().contains(deviceType.name());
+        return device.getName() != null && device.getName().contains(deviceType.toString());
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)

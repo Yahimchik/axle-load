@@ -23,6 +23,9 @@ public class SensorInfoAdapter {
 
     private final Button readFromSensorButton;
     private final Button finishButton;
+    private final Button saveToFileButton;
+    private final Button readFromFileButton;
+
     private String cachedFirmwareVersion;
     private String cachedHardwareVersion;
     private String cachedBatteryLevel;
@@ -41,11 +44,21 @@ public class SensorInfoAdapter {
         pressureTextView = root.findViewById(R.id.pressureValueTextView);
         readFromSensorButton = root.findViewById(R.id.readFromSensorButton);
         finishButton = root.findViewById(R.id.finishButton);
+        saveToFileButton = root.findViewById(R.id.saveToFileButton);
+        readFromFileButton = root.requireViewById(R.id.readFromFileButton);
         this.formatter = formatter;
     }
 
     public void finishButtonOnClick(View.OnClickListener listener) {
         finishButton.setOnClickListener(listener);
+    }
+
+    public void saveToFileOnClick(View.OnClickListener listener){
+        saveToFileButton.setOnClickListener(listener);
+    }
+
+    public void readFromFileButton(View.OnClickListener listener){
+        readFromFileButton.setOnClickListener(listener);
     }
 
     public void bind(DeviceDetails newDetails) {

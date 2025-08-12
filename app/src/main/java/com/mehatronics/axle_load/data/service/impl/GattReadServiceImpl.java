@@ -5,8 +5,7 @@ import static com.mehatronics.axle_load.constants.CommandsConstants.NINE_COMMAND
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
-import static com.mehatronics.axle_load.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
-import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
@@ -21,11 +20,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -67,6 +69,7 @@ public class GattReadServiceImpl implements GattReadService {
      * Маппер для преобразования BLE-данных в доменные сущности.
      */
     private final GattDataMapper gattDataMapper;
+    private final DeviceTypeRepository repository;
 
     /**
      * Хранение считанной калибровочной таблицы.
@@ -127,8 +130,9 @@ public class GattReadServiceImpl implements GattReadService {
      * @param gattDataMapper преобразователь BLE-данных в доменные объекты
      */
     @Inject
-    public GattReadServiceImpl(GattDataMapper gattDataMapper) {
+    public GattReadServiceImpl(GattDataMapper gattDataMapper, DeviceTypeRepository repository) {
         this.gattDataMapper = gattDataMapper;
+        this.repository = repository;
     }
 
     public void setListener(GattReadListener listener) {
@@ -202,7 +206,7 @@ public class GattReadServiceImpl implements GattReadService {
             return;
         }
 
-        if (isMatchingCommand(bytes, 1, NINE_COMMAND) && isMatchingCommand(bytes, 4, ZERO_COMMAND_DECIMAL)) {
+        if (repository.getCurrDeviceType().equals(DeviceType.DPS) && isMatchingCommand(bytes, 1, NINE_COMMAND) && isMatchingCommand(bytes, 4, ZERO_COMMAND_DECIMAL)) {
             listener.onWrongPassword();
         }
 
@@ -244,8 +248,12 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void readNextAfterWrite(BluetoothGatt gatt) {
-        var service = gatt.getService(USER_SERVICE_DPS);
-        var readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_DPS);
+        UUID[] uuids = UUID_MAP.get(repository.getCurrDeviceType());
+        if (uuids == null) return;
+
+        var service = gatt.getService(uuids[0]);
+        var readCharacteristic = service.getCharacteristic(uuids[2]);
+
         if (readCharacteristic != null) {
             gatt.readCharacteristic(readCharacteristic);
         }

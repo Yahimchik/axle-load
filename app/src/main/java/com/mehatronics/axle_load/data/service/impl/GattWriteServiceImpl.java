@@ -1,19 +1,19 @@
 package com.mehatronics.axle_load.data.service.impl;
 
-import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
-import static com.mehatronics.axle_load.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
-import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -27,6 +27,7 @@ public class GattWriteServiceImpl implements GattWriteService {
 
     private final Map<String, CommandStrategy> commandStrategies;
     private final byte[] buffer = new byte[68];
+    private final DeviceTypeRepository repository;
 
     /**
      * Внедрение зависимостей через конструктор.
@@ -34,8 +35,9 @@ public class GattWriteServiceImpl implements GattWriteService {
      * @param commandStrategies карта стратегий по ключу "C1-C2", где C1 и C2 — команды
      */
     @Inject
-    public GattWriteServiceImpl(Map<String, CommandStrategy> commandStrategies) {
+    public GattWriteServiceImpl(Map<String, CommandStrategy> commandStrategies, DeviceTypeRepository repository) {
         this.commandStrategies = commandStrategies;
+        this.repository = repository;
     }
 
     /**
@@ -81,8 +83,8 @@ public class GattWriteServiceImpl implements GattWriteService {
     /**
      * Пишет содержимое буфера в WRITE-характеристику BLE-устройства.
      * <p>
-     * Поиск производится по UUID сервиса {@link com.mehatronics.axle_load.constants.UuidConstants#USER_SERVICE_DPS} и
-     * характеристики {@link com.mehatronics.axle_load.constants.UuidConstants#WRITE_CHARACTERISTIC_DPS}.
+     * Поиск производится по UUID сервиса и
+     * характеристики.
      * <p>
      * Метод требует разрешение {@link Manifest.permission#BLUETOOTH_CONNECT}.
      *
@@ -91,10 +93,13 @@ public class GattWriteServiceImpl implements GattWriteService {
     @Override
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void write(BluetoothGatt gatt) {
-        var service = gatt.getService(USER_SERVICE_DPS);
+        UUID[] uuids = UUID_MAP.get(repository.getCurrDeviceType());
+        if (uuids == null) return;
+
+        var service = gatt.getService(uuids[0]);
         if (service == null) return;
 
-        var characteristic = service.getCharacteristic(WRITE_CHARACTERISTIC_DPS);
+        var characteristic = service.getCharacteristic(uuids[1]);
         if (characteristic == null) return;
 
         characteristic.setValue(buffer);

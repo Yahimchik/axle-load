@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui.binder;
 
+import static com.mehatronics.axle_load.R.string.calibration;
+import static com.mehatronics.axle_load.R.string.tar_table;
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 import static com.mehatronics.axle_load.ui.adapter.diffUtil.CalibrationDiffUtil.hasTableChanged;
 
@@ -11,9 +13,11 @@ import androidx.appcompat.widget.PopupMenu;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
+import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.TableAdapter;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigAdapter;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorInfoAdapter;
@@ -33,24 +37,47 @@ public class DeviceDetailsBinder {
     private TableAdapter tableAdapter;
     private final DeviceDetailsFormatter formatter;
     private final SensorConfigFormatter configFormatter;
+    private final SaveToFileService service;
+    private final ResourceProvider provider;
+    private DeviceViewModel vm;
 
     @Inject
     public DeviceDetailsBinder(
+            SaveToFileService service,
             DeviceDetailsFormatter formatter,
-            SensorConfigFormatter configFormatter) {
+            SensorConfigFormatter configFormatter,
+            ResourceProvider provider) {
+        this.service = service;
         this.configFormatter = configFormatter;
         this.formatter = formatter;
+        this.provider = provider;
     }
 
     public void init(View view, DeviceViewModel vm) {
+        this.vm = vm;
         sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter);
         sensorInfoAdapter = new SensorInfoAdapter(view, formatter);
         tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
+        saveToFileOnClick();
     }
 
     public void finishButtonOnClick(View.OnClickListener listener) {
         sensorInfoAdapter.finishButtonOnClick(listener);
+    }
+
+    public void readFromFileOnClick(View.OnClickListener listener) {
+        sensorInfoAdapter.readFromFileButton(listener);
+    }
+
+    public void saveToFileOnClick() {
+        sensorInfoAdapter.saveToFileOnClick(v
+                -> {
+            String deviceName = vm.getDeviceName();
+            List<CalibrationTable> copy = new ArrayList<>(tableAdapter.getCurrentList());
+            copy.remove(copy.size() - 1);
+            service.saveToFile(v, v.getContext(), provider.getString(calibration), provider.getString(tar_table, deviceName), copy);
+        });
     }
 
     public void setupPopupMenu(View view, PopupMenu.OnMenuItemClickListener listener) {

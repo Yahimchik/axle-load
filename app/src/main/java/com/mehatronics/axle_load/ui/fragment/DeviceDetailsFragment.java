@@ -5,6 +5,7 @@ import static com.mehatronics.axle_load.R.id.menu_reset_password;
 import static com.mehatronics.axle_load.R.id.menu_set_new_password;
 import static com.mehatronics.axle_load.R.layout.fragment_device_details;
 import static com.mehatronics.axle_load.R.string.disconnect_from;
+import static com.mehatronics.axle_load.R.string.error_reading_the_file;
 import static com.mehatronics.axle_load.R.string.invalid_detector;
 import static com.mehatronics.axle_load.R.string.invalid_password_for;
 import static com.mehatronics.axle_load.R.string.password_reset_for;
@@ -13,18 +14,25 @@ import static com.mehatronics.axle_load.R.string.save_configuration;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
+import com.mehatronics.axle_load.data.service.SaveToFileService;
+import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.localization.ResourceProvider;
@@ -35,6 +43,8 @@ import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,11 +67,14 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     protected PasswordInputDialogFragment dialog;
     @Inject
     protected PasswordRepository passwordRepository;
+    @Inject
+    protected SaveToFileService service;
     private DeviceViewModel vm;
     private LoadingManager loadingManager;
     private View view;
     private boolean wrongPassword = false;
     private boolean isSavingStarted = false;
+    protected ActivityResultLauncher<Intent> pickFileLauncher;
 
     /**
      * Инициализация ViewModel при создании фрагмента.
@@ -71,6 +84,24 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        pickFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null) {
+                            List<CalibrationTable> loadedList = service.loadListFromUri(requireContext(), uri, CalibrationTable.class);
+                            if (loadedList != null && !loadedList.isEmpty()) {
+                                vm.setCalibrationTable(loadedList);
+                            } else {
+                                showMessage(provider.getString(error_reading_the_file));
+                            }
+                        }
+                    }
+                }
+        );
+
         vm = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
         vm.setListener(this);
     }
@@ -91,7 +122,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
         loadingManager = new LoadingManager(view);
         observeView();
         setupResetTableBtn();
-
         return view;
     }
 
@@ -147,6 +177,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
         vm.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         vm.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
 
+        detailsBinder.readFromFileOnClick(v -> openFilePicker());
+
         observePasswordDialogEvent();
     }
 
@@ -159,6 +191,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 (requestKey, bundle) -> {
                     if (bundle.getBoolean(ChangePasswordDialogFragment.KEY_CANCELLED, false)) {
                         showMessage(getString(R.string.cancel));
+                        loadingManager.showLoading(false);
                     } else {
                         String oldPassword = bundle.getString(ChangePasswordDialogFragment.KEY_OLD_PASSWORD);
                         String newPassword = bundle.getString(ChangePasswordDialogFragment.KEY_NEW_PASSWORD);
@@ -210,7 +243,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                         if (lastMac != null) {
                             vm.addFinishedMac(lastMac);
                         }
-                        closeFragment();
                     }
                 });
             }
@@ -293,5 +325,12 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
         closeFragment();
         Log.d("MyTag", "Device details fragment is closed");
+    }
+
+    public void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        pickFileLauncher.launch(intent);
     }
 }

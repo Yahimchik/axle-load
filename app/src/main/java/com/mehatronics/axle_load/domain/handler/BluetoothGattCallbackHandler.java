@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.domain.handler;
 
-import static com.mehatronics.axle_load.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
@@ -21,6 +22,8 @@ import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.impl.CommandAfterAuth;
 import com.mehatronics.axle_load.domain.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
+
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -59,6 +62,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      * Маппер для преобразования данных BLE в доменные объекты
      */
     private final GattDataMapper gattDataMapper;
+
+    private final DeviceTypeRepository repository;
 
     /**
      * Обработчик событий подключения и повторных подключений
@@ -102,7 +107,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             GattReadService gattReadService,
             GattWriteService gattWriteService,
             GattDataMapper gattDataMapper,
-            CommandStateHandler stateHandler
+            CommandStateHandler stateHandler,
+            DeviceTypeRepository repository
     ) {
         this.passwordRepository = passwordRepository;
         this.connectionManager = connectionManager;
@@ -110,6 +116,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         this.gattWriteService = gattWriteService;
         this.gattDataMapper = gattDataMapper;
         this.stateHandler = stateHandler;
+        this.repository = repository;
     }
 
     /**
@@ -178,7 +185,9 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (isStatusOk(status, BluetoothGatt.GATT_SUCCESS)) {
-            if (characteristic.getUuid().equals(WRITE_CHARACTERISTIC_DPS)) {
+            UUID[] uuids = UUID_MAP.get(repository.getCurrDeviceType());
+            if (uuids == null) return;
+            if (characteristic.getUuid().equals(uuids[1])) {
                 gattReadService.readNextAfterWrite(gatt);
             }
         }

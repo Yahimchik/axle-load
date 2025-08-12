@@ -207,6 +207,10 @@ public class DeviceViewModel extends ViewModel {
         return bluetoothRepository.getCalibrationTable();
     }
 
+    public void setCalibrationTable(List<CalibrationTable> table){
+        bluetoothRepository.setCalibrationTable(table);
+    }
+
     /**
      * Обновляет виртуальную точку в таблице калибровки на основе деталей устройства.
      *

@@ -12,6 +12,7 @@
     <string name="axle_numbered">AXLE %1$d</string>
     <string name="axle_right">Axle right</string>
     <string name="axles_count">Choose the axles count</string>
+    <string name="axis_config">Конфиг_осей</string>
 
     <string name="battery">Battery: </string>
 
@@ -27,6 +28,7 @@
     <string name="configure_the_settings">Configure The Settings</string>
     <string name="configure_loaded">Configure Loaded</string>
     <string name="connection_failed">Failed to connect to device</string>
+    <string name="configuration">Configuration</string>
 
     <string name="delete" translatable="false">DELETE</string>
     <string name="device_mac" translatable="false">MAC: </string>
@@ -48,6 +50,7 @@
     <string name="error_invalid_number">Please enter a valid number</string>
     <string name="error_select_at_least_one_sensor_per_axis">Select at least one sensor per axis</string>
     <string name="error_sensor_not_selected">Sensor not select</string>
+    <string name="error_reading_the_file">Incorrect format or file</string>
 
     <string name="firmware_version">Firmware Version: </string>
     <string name="finish_button">FINISH</string>
@@ -90,8 +93,10 @@
     <string name="set_new_password">SET NEW PASSWORD</string>
     <string name="stateNumber">State Number</string>
     <string name="save_to_file_not_allowed_at">Saving is not supported on this version of Android</string>
-    <string name="saved_in">Saved in:</string>
-    <string name="error_reading_the_file">Error reading the file</string>
+    <string name="saved_in">Saved in: %1$s</string>
+
+    <string name="tar_table">Tar table %1$s</string>
+    <string name="calibration">Сalibration</string>
 
     <string name="weight">Weight: </string>
     <string name="wheel_center">Center of axle %1$d</string>

@@ -178,6 +178,10 @@ public class BluetoothRepository {
         return calibrationTableManager.getCalibrationTable();
     }
 
+    public void setCalibrationTable(List<CalibrationTable> table){
+        calibrationTableManager.setCalibrationTable(table);
+    }
+
     /**
      * Обновляет виртуальную точку в таблице калибровки.
      *
