@@ -1,14 +1,14 @@
 package com.mehatronics.axle_load.data.service.impl;
 
 import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.NINE_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
-import static com.mehatronics.axle_load.constants.UuidConstants.READ_CHARACTERISTIC_DPS;
-import static com.mehatronics.axle_load.constants.UuidConstants.USER_SERVICE_DPS;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
+import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
-import static com.mehatronics.axle_load.utils.ByteUtils.parseIntFromBytes;
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
@@ -20,17 +20,21 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -65,6 +69,7 @@ public class GattReadServiceImpl implements GattReadService {
      * Маппер для преобразования BLE-данных в доменные сущности.
      */
     private final GattDataMapper gattDataMapper;
+    private final DeviceTypeRepository repository;
 
     /**
      * Хранение считанной калибровочной таблицы.
@@ -79,7 +84,7 @@ public class GattReadServiceImpl implements GattReadService {
     /**
      * Флаг: завершено ли чтение конфигурации.
      */
-    private boolean isRieadingConfigComplete = false;
+    private boolean isReadingConfigComplete = false;
 
     /**
      * Флаг: завершено ли чтение калибровочной таблицы.
@@ -90,11 +95,8 @@ public class GattReadServiceImpl implements GattReadService {
      * Флаг: была ли сохранена конфигурация.
      */
     private boolean isConfigurationSaved = false;
-
-    /**
-     * Флаг: выполнен ли повторный запрос конфигурации.
-     */
-    private boolean retriedConfigRead = false;
+    private boolean isPasswordReset = false;
+    private boolean isPasswordSet = false;
 
     /**
      * Флаг: происходит ли чтение всех характеристик.
@@ -120,6 +122,7 @@ public class GattReadServiceImpl implements GattReadService {
      * MAC-адрес текущего устройства.
      */
     private String currentMac;
+    private GattReadListener listener;
 
     /**
      * Конструктор с внедрением зависимого маппера.
@@ -127,8 +130,13 @@ public class GattReadServiceImpl implements GattReadService {
      * @param gattDataMapper преобразователь BLE-данных в доменные объекты
      */
     @Inject
-    public GattReadServiceImpl(GattDataMapper gattDataMapper) {
+    public GattReadServiceImpl(GattDataMapper gattDataMapper, DeviceTypeRepository repository) {
         this.gattDataMapper = gattDataMapper;
+        this.repository = repository;
+    }
+
+    public void setListener(GattReadListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -170,7 +178,7 @@ public class GattReadServiceImpl implements GattReadService {
             }
         }
         isReadingAll = true;
-        isRieadingConfigComplete = true;
+        isReadingConfigComplete = true;
         isReadingTableComplete = true;
         readNext(gatt);
     }
@@ -198,20 +206,12 @@ public class GattReadServiceImpl implements GattReadService {
             return;
         }
 
-        if (isRieadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
+        if (repository.getCurrDeviceType().equals(DeviceType.DPS) && isMatchingCommand(bytes, 1, NINE_COMMAND) && isMatchingCommand(bytes, 4, ZERO_COMMAND_DECIMAL)) {
+            listener.onWrongPassword();
+        }
+
+        if (isReadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                 && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
-
-            int battery = parseIntFromBytes(bytes, 21, 20);
-            if (battery == 0 && !retriedConfigRead) {
-                retriedConfigRead = true;
-                isReadingAll = true;
-                Log.w("MyTag", "Battery value suspicious (" + battery + "), retrying config read");
-                gatt.readCharacteristic(characteristic);
-                return;
-            }
-
-            isRieadingConfigComplete = false;
-            retriedConfigRead = false;
             currentMac = gatt.getDevice().getAddress();
             sensorConfigLiveData.postValue(convertBytesToConfiguration(gatt, bytes));
         }
@@ -248,8 +248,12 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void readNextAfterWrite(BluetoothGatt gatt) {
-        var service = gatt.getService(USER_SERVICE_DPS);
-        var readCharacteristic = service.getCharacteristic(READ_CHARACTERISTIC_DPS);
+        UUID[] uuids = UUID_MAP.get(repository.getCurrDeviceType());
+        if (uuids == null) return;
+
+        var service = gatt.getService(uuids[0]);
+        var readCharacteristic = service.getCharacteristic(uuids[2]);
+
         if (readCharacteristic != null) {
             gatt.readCharacteristic(readCharacteristic);
         }
@@ -395,6 +399,26 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return configurationSavedLiveData;
+    }
+
+    @Override
+    public void resetPassword(boolean value) {
+        isPasswordReset = value;
+    }
+
+    @Override
+    public boolean isResetPassword() {
+        return isPasswordReset;
+    }
+
+    @Override
+    public void setPassword(boolean value) {
+        isPasswordSet = value;
+    }
+
+    @Override
+    public boolean isPasswordSet() {
+        return isPasswordSet;
     }
 
     /**

@@ -6,6 +6,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.service.BleScannerService;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
@@ -177,6 +178,10 @@ public class BluetoothRepository {
         return calibrationTableManager.getCalibrationTable();
     }
 
+    public void setCalibrationTable(List<CalibrationTable> table){
+        calibrationTableManager.setCalibrationTable(table);
+    }
+
     /**
      * Обновляет виртуальную точку в таблице калибровки.
      *
@@ -227,5 +232,17 @@ public class BluetoothRepository {
 
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return bluetoothConnectionManager.getConfigurationSavedLiveData();
+    }
+
+    public void resetPassword(boolean value) {
+        bluetoothConnectionManager.resetPassword(value);
+    }
+
+    public void setPassword(boolean value) {
+        bluetoothConnectionManager.setPassword(value);
+    }
+
+    public void setListener(GattReadListener listener) {
+        bluetoothConnectionManager.setListener(listener);
     }
 }

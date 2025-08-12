@@ -14,9 +14,7 @@ import java.util.Set;
 public interface DeviceRepository {
     LiveData<List<AxisModel>> getAxisList();
 
-    public void setLoadedAxisList(List<AxisModel> list);
-
-    int getAxisCount();
+    void setLoadedAxisList(List<AxisModel> list);
 
     LiveData<String> getMessage();
 
@@ -68,6 +66,6 @@ public interface DeviceRepository {
 
     void setSelectionMode(boolean isSelection);
 
-    public void refreshScannedDevices();
+    void refreshScannedDevices();
 
 }

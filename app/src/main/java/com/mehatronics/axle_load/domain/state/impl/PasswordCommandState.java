@@ -32,23 +32,21 @@ public class PasswordCommandState implements CommandStateHandler {
 
         if (isPasswordProtected) {
             if (isPasswordSet) {
-                Log.d("MyTag", "Пароль уже установлен.");
+                passwordRepository.setPasswordStandart(true);
                 handler.setCommand(FIRST_COMMAND, ZERO_COMMAND_DECIMAL);
                 passwordRepository.setFlag(false);
                 handler.setCommandState(new CommandAfterCheckingPassword());
             } else {
                 String password = passwordRepository.get();
                 if (password.isBlank()) {
-                    Log.d("MyTag", "Пароль отсутствует. Показываем диалог.");
                     passwordRepository.setFlag(true);
+                    passwordRepository.setPasswordStandart(false);
                     handler.notifyPasswordRequired();
                 } else {
-                    Log.d("MyTag", "Пароль есть, продолжаем.");
                     handler.setCommandState(new CommandAfterUserPassword());
                 }
             }
         } else {
-            Log.d("MyTag", "Пароль не требуется.");
             handler.setCommandState(new CommandAfterCheckingPassword());
         }
     }

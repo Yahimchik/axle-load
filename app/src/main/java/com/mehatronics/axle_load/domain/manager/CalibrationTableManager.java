@@ -47,6 +47,36 @@ public class CalibrationTableManager {
         return tableLiveData;
     }
 
+    public void setCalibrationTable(List<CalibrationTable> table){
+        if (originalPoints.size() >= 2) {
+            CalibrationTable first = originalPoints.get(0);
+            CalibrationTable last = originalPoints.get(originalPoints.size() - 1);
+
+            originalPoints.clear();
+            originalPoints.add(first);
+            originalPoints.addAll(table); // вставляем новые
+            originalPoints.add(last);
+        } else {
+            originalPoints.clear();
+            originalPoints.addAll(table);
+        }
+
+        if (initialPoints.size() >= 2) {
+            CalibrationTable first = initialPoints.get(0);
+            CalibrationTable last = initialPoints.get(initialPoints.size() - 1);
+
+            initialPoints.clear();
+            initialPoints.add(first);
+            initialPoints.addAll(table);
+            initialPoints.add(last);
+        } else {
+            initialPoints.clear();
+            initialPoints.addAll(table);
+        }
+
+        tableLiveData.setValue(new ArrayList<>(originalPoints));
+    }
+
     /**
      * Обновляет виртуальную точку на основе давления, полученного от устройства.
      *

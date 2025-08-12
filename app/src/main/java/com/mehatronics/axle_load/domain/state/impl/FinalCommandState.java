@@ -19,16 +19,15 @@ public class FinalCommandState implements CommandStateHandler {
      * Если ранее было указано, что конфигурация должна быть сохранена,
      * переход в состояние {@link ConfigureCommandState}.
      *
-     * @param handler обработчик GATT, содержащий данные конфигурации и текущее состояние
+     * @param h обработчик GATT, содержащий данные конфигурации и текущее состояние
      */
     @Override
-    public void handle(BluetoothGattCallbackHandler handler) {
-        handler.setCommand(SEVEN_COMMAND, SECOND_COMMAND);
+    public void handle(BluetoothGattCallbackHandler h) {
+        h.setCommand(SEVEN_COMMAND, SECOND_COMMAND);
 
-        if (handler.isConfigurationSaved()) {
-            handler.setCommandState(new ConfigureCommandState());
-        } else if (handler.isTableSaved()) {
-            handler.setCommandState(new SaveTableCommand());
-        }
+        if (h.isConfigurationSaved()) h.setCommandState(new ConfigureCommandState());
+        else if (h.isTableSaved()) h.setCommandState(new SaveTableCommand());
+        else if (h.isResetPassword()) h.setCommandState(new ResetPasswordCommandState());
+        else if (h.isPasswordSet()) h.setCommandState(new SetPasswordCommandState());
     }
 }

@@ -17,6 +17,8 @@ public class PasswordRepositoryImpl implements PasswordRepository {
     private boolean shouldSendPassword = false;
     private boolean isSet = false;
     private String password;
+    private String newPassword;
+    private boolean isPasswordStandart = false;
 
     @Inject
     public PasswordRepositoryImpl() {
@@ -29,6 +31,11 @@ public class PasswordRepositoryImpl implements PasswordRepository {
     }
 
     @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
     public String get() {
         return password == null ? "" : password;
     }
@@ -36,6 +43,7 @@ public class PasswordRepositoryImpl implements PasswordRepository {
     @Override
     public void clear() {
         password = null;
+        newPassword = null;
         shouldSendPassword = false;
         isSet = false;
     }
@@ -78,5 +86,25 @@ public class PasswordRepositoryImpl implements PasswordRepository {
     @Override
     public void setPasswordDialogVisible(boolean visible) {
         isPasswordDialogVisible.setValue(visible);
+    }
+
+    @Override
+    public void setNewPassword(String password) {
+        this.newPassword = password;
+    }
+
+    @Override
+    public String getNewPassword() {
+        return newPassword == null ? "" : newPassword;
+    }
+
+    @Override
+    public boolean isPasswordStandart() {
+        return isPasswordStandart;
+    }
+
+    @Override
+    public void setPasswordStandart(boolean value) {
+        this.isPasswordStandart = value;
     }
 }

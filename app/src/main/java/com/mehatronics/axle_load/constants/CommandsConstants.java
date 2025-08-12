@@ -10,5 +10,6 @@ public class CommandsConstants {
     public static final int SEVENTY_ONE_COMMAND = 0x71;
     public static final int FIFTY_COMMAND = 0x50;
     public static final int NINE_COMMAND = 0x09;
-
+    public static final int EIGHT_COMMAND = 0x08;
+    public static final int TENTH_COMMAND = 0x0a;
 }

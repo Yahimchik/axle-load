@@ -2,6 +2,7 @@ package com.mehatronics.axle_load.data.mapper.impl;
 
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_DETECTORS;
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_MULTIPLIER;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.BATTERY;
 import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.PRESSURE;
 import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.WEIGHT;
 import static com.mehatronics.axle_load.utils.ByteUtils.detectorToBytes;
@@ -10,7 +11,6 @@ import static com.mehatronics.axle_load.utils.ByteUtils.intToFourBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToTwoBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.multiplierToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.stringToBytes;
-import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToBattery;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
 
@@ -60,7 +60,7 @@ public class GattDataMapperImpl implements GattDataMapper {
         String serialNumber = convertBytesToString(values.get(6));
         String firmwareVersion = convertBytesToString(values.get(7));
         String hardwareVersion = convertBytesToString(values.get(8));
-        String batteryLevel = convertBytesToBattery(values.get(9));
+        String batteryLevel = convertBytesToValue(values.get(10), BATTERY);
         String weight = convertBytesToValue(values.get(10), WEIGHT);
         String pressure = convertBytesToValue(values.get(10), PRESSURE);
 

@@ -26,5 +26,7 @@ public class FirstCommandState implements CommandStateHandler {
         handler.setCommand(FIRST_COMMAND, handler.getTablePage());
         Log.d("MyTag", "First command sent");
         handler.setCommandState(new SecondCommandState());
+        handler.resetPassword(false);
+        handler.setPassword(false);
     }
 }

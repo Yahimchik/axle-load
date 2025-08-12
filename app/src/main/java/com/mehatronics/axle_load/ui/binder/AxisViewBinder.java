@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui.binder;
 
+import static com.mehatronics.axle_load.R.string.axis_config;
+import static com.mehatronics.axle_load.R.string.configuration;
 import static com.mehatronics.axle_load.R.string.error_select_at_least_one_sensor_per_axis;
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 
@@ -36,6 +38,8 @@ public class AxisViewBinder implements BaseBinder {
     private final AxisAdapter adapter;
     private final MessageCallback callback;
     private final ResourceProvider provider;
+    private final Runnable onConfigureLoadedClick;
+
 
     public AxisViewBinder(
             View root,
@@ -43,7 +47,8 @@ public class AxisViewBinder implements BaseBinder {
             BluetoothHandler handler,
             MessageCallback callback,
             ResourceProvider resourceProvider,
-            FragmentNavigator navigator
+            FragmentNavigator navigator,
+            Runnable onConfigureLoadedClick
     ) {
         this.service = service;
         this.adapter = new AxisAdapter(handler::onClick, handler::onReset);
@@ -54,6 +59,7 @@ public class AxisViewBinder implements BaseBinder {
         this.callback = callback;
         this.provider = resourceProvider;
         this.navigator = navigator;
+        this.onConfigureLoadedClick = onConfigureLoadedClick;
 
         initRecyclerView(root, R.id.recyclerViewAxes, adapter);
 
@@ -100,11 +106,11 @@ public class AxisViewBinder implements BaseBinder {
         });
 
         finishButton.setOnClickListener(v -> {
-            service.saveAxisConfiguration(v.getContext(), "Конфигурация", "axis_configuration", adapter.getCurrentList());
+            service.saveToFile(v, v.getContext(), provider.getString(configuration), provider.getString(axis_config), adapter.getCurrentList());
             navigator.showFragment(new AxleOverviewFragment());
         });
 
-        buttonConfigureLoaded.setOnClickListener(v -> navigator.openDocumentPicker());
+        buttonConfigureLoaded.setOnClickListener(v -> onConfigureLoadedClick.run());
     }
 
     private boolean isCanSave() {

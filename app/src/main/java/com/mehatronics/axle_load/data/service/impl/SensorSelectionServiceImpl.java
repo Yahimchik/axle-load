@@ -69,5 +69,3 @@ public class SensorSelectionServiceImpl implements SensorSelectionService {
         navigator.showFragment(fragment);
     }
 }
-
-

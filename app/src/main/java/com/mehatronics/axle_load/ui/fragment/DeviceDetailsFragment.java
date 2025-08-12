@@ -1,31 +1,50 @@
 package com.mehatronics.axle_load.ui.fragment;
 
 import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+import static com.mehatronics.axle_load.R.id.menu_reset_password;
+import static com.mehatronics.axle_load.R.id.menu_set_new_password;
 import static com.mehatronics.axle_load.R.layout.fragment_device_details;
 import static com.mehatronics.axle_load.R.string.disconnect_from;
+import static com.mehatronics.axle_load.R.string.error_reading_the_file;
 import static com.mehatronics.axle_load.R.string.invalid_detector;
+import static com.mehatronics.axle_load.R.string.invalid_password_for;
+import static com.mehatronics.axle_load.R.string.password_reset_for;
+import static com.mehatronics.axle_load.R.string.password_set_for;
 import static com.mehatronics.axle_load.R.string.save_configuration;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresPermission;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.repository.PasswordRepository;
+import com.mehatronics.axle_load.data.service.SaveToFileService;
+import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,15 +56,25 @@ import dagger.hilt.android.AndroidEntryPoint;
  * Использует {@link DeviceViewModel} для получения и обновления данных.
  */
 @AndroidEntryPoint
-public class DeviceDetailsFragment extends Fragment implements MessageCallback {
+public class DeviceDetailsFragment extends Fragment implements MessageCallback, GattReadListener {
+    @Inject
+    protected ResourceProvider provider;
     @Inject
     protected SnackbarManager snackbarManager;
     @Inject
     protected DeviceDetailsBinder detailsBinder;
     @Inject
     protected PasswordInputDialogFragment dialog;
-    private DeviceViewModel viewModel;
+    @Inject
+    protected PasswordRepository passwordRepository;
+    @Inject
+    protected SaveToFileService service;
+    private DeviceViewModel vm;
     private LoadingManager loadingManager;
+    private View view;
+    private boolean wrongPassword = false;
+    private boolean isSavingStarted = false;
+    protected ActivityResultLauncher<Intent> pickFileLauncher;
 
     /**
      * Инициализация ViewModel при создании фрагмента.
@@ -55,7 +84,26 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+
+        pickFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null) {
+                            List<CalibrationTable> loadedList = service.loadListFromUri(requireContext(), uri, CalibrationTable.class);
+                            if (loadedList != null && !loadedList.isEmpty()) {
+                                vm.setCalibrationTable(loadedList);
+                            } else {
+                                showMessage(provider.getString(error_reading_the_file));
+                            }
+                        }
+                    }
+                }
+        );
+
+        vm = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        vm.setListener(this);
     }
 
     /**
@@ -68,14 +116,12 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        var view = inflater.inflate(fragment_device_details, container, false);
-        detailsBinder.init(view, viewModel);
-        detailsBinder.setupPopupMenu(view, viewModel::resetPassword, viewModel::setNewPassword);
-        loadingManager = new LoadingManager(view);
+        view = inflater.inflate(fragment_device_details, container, false);
+        detailsBinder.init(view, vm);
 
+        loadingManager = new LoadingManager(view);
         observeView();
         setupResetTableBtn();
-
         return view;
     }
 
@@ -83,7 +129,16 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onDestroyView() {
         super.onDestroyView();
+        if (!wrongPassword) showMessage(getString(disconnect_from, vm.getDeviceName()));
         cleanUpOnClose();
+    }
+
+    @Override
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    public void onWrongPassword() {
+        wrongPassword = true;
+        showMessage(provider.getString(invalid_password_for, vm.getDeviceName()));
+        closeFragment();
     }
 
     @Override
@@ -96,29 +151,71 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      * Обновляет детали устройства, таблицу калибровки и конфигурацию сенсора.
      */
     private void observeView() {
-        viewModel.getDeviceDetails().observe(getViewLifecycleOwner(), this::observeDetails);
+        vm.getDeviceDetails().observe(getViewLifecycleOwner(), this::observeDetails);
 
         observeSelectionMode();
 
-        viewModel.setPasswordListener(() -> requireActivity().runOnUiThread(viewModel::requestPasswordInput));
+        detailsBinder.setupPopupMenu(view, item -> {
+            int itemId = item.getItemId();
+            if (itemId == menu_reset_password) {
+                loadingManager.showLoading(true);
+                vm.resetPassword(true);
+                passwordRepository.setPasswordStandart(true);
+                snackbarManager.showMessage(getViewById(), getString(password_reset_for, vm.getDeviceName()), ()
+                        -> loadingManager.showLoading(false));
+                return true;
+            } else if (itemId == menu_set_new_password) {
+                loadingManager.showLoading(true);
+                showChangePasswordDialog();
+                return true;
+            }
+            return false;
+        });
 
-        viewModel.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
-        viewModel.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
+        vm.setPasswordListener(() -> requireActivity().runOnUiThread(vm::requestPasswordInput));
+
+        vm.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
+        vm.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
+
+        detailsBinder.readFromFileOnClick(v -> openFilePicker());
 
         observePasswordDialogEvent();
     }
 
-    private void observeDetails(DeviceDetails deviceDetails) {
-        detailsBinder.bindInfo(deviceDetails);
-        viewModel.updateVirtualPoint(deviceDetails);
+    private void showChangePasswordDialog() {
+        var dialogFragment = new ChangePasswordDialogFragment(provider, passwordRepository);
+
+        getParentFragmentManager().setFragmentResultListener(
+                ChangePasswordDialogFragment.REQUEST_KEY,
+                getViewLifecycleOwner(),
+                (requestKey, bundle) -> {
+                    if (bundle.getBoolean(ChangePasswordDialogFragment.KEY_CANCELLED, false)) {
+                        showMessage(getString(R.string.cancel));
+                        loadingManager.showLoading(false);
+                    } else {
+                        String oldPassword = bundle.getString(ChangePasswordDialogFragment.KEY_OLD_PASSWORD);
+                        String newPassword = bundle.getString(ChangePasswordDialogFragment.KEY_NEW_PASSWORD);
+
+                        passwordRepository.setPassword(oldPassword);
+                        passwordRepository.setNewPassword(newPassword);
+                        vm.setPassword(true);
+                        snackbarManager.showMessage(getViewById(), getString(password_set_for, vm.getDeviceName()), ()
+                                -> loadingManager.showLoading(false));
+                    }
+                });
+
+        dialogFragment.show(getParentFragmentManager(), ChangePasswordDialogFragment.TAG);
     }
 
-    private boolean isSavingStarted = false;
+    private void observeDetails(DeviceDetails deviceDetails) {
+        detailsBinder.bindInfo(deviceDetails);
+        vm.updateVirtualPoint(deviceDetails);
+    }
 
     private void observeSelectionMode() {
         detailsBinder.finishButtonOnClick(v -> {
             loadingManager.showLoading(true);
-            int res = viewModel.saveTable();
+            int res = vm.saveTable();
 
             if (res > 0) {
                 showMessage(getString(invalid_detector, res));
@@ -126,66 +223,56 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
                 return;
             }
 
-            SensorConfig config = viewModel.getSensorConfigure().getValue();
+            SensorConfig config = vm.getSensorConfigure().getValue();
             if (config != null) {
                 detailsBinder.updateSensorConfig(config);
-                viewModel.saveSensorConfiguration();
+                vm.saveSensorConfiguration();
                 isSavingStarted = true;
             }
         });
 
-        viewModel.getConfigurationSavedLiveData().observe(getViewLifecycleOwner(), isSaved -> {
+        vm.getConfigurationSavedLiveData().observe(getViewLifecycleOwner(), isSaved -> {
             if (Boolean.TRUE.equals(isSaved) && isSavingStarted) {
                 isSavingStarted = false;
-                viewModel.setConfigurationSavedLive(false);
+                vm.setConfigurationSavedLive(false);
 
                 snackbarManager.showMessage(getViewById(), getString(save_configuration), () -> {
                     loadingManager.showLoading(false);
-
-                    // Проверяем состояние selectionMode
-                    if (Boolean.TRUE.equals(viewModel.getSelectionModeLiveData().getValue())) {
-                        // Если режим выбора — закрываем фрагмент
-                        String lastMac = viewModel.getLastFinishedMac().getValue();
+                    if (Boolean.TRUE.equals(vm.getSelectionModeLiveData().getValue())) {
+                        String lastMac = vm.getLastFinishedMac().getValue();
                         if (lastMac != null) {
-                            viewModel.addFinishedMac(lastMac);
+                            vm.addFinishedMac(lastMac);
                         }
-                        closeFragment();
-                    } else {
-                        // В другом режиме — просто показываем сообщение, ничего не закрываем
-                        Log.d("MyTag", "Snackbar shown, fragment remains open.");
                     }
                 });
             }
         });
-
-
     }
 
     private void observePasswordDialogEvent() {
-        viewModel.getShowPasswordDialogEvent().observe(getViewLifecycleOwner(), unused -> {
-            if (viewModel.isPasswordSet() && !isDialogVisible()) showPasswordInputDialog();
-            else Log.d("MyTag", "Диалог не открыт");
+        vm.getShowPasswordDialogEvent().observe(getViewLifecycleOwner(), unused -> {
+            if (vm.isPasswordSet() && !isDialogVisible()) showPasswordInputDialog();
         });
     }
 
     private void showPasswordInputDialog() {
         if (isDialogVisible()) return;
-        viewModel.setPasswordDialogVisible(true);
+        vm.setPasswordDialogVisible(true);
 
         dialog.setPasswordListener(new PasswordListener() {
             @Override
             public void onPasswordSubmitted(String password) {
-                viewModel.submitPassword(password);
-                viewModel.setPasswordDialogVisible(false);
+                vm.submitPassword(password);
+                vm.setPasswordDialogVisible(false);
             }
 
             @Override
             public void onPasswordCancelled() {
-                viewModel.clearPassword();
-                viewModel.setPasswordDialogVisible(false);
+                vm.clearPassword();
+                vm.setPasswordDialogVisible(false);
 
-                viewModel.clearPasswordDialogShown();
-                viewModel.requestPasswordInput();
+                vm.clearPasswordDialogShown();
+                vm.requestPasswordInput();
 
                 closeFragment();
             }
@@ -194,7 +281,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     }
 
     private boolean isDialogVisible() {
-        return Boolean.TRUE.equals(viewModel.getIsPasswordDialogVisible().getValue());
+        return Boolean.TRUE.equals(vm.getIsPasswordDialogVisible().getValue());
     }
 
     private void closeFragment() {
@@ -208,7 +295,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
      * Настраивает кнопку сброса таблицы калибровки для повторного чтения из сенсора.
      */
     private void setupResetTableBtn() {
-        detailsBinder.setupReadFromSensorButton(v -> viewModel.rereadCalibrationTable());
+        detailsBinder.setupReadFromSensorButton(v -> vm.rereadCalibrationTable());
     }
 
     private View getViewById() {
@@ -224,21 +311,26 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback {
     private void cleanUpOnClose() {
         detailsBinder = null;
 
-        viewModel.clearDetails();
-        viewModel.disconnect();
+        vm.clearDetails();
+        vm.disconnect();
 
-        viewModel.clearPassword();
-        viewModel.setPasswordDialogVisible(false);
+        vm.clearPassword();
+        vm.setPasswordDialogVisible(false);
 
-        showMessage(getString(disconnect_from, viewModel.getDeviceName()));
+        vm.clearPasswordDialogShown();
+        vm.requestPasswordInput();
 
-        viewModel.clearPasswordDialogShown();
-        viewModel.requestPasswordInput();
-
-        viewModel.markAsSaved();
-        viewModel.setSelectionMode(false);
+        vm.markAsSaved();
+        vm.setSelectionMode(false);
 
         closeFragment();
         Log.d("MyTag", "Device details fragment is closed");
+    }
+
+    public void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        pickFileLauncher.launch(intent);
     }
 }

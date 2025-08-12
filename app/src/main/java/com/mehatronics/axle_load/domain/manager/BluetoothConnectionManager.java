@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -46,8 +47,7 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     public void connect(Device device) {
         gattCallbackHandler.resetState();
         Log.d("MyTag", "Connecting to device...");
-        BluetoothDevice bluetoothDevice = device.getDevice();
-        safeConnectGatt(bluetoothDevice);
+        safeConnectGatt(device.getDevice());
     }
 
     @Override
@@ -133,5 +133,17 @@ public class BluetoothConnectionManager implements ConnectionHandler {
 
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return gattCallbackHandler.getConfigurationSavedLiveData();
+    }
+
+    public void resetPassword(boolean value) {
+        gattCallbackHandler.resetPassword(value);
+    }
+
+    public void setPassword(boolean value) {
+        gattCallbackHandler.setPassword(value);
+    }
+
+    public void setListener(GattReadListener listener) {
+        gattCallbackHandler.setListener(listener);
     }
 }

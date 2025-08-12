@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.domain.handler;
 
-import static com.mehatronics.axle_load.constants.UuidConstants.WRITE_CHARACTERISTIC_DPS;
+import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -10,9 +10,11 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
@@ -20,6 +22,8 @@ import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.impl.CommandAfterAuth;
 import com.mehatronics.axle_load.domain.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
+
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -34,34 +38,56 @@ import javax.inject.Inject;
  */
 public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
-    /** Репозиторий паролей для авторизации устройства */
+    /**
+     * Репозиторий паролей для авторизации устройства
+     */
     private final PasswordRepository passwordRepository;
 
-    /** Менеджер управления состоянием подключения BLE */
+    /**
+     * Менеджер управления состоянием подключения BLE
+     */
     private final GattConnectionManager connectionManager;
 
-    /** Сервис для записи данных в BLE-устройство */
+    /**
+     * Сервис для записи данных в BLE-устройство
+     */
     private final GattWriteService gattWriteService;
 
-    /** Сервис для чтения данных с BLE-устройства */
+    /**
+     * Сервис для чтения данных с BLE-устройства
+     */
     private final GattReadService gattReadService;
 
-    /** Маппер для преобразования данных BLE в доменные объекты */
+    /**
+     * Маппер для преобразования данных BLE в доменные объекты
+     */
     private final GattDataMapper gattDataMapper;
 
-    /** Обработчик событий подключения и повторных подключений */
+    private final DeviceTypeRepository repository;
+
+    /**
+     * Обработчик событий подключения и повторных подключений
+     */
     private ConnectionHandler connectionHandler;
 
-    /** Текущий обработчик состояния команд */
+    /**
+     * Текущий обработчик состояния команд
+     */
     private CommandStateHandler stateHandler;
 
-    /** Слушатель событий диалога ввода пароля */
+    /**
+     * Слушатель событий диалога ввода пароля
+     */
     private PasswordDialogListener passwordDialogListener;
 
-    /** Флаг, показывающий, был ли уже показан диалог ввода пароля */
+    /**
+     * Флаг, показывающий, был ли уже показан диалог ввода пароля
+     */
     private boolean passwordDialogShown = false;
 
-    /** Флаг, указывающий, идет ли сейчас операция записи */
+    /**
+     * Флаг, указывающий, идет ли сейчас операция записи
+     */
     private boolean isWritePending = false;
 
     /**
@@ -81,7 +107,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
             GattReadService gattReadService,
             GattWriteService gattWriteService,
             GattDataMapper gattDataMapper,
-            CommandStateHandler stateHandler
+            CommandStateHandler stateHandler,
+            DeviceTypeRepository repository
     ) {
         this.passwordRepository = passwordRepository;
         this.connectionManager = connectionManager;
@@ -89,6 +116,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         this.gattWriteService = gattWriteService;
         this.gattDataMapper = gattDataMapper;
         this.stateHandler = stateHandler;
+        this.repository = repository;
     }
 
     /**
@@ -157,7 +185,9 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         if (isStatusOk(status, BluetoothGatt.GATT_SUCCESS)) {
-            if (characteristic.getUuid().equals(WRITE_CHARACTERISTIC_DPS)) {
+            UUID[] uuids = UUID_MAP.get(repository.getCurrDeviceType());
+            if (uuids == null) return;
+            if (characteristic.getUuid().equals(uuids[1])) {
                 gattReadService.readNextAfterWrite(gatt);
             }
         }
@@ -429,5 +459,26 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      */
     public LiveData<Boolean> getConfigurationSavedLiveData() {
         return gattReadService.getConfigurationSavedLiveData();
+    }
+
+    public void resetPassword(boolean value) {
+        gattReadService.resetPassword(value);
+    }
+
+    public boolean isResetPassword() {
+        return gattReadService.isResetPassword();
+    }
+
+    public void setPassword(boolean value) {
+        gattReadService.setPassword(value);
+    }
+
+    public boolean isPasswordSet() {
+        return gattReadService.isPasswordSet();
+    }
+
+    public void setListener(GattReadListener listener) {
+        stateHandler = new FirstAuthCommandState();
+        gattReadService.setListener(listener);
     }
 }

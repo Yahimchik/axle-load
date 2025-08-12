@@ -2,7 +2,6 @@ package com.mehatronics.axle_load.ui.viewModel;
 
 import android.Manifest;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LifecycleOwner;
@@ -14,7 +13,6 @@ import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
 import com.mehatronics.axle_load.data.mapper.ConfiguredDeviceMapper;
 import com.mehatronics.axle_load.data.repository.BluetoothRepository;
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
-import com.mehatronics.axle_load.data.repository.impl.DeviceRepositoryImpl;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.AxisUiModel;
@@ -28,6 +26,7 @@ import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 import com.mehatronics.axle_load.domain.usecase.SubmitPasswordUseCase;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import java.util.List;
@@ -75,7 +74,7 @@ public class DeviceViewModel extends ViewModel {
     @Inject
     public DeviceViewModel(
             BluetoothRepository bluetoothRepository,
-            DeviceRepositoryImpl deviceRepository,
+            DeviceRepository deviceRepository,
             SaveCalibrationTableUseCase saveUseCase,
             SubmitPasswordUseCase submitPasswordUseCase,
             PasswordRepository passwordRepository,
@@ -208,6 +207,10 @@ public class DeviceViewModel extends ViewModel {
         return bluetoothRepository.getCalibrationTable();
     }
 
+    public void setCalibrationTable(List<CalibrationTable> table){
+        bluetoothRepository.setCalibrationTable(table);
+    }
+
     /**
      * Обновляет виртуальную точку в таблице калибровки на основе деталей устройства.
      *
@@ -257,15 +260,6 @@ public class DeviceViewModel extends ViewModel {
 
     public void setLoadedAxisList(List<AxisModel> list) {
         deviceRepository.setLoadedAxisList(list);
-    }
-
-    /**
-     * Возвращает количество осей.
-     *
-     * @return Количество осей
-     */
-    public int getAxisCount() {
-        return deviceRepository.getAxisCount();
     }
 
     /**
@@ -425,25 +419,6 @@ public class DeviceViewModel extends ViewModel {
      */
     public void clearPassword() {
         passwordRepository.clear();
-    }
-
-    /**
-     * Сбрасывает пароль и флаг установки.
-     *
-     * @param view Не используется, параметр для возможности использования в XML
-     */
-    public void resetPassword(View view) {
-        passwordRepository.clear();
-        passwordRepository.setFlag(false);
-    }
-
-    /**
-     * Инициирует установку нового пароля (вызывает диалог).
-     *
-     * @param view Не используется, параметр для возможности использования в XML
-     */
-    public void setNewPassword(View view) {
-        requestPasswordInput();
     }
 
     /**
@@ -652,5 +627,17 @@ public class DeviceViewModel extends ViewModel {
 
     public void refreshScannedDevices() {
         deviceRepository.refreshScannedDevices();
+    }
+
+    public void resetPassword(boolean value) {
+        bluetoothRepository.resetPassword(value);
+    }
+
+    public void setPassword(boolean value) {
+        bluetoothRepository.setPassword(value);
+    }
+
+    public void setListener(GattReadListener listener) {
+        bluetoothRepository.setListener(listener);
     }
 }
