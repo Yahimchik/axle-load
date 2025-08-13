@@ -1,77 +1,80 @@
 package com.mehatronics.axle_load.utils;
 
-import android.bluetooth.le.ScanRecord;
-import android.bluetooth.le.ScanResult;
-import android.util.Log;
-import android.util.SparseArray;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
+import static com.mehatronics.axle_load.constants.StringConstants.ZERO;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.PRESSURE;
+import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType.WEIGHT;
+import static com.mehatronics.axle_load.utils.ByteUtils.convertByteToValue;
 
-import java.util.Arrays;
-import java.util.Locale;
+import com.mehatronics.axle_load.domain.entities.enums.CharacteristicType;
 
+/**
+ * Утилитный класс для преобразования байтов в строки, значения батареи,
+ * даты и измеренные значения (вес или давление) для axle load устройств.
+ */
 public class DataUtils {
-    public static String extractManufacturerData(ScanResult result) {
-        ScanRecord scanRecord = result.getScanRecord();
-        if (scanRecord != null) {
-            SparseArray<byte[]> manufacturerData = scanRecord.getManufacturerSpecificData();
-            if (manufacturerData != null && manufacturerData.size() > 0) {
-                int manufacturerId = manufacturerData.keyAt(0);
-                byte[] data = manufacturerData.get(manufacturerId);
-                Log.d("MyTag", " " + Arrays.toString(data));
-                if (data != null) {
-                    if (data.length >= 3) {
-                        int year = data[0];
-                        int month = data[1];
-                        int day = data[2];
-                        return String.format(Locale.getDefault(), "%02d/%02d/%02d", day, month, year);
-                    }
-                }
-            }
-        }
-        return "Неизвестно";
+
+    /**
+     * Преобразует массив байт в строку.
+     *
+     * @param bytes Массив байт.
+     * @return Строковое представление байтов.
+     */
+    public static String convertBytesToString(byte[] bytes) {
+        return new String(bytes);
     }
 
-    public static String extractData(byte[] data) {
-        if (data != null) {
-            if (data.length == 7) {
-                int year = data[1] & 0xFF;
-                year = year << 8;
-                year += data[0] & 0xFF;
-                int month = data[2];
-                int day = data[3];
-                return String.format(Locale.getDefault(), "%02d/%02d/%02d", day, month, year);
-            } else if (data.length >= 3) {
-                int year = data[0];
-                int month = data[1];
-                int day = data[2];
-                return String.format(Locale.getDefault(), "%02d/%02d/%02d", day, month, year);
-            } else {
-                return String.valueOf(data[0]);
-            }
+    /**
+     * Преобразует массив байт в строковое значение заряда батареи.
+     * Используется только первый байт массива.
+     *
+     * @param bytes Массив байт (ожидается до 3 байт).
+     * @return Значение заряда батареи в виде строки, либо "0", если данные недопустимы.
+     */
+    public static String convertBytesToBattery(byte[] bytes) {
+        if (bytes != null && bytes.length <= 3) {
+            return String.valueOf(bytes[0]);
         }
-        return "Unknown";
+        return ZERO;
     }
 
-    public static String extractDetails(byte[] data, String type) {
-        if ((data[0] & 0xff) == 0x07) {
-            if ((data[1] & 0xff) == 0x02) {
-                Log.d("MyTag", "Extract info");
-                short iTempShort = 0;
-                if (type.equals("pressure")) {
-                    iTempShort |= (short) (data[5] & 0xff);
-                    iTempShort <<= 8;
-                    iTempShort |= (short) (data[4] & 0xff);
-                    return String.valueOf((float) iTempShort / 10);
-                }
-
-                if (type.equals("weight")) {
-                    iTempShort |= (short) (data[7] & 0xff);
-                    iTempShort <<= 8;
-                    iTempShort |= (short) (data[6] & 0xff);
-                    return String.valueOf(iTempShort);
+    /**
+     * Преобразует массив байт в строковое значение измеренной характеристики
+     * (вес или давление) в зависимости от типа.
+     *
+     * <p>Проверяются управляющие байты (0-й и 1-й), чтобы удостовериться, что данные валидны.
+     *
+     * @param bytes Массив байт с данными.
+     * @param type  Тип характеристики: {@link CharacteristicType#WEIGHT} или {@link CharacteristicType#PRESSURE}.
+     * @return Значение характеристики в виде строки или "0" при недопустимых данных.
+     */
+    public static String convertBytesToValue(byte[] bytes, CharacteristicType type) {
+        if ((bytes[0] & ZERO_COMMAND_BINARY) == SEVEN_COMMAND) {
+            if ((bytes[1] & ZERO_COMMAND_BINARY) == SECOND_COMMAND) {
+                if (type.equals(WEIGHT)) {
+                    return String.valueOf(convertByteToValue(bytes, 7, 6));
+                } else if (type.equals(PRESSURE)) {
+                    return String.valueOf(convertByteToValue(bytes, 5, 4) / 10f);
+                } else {
+                    return String.valueOf(bytes[12]);
                 }
             }
         }
-        return null;
+        return ZERO;
+    }
+
+    /**
+     * Преобразует строку давления в целое значение в десятых долях (например, 2.3 → 23).
+     *
+     * @param pressure Давление в строковом формате.
+     * @return Целочисленное представление давления * 10, или 0, если строка пустая или "0".
+     */
+    public static int parsePressure(String pressure) {
+        if (pressure == null || pressure.equalsIgnoreCase(ZERO)) {
+            return 0;
+        }
+        return (int) (Float.parseFloat(pressure) * 10);
     }
 }
-

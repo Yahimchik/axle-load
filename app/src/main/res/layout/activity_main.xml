@@ -7,9 +7,9 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activity.MainActivity">
 
-    <!-- Заголовок -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
@@ -18,14 +18,14 @@
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Группа переключателей -->
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/buttonGroup"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         app:singleSelection="true"
@@ -41,14 +41,18 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:text="@string/DPS"
-            android:textSize="18sp"
             android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/roboto_bold"
             android:paddingHorizontal="16dp"
-            android:backgroundTint="@color/button_background"
             app:strokeWidth="2dp"
             app:strokeColor="@color/white"
             app:cornerRadius="20dp"
-            android:layout_marginEnd="6dp"/>
+            android:layout_marginEnd="6dp"
+            tools:ignore="VisualLintButtonSize"
+            android:backgroundTint="@android:color/transparent"
+            />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDSS"
@@ -57,14 +61,17 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:text="@string/DSS"
-            android:textSize="18sp"
             android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/roboto_bold"
             android:paddingHorizontal="16dp"
-            android:backgroundTint="@color/button_background"
             app:strokeWidth="2dp"
             app:strokeColor="@color/white"
             app:cornerRadius="20dp"
-            android:layout_marginHorizontal="6dp"/>
+            android:layout_marginHorizontal="6dp"
+            tools:ignore="VisualLintButtonSize"
+            android:backgroundTint="@android:color/transparent"
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDDS"
@@ -73,14 +80,37 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:text="@string/DDS"
-            android:textSize="18sp"
             android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/roboto_bold"
             android:paddingHorizontal="16dp"
-            android:backgroundTint="@color/button_background"
             app:strokeWidth="2dp"
             app:strokeColor="@color/white"
             app:cornerRadius="20dp"
-            android:layout_marginStart="6dp"/>
+            android:layout_marginStart="6dp"
+            tools:ignore="VisualLintButtonSize"
+            android:backgroundTint="@android:color/transparent"
+            />
+
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnChangeLang"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_langauge"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:fontFamily="@font/roboto_bold"
+        android:layout_marginTop="24dp"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/white"
+        app:cornerRadius="20dp"
+        app:iconPadding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/buttonGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@android:color/transparent"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
