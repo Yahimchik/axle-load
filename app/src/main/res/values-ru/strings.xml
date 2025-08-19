@@ -9,6 +9,7 @@
     <string name="axles_count">Выберите количество осей</string>
 
     <string name="axis_config">Axis_config</string>
+
     <string name="battery">Батарея:</string>
 
     <string name="calibration_table">Тарировочная таблица</string>
@@ -43,6 +44,15 @@
     <string name="error_select_at_least_one_sensor_per_axis">Выберите хотя бы один датчик на каждой оси</string>
     <string name="error_sensor_not_selected">Датчик не выбран</string>
     <string name="error_reading_the_file">Неверный формат или файл</string>
+    <string name="error_message_period_range">Значение должно быть от 2 до 1800</string>
+    <string name="error_measurement_period_range">Значение должно быть от 2 до 1800</string>
+    <string name="error_state_number_length">Максимум 10 символов</string>
+    <string name="error_required">Обязательное поле</string>
+    <string name="error_total_axles_range">Значение должно быть от 1 до 7</string>
+    <string name="error_total_sensors_range">Значение должно быть от 1 до 14</string>
+    <string name="error_sensors_on_axle_range">Значение должно быть 1 или 2</string>
+    <string name="error_installation_point_greater_than_total_axles_ru">Точка установки не может быть больше общего количества осей</string>
+    <string name="error_sensor_number_greater_than_total_sensors_ru">Номер датчика не может быть больше общего количества датчиков</string>
 
     <string name="firmware_version">Версия прошивки:</string>
     <string name="finish_button">ЗАВЕРШИТЬ</string>
@@ -51,8 +61,8 @@
 
     <string name="installation_point">Точка установки</string>
     <string name="invalid_detector">Неверный детектор в строгке %1$d</string>
-
     <string name="invalid_password_for">Неверный пароль: %1$s</string>
+
     <string name="manufacturer">Производитель:</string>
     <string name="measurement_period">Период вычислений</string>
     <string name="message_delivery_period">Период доставки сообщений</string>
@@ -86,8 +96,15 @@
 
     <string name="save_to_file_not_allowed_at">Сохранение не поддерживается на этой версии Android</string>
     <string name="saved_in">Сохранено в: %1$</string>
+
     <string name="tar_table">Тар таблица %1$s</string>
+    <string name="total_axles">Общее количество осей</string>
+    <string name="total_sensors">Общее количество датчиков</string>
+    <string name="trailer_changeable">Шасси бессменный/сменный</string>
+
     <string name="calibration">Тарировка</string>
+    <string name="changeable_short">Сменный</string>
+
     <string name="weight">Вес:</string>
     <string name="wheel_center">Центр оси %1$d</string>
     <string name="wheel_left">Левое колесо оси %1$d</string>
@@ -96,4 +113,5 @@
     <string name="yes">Да</string>
     <string name="password_old">Старый пароль</string>
     <string name="configuration">Конфигурация</string>
+    <string name="number_of_sensors_per_axis">Количество датчиков на оси</string>
 </resources>

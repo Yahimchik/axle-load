@@ -9,9 +9,11 @@ import android.Manifest;
 import androidx.annotation.RequiresPermission;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
@@ -19,6 +21,7 @@ public class BluetoothHandler {
     private final DeviceViewModel viewModel;
     private final BluetoothHandlerContract contract;
     private final ResourceProvider provider;
+    private final DeviceTypeRepository repository;
 
     private boolean userClosedDeviceDetails = false;
     private boolean isDeviceDetailsFragmentOpen = false;
@@ -26,10 +29,12 @@ public class BluetoothHandler {
 
     public BluetoothHandler(DeviceViewModel viewModel,
                             BluetoothHandlerContract contract,
-                            ResourceProvider provider) {
+                            ResourceProvider provider,
+                            DeviceTypeRepository repository) {
         this.viewModel = viewModel;
         this.contract = contract;
         this.provider = provider;
+        this.repository = repository;
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -81,8 +86,7 @@ public class BluetoothHandler {
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
-        contract.loadingManagerShowLoading(false);
-
+        contract.loadingManagerShowLoading(repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI));
         if (deviceDetails != null && isConnected()) {
             viewModel.setDeviceName(deviceDetails.getDeviceName());
 

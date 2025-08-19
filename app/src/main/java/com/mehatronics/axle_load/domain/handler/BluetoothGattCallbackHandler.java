@@ -9,11 +9,14 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.constants.CommandsConstants;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -23,6 +26,7 @@ import com.mehatronics.axle_load.domain.state.impl.CommandAfterAuth;
 import com.mehatronics.axle_load.domain.state.impl.FirstAuthCommandState;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -480,5 +484,31 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     public void setListener(GattReadListener listener) {
         stateHandler = new FirstAuthCommandState();
         gattReadService.setListener(listener);
+    }
+
+    public void setSavedToBTCOMMini(boolean value){
+        gattReadService.setSaveToBTCOMMini(value);
+    }
+
+    public boolean isSavedToBTCOMMini() {
+        return gattReadService.isSavedToBTCOMMini();
+    }
+
+    public void saveToBTCOMMini() {
+        var save = new DeviceInfoToSave.Builder();
+        save.type(1)
+                .carNumberFirst("AB1234-567")
+                .carNumberSecond("AB7654-321");
+        gattDataMapper.setBTCOMMiniSettings(save.build(), gattWriteService.getBuffer());
+        Log.d("MyTag", Arrays.toString(gattWriteService.getBuffer()));
+        gattReadService.setSaveToBTCOMMini(false);
+    }
+
+    public void setSaveToMiniLive(boolean value) {
+        gattReadService.setSaveToMiniLive(value);
+    }
+
+    public SingleLiveEvent<Boolean> getSaveToMiniLive() {
+        return gattReadService.getSaveToMiniLive();
     }
 }

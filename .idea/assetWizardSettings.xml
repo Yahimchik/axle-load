@@ -310,8 +310,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="outline_align_horizontal_left_24" />
-                            <entry key="sourceFile" value="D:\DOWNLOAD\IMAGES\noun-car-chassis.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="icon" />
+                            <entry key="sourceFile" value="D:\DOWNLOAD\IMAGES\ICON.svg" />
                           </map>
                         </option>
                       </PersistentState>

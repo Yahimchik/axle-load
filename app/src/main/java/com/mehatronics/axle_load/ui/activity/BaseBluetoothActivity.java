@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.data.mapper.DeviceMapper;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandlerContract;
@@ -45,6 +46,8 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     protected ResourceProvider provider;
     @Inject
     protected DeviceMapper mapper;
+    @Inject
+    protected DeviceTypeRepository repository;
 
     private DeviceViewModel viewModel;
     private BluetoothHandler handler;
@@ -57,7 +60,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(DeviceViewModel.class);
-        handler = new BluetoothHandler(viewModel, this, provider);
+        handler = new BluetoothHandler(viewModel, this, provider, repository);
     }
 
     @Override
@@ -76,11 +79,16 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         viewModel.stopScan();
         viewModel.clearDetails();
         viewModel.disconnect();
+        repository.setDeviceType(null);
     }
 
     @Override
     public void showFragment() {
-        navigator.showFragment(new DeviceDetailsFragment());
+        if (repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)){
+            navigator.addHiddenFragment(new DeviceDetailsFragment());
+        }else {
+            navigator.showFragment(new DeviceDetailsFragment());
+        }
     }
 
     @Override

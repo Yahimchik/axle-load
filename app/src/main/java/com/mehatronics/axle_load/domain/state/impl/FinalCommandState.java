@@ -29,5 +29,6 @@ public class FinalCommandState implements CommandStateHandler {
         else if (h.isTableSaved()) h.setCommandState(new SaveTableCommand());
         else if (h.isResetPassword()) h.setCommandState(new ResetPasswordCommandState());
         else if (h.isPasswordSet()) h.setCommandState(new SetPasswordCommandState());
+        else if (h.isSavedToBTCOMMini()) h.setCommandState(new SaveToBTCOMMiniCommandState());
     }
 }

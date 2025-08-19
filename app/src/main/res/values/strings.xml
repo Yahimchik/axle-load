@@ -51,6 +51,15 @@
     <string name="error_select_at_least_one_sensor_per_axis">Select at least one sensor per axis</string>
     <string name="error_sensor_not_selected">Sensor not select</string>
     <string name="error_reading_the_file">Incorrect format or file</string>
+    <string name="error_message_period_range">Value must be between 2 and 1800</string>
+    <string name="error_measurement_period_range">Value must be between 2 and 1800</string>
+    <string name="error_state_number_length">Max 10 characters required</string>
+    <string name="error_required">Required</string>
+    <string name="error_total_axles_range">Value must be between 1 and 7</string>
+    <string name="error_total_sensors_range">Value must be between 1 and 14</string>
+    <string name="error_sensors_on_axle_range">Value must be 1 or 2</string>
+    <string name="error_installation_point_greater_than_total_axles">Installation point cannot be greater than total axles</string>
+    <string name="error_sensor_number_greater_than_total_sensors">Sensor number cannot be greater than total sensors</string>
 
     <string name="firmware_version">Firmware Version: </string>
     <string name="finish_button">FINISH</string>
@@ -104,4 +113,10 @@
     <string name="wheel_right">Right wheel of axle %1$d</string>
 
     <string name="yes">Yes</string>
+    <string name="total_axles">Total number of axes</string>
+    <string name="total_sensors">Total number of sensors</string>
+    <string name="trailer_changeable">The chassis is non-replaceable/replaceable</string>
+    <string name="changeable_short">Replaceable</string>
+
+    <string name="number_of_sensors_per_axis">Number of sensors per axis</string>
 </resources>

@@ -20,7 +20,9 @@ import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.TableAdapter;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigAdapter;
+import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigValidator;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorInfoAdapter;
+import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class DeviceDetailsBinder {
     private final SensorConfigFormatter configFormatter;
     private final SaveToFileService service;
     private final ResourceProvider provider;
+    private final SnackbarManager snackbarManager;
+    private final SensorConfigValidator validator;
     private DeviceViewModel vm;
 
     @Inject
@@ -46,16 +50,20 @@ public class DeviceDetailsBinder {
             SaveToFileService service,
             DeviceDetailsFormatter formatter,
             SensorConfigFormatter configFormatter,
-            ResourceProvider provider) {
+            ResourceProvider provider,
+            SnackbarManager snackbarManager,
+            SensorConfigValidator validator) {
         this.service = service;
         this.configFormatter = configFormatter;
         this.formatter = formatter;
         this.provider = provider;
+        this.snackbarManager = snackbarManager;
+        this.validator = validator;
     }
 
     public void init(View view, DeviceViewModel vm) {
         this.vm = vm;
-        sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter);
+        sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter,  validator);
         sensorInfoAdapter = new SensorInfoAdapter(view, formatter);
         tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);
@@ -63,7 +71,7 @@ public class DeviceDetailsBinder {
     }
 
     public void finishButtonOnClick(View.OnClickListener listener) {
-        sensorInfoAdapter.finishButtonOnClick(listener);
+        sensorConfigAdapter.finishButtonOnClick(listener);
     }
 
     public void readFromFileOnClick(View.OnClickListener listener) {

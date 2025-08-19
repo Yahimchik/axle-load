@@ -26,6 +26,7 @@ import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 import com.mehatronics.axle_load.domain.usecase.SubmitPasswordUseCase;
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
@@ -639,5 +640,21 @@ public class DeviceViewModel extends ViewModel {
 
     public void setListener(GattReadListener listener) {
         bluetoothRepository.setListener(listener);
+    }
+
+    public void saveToBTCOMMini() {
+        bluetoothRepository.saveToBTCOMMini();
+    }
+
+    public boolean isSavedToBTCOMMini() {
+        return bluetoothRepository.isSavedToBTCOMMini();
+    }
+
+    public void setSaveToMiniLive(boolean value) {
+        bluetoothRepository.setSaveToMiniLive(value);
+    }
+
+    public SingleLiveEvent<Boolean> getSaveToMiniLive() {
+        return bluetoothRepository.getSaveToMiniLive();
     }
 }

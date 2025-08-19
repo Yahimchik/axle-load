@@ -17,6 +17,12 @@ public class SensorConfig {
     private int configType;
     private int installationPoint;
     private String stateNumber;
+    private int carType;
+    private int totalNumberOfAxleOnChassis;
+    private int totalNumberOfSensorsOnChassis;
+    private int numberOfAxle;
+    private int installationPosition;
+    private int totalNumberOfSensorsOnAxle;
 
     public SensorConfig(Builder builder) {
         this.mac = builder.mac;
@@ -33,6 +39,12 @@ public class SensorConfig {
         this.configType = builder.configType;
         this.installationPoint = builder.installationPoint;
         this.stateNumber = builder.stateNumber;
+        this.carType = builder.carType;
+        this. totalNumberOfAxleOnChassis = builder.totalNumberOfAxleOnChassis;
+        this. totalNumberOfSensorsOnChassis = builder.totalNumberOfSensorsOnChassis;
+        this. numberOfAxle = builder.numberOfAxle;
+        this. installationPosition = builder.installationPosition;
+        this. totalNumberOfSensorsOnAxle = builder.totalNumberOfSensorsOnAxle;
     }
 
     public String getMac() {
@@ -91,6 +103,30 @@ public class SensorConfig {
         this.stateNumber = stateNumber;
     }
 
+    public void setCarType(int carType) {
+        this.carType = carType;
+    }
+
+    public void setTotalNumberOfAxleOnChassis(int totalNumberOfAxleOnChassis) {
+        this.totalNumberOfAxleOnChassis = totalNumberOfAxleOnChassis;
+    }
+
+    public void setTotalNumberOfSensorsOnChassis(int totalNumberOfSensorsOnChassis) {
+        this.totalNumberOfSensorsOnChassis = totalNumberOfSensorsOnChassis;
+    }
+
+    public void setNumberOfAxle(int numberOfAxle) {
+        this.numberOfAxle = numberOfAxle;
+    }
+
+    public void setInstallationPosition(int installationPosition) {
+        this.installationPosition = installationPosition;
+    }
+
+    public void setTotalNumberOfSensorsOnAxle(int totalNumberOfSensorsOnAxle) {
+        this.totalNumberOfSensorsOnAxle = totalNumberOfSensorsOnAxle;
+    }
+
     public int getFlagSystem() {
         return flagSystem;
     }
@@ -143,6 +179,30 @@ public class SensorConfig {
         return stateNumber;
     }
 
+    public int getCarType() {
+        return carType;
+    }
+
+    public int getTotalNumberOfAxleOnChassis() {
+        return totalNumberOfAxleOnChassis;
+    }
+
+    public int getTotalNumberOfSensorsOnChassis() {
+        return totalNumberOfSensorsOnChassis;
+    }
+
+    public int getNumberOfAxle() {
+        return numberOfAxle;
+    }
+
+    public int getInstallationPosition() {
+        return installationPosition;
+    }
+
+    public int getTotalNumberOfSensorsOnAxle() {
+        return totalNumberOfSensorsOnAxle;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -161,6 +221,12 @@ public class SensorConfig {
                 ", configType=" + configType +
                 ", installationPoint=" + installationPoint +
                 ", stateNumber='" + stateNumber + '\'' +
+                ", carType=" + carType +
+                ", totalNumberOfAxleOnChassis=" + totalNumberOfAxleOnChassis +
+                ", totalNumberOfSensorsOnChassis=" + totalNumberOfSensorsOnChassis +
+                ", numberOfAxle=" + numberOfAxle +
+                ", installationPosition=" + installationPosition +
+                ", totalNumberOfSensorsOnAxle=" + totalNumberOfSensorsOnAxle +
                 '}';
     }
 
@@ -179,6 +245,12 @@ public class SensorConfig {
         private int configType;
         private int installationPoint;
         private String stateNumber;
+        private int carType;
+        private int totalNumberOfAxleOnChassis;
+        private int totalNumberOfSensorsOnChassis;
+        private int numberOfAxle;
+        private int installationPosition;
+        private int totalNumberOfSensorsOnAxle;
 
         public Builder setMac(String mac){
             this.mac = mac;
@@ -250,6 +322,32 @@ public class SensorConfig {
             this.stateNumber = stateNumber;
             return this;
         }
+
+        public Builder carType(int carType){
+            this.carType = carType;
+            return this;
+        }
+        public Builder totalNumberOfAxleOnChassis(int totalNumberOfAxleOnChassis){
+            this.totalNumberOfAxleOnChassis = totalNumberOfAxleOnChassis;
+            return this;
+        }
+        public Builder totalNumberOfSensorsOnChassis(int totalNumberOfSensorsOnChassis){
+            this.totalNumberOfSensorsOnChassis = totalNumberOfSensorsOnChassis;
+            return this;
+        }
+        public Builder numberOfAxle(int numberOfAxle){
+            this.numberOfAxle = numberOfAxle;
+            return this;
+        }
+
+        public Builder installationPosition(int installationPosition){
+            this.installationPosition = installationPosition;
+            return this;
+        };
+        public Builder totalNumberOfSensorsOnAxle(int totalNumberOfSensorsOnAxle){
+            this.totalNumberOfSensorsOnAxle = totalNumberOfSensorsOnAxle;
+            return this;
+        };
 
         public SensorConfig build() {
             return new SensorConfig(this);

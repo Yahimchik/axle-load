@@ -25,8 +25,10 @@ import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ public class GattReadServiceImpl implements GattReadService {
      * LiveData с данными об устройстве.
      */
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<BTCOMMiniDetails> btcomMiniDetailsMutableLiveData = new MutableLiveData<>();
+    private final SingleLiveEvent<Boolean> isConfigureBTCOMMiniSaved = new SingleLiveEvent<>();
 
     /**
      * LiveData с конфигурацией сенсора.
@@ -95,6 +99,7 @@ public class GattReadServiceImpl implements GattReadService {
      * Флаг: была ли сохранена конфигурация.
      */
     private boolean isConfigurationSaved = false;
+    private boolean isSaveToBTCOMMini = false;
     private boolean isPasswordReset = false;
     private boolean isPasswordSet = false;
 
@@ -226,7 +231,12 @@ public class GattReadServiceImpl implements GattReadService {
         }
 
         if (isConnected && values.size() > 8) {
-            deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
+            if (repository.getCurrDeviceType().equals(DeviceType.DPS)){
+                deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
+            }else {
+//                btcomMiniDetailsMutableLiveData.postValue(gattDataMapper.convertToBTCOMMiniDetails(gatt, values, table));
+                deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
+            }
         }
     }
 
@@ -314,6 +324,11 @@ public class GattReadServiceImpl implements GattReadService {
         isConfigurationSaved = value;
     }
 
+    @Override
+    public void setSaveToBTCOMMini(boolean value) {
+        isSaveToBTCOMMini = value;
+    }
+
     /**
      * Устанавливает флаг, отражающий факт успешного сохранения таблицы калибровки на устройстве.
      *
@@ -342,6 +357,11 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public boolean isConfigurationSaved() {
         return isConfigurationSaved;
+    }
+
+    @Override
+    public boolean isSavedToBTCOMMini(){
+        return isSaveToBTCOMMini;
     }
 
     /**
@@ -419,6 +439,17 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public boolean isPasswordSet() {
         return isPasswordSet;
+    }
+
+    @Override
+    public void setSaveToMiniLive(boolean value) {
+        isSaveToBTCOMMini = value;
+        isConfigureBTCOMMiniSaved.postValue(value);
+    }
+
+    @Override
+    public SingleLiveEvent<Boolean> getSaveToMiniLive() {
+        return isConfigureBTCOMMiniSaved;
     }
 
     /**

@@ -316,32 +316,122 @@
                         app:layout_constraintStart_toEndOf="@id/measurementPeriodLabel"
                         app:layout_constraintTop_toBottomOf="@id/messageDeliveryPeriodEditText" />
 
-                    <!-- Data Transmission Mode Spinner -->
+                    <!-- Trailer: сменный / не сменный (чекбокс) -->
                     <TextView
-                        android:id="@+id/configType"
+                        android:id="@+id/trailerChangeableLabel"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/roboto_bold"
                         android:gravity="center_vertical"
-                        android:text="@string/config_type"
+                        android:text="@string/trailer_changeable"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/trailerChangeableCheckBox"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
 
-                    <Spinner
-                        android:id="@+id/configTypeSpinner"
-                        style="@style/CustomSpinnerStyle"
+                    <CheckBox
+                        android:id="@+id/trailerChangeableCheckBox"
                         android:layout_width="wrap_content"
                         android:layout_height="48dp"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/roboto_bold"
-                        android:padding="8dp"
+                        android:gravity="center_vertical"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/configType"
+                        app:layout_constraintStart_toEndOf="@id/trailerChangeableLabel"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
+
+                    <!-- Общее количество осей -->
+                    <TextView
+                        android:id="@+id/totalAxlesLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center_vertical"
+                        android:text="@string/total_axles"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/totalAxlesEditText"
+                        app:layout_constraintTop_toBottomOf="@id/trailerChangeableCheckBox" />
+
+                    <EditText
+                        android:id="@+id/totalAxlesEditText"
+                        android:layout_width="80dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:drawable/edit_text"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:padding="8dp"
+                        android:textColor="#000000"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/totalAxlesLabel"
+                        app:layout_constraintTop_toBottomOf="@id/trailerChangeableCheckBox" />
+
+                    <!-- Общее количество датчиков -->
+                    <TextView
+                        android:id="@+id/totalSensorsLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center_vertical"
+                        android:text="@string/total_sensors"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/totalSensorsEditText"
+                        app:layout_constraintTop_toBottomOf="@id/totalAxlesEditText" />
+
+                    <EditText
+                        android:id="@+id/totalSensorsEditText"
+                        android:layout_width="80dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:drawable/edit_text"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:padding="8dp"
+                        android:textColor="#000000"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/totalSensorsLabel"
+                        app:layout_constraintTop_toBottomOf="@id/totalAxlesEditText" />
+
+                    <!-- Config Type сдвигаем ниже -->
+
+                    <!-- Data Transmission Mode Spinner -->
+<!--                    <TextView-->
+<!--                        android:id="@+id/configType"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="48dp"-->
+<!--                        android:layout_marginTop="8dp"-->
+<!--                        android:fontFamily="@font/roboto_bold"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:text="@string/config_type"-->
+<!--                        android:textColor="#000000"-->
+<!--                        android:textSize="16sp"-->
+<!--                        app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
+
+<!--                    <Spinner-->
+<!--                        android:id="@+id/configTypeSpinner"-->
+<!--                        style="@style/CustomSpinnerStyle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="48dp"-->
+<!--                        android:layout_marginTop="8dp"-->
+<!--                        android:fontFamily="@font/roboto_bold"-->
+<!--                        android:padding="8dp"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toEndOf="@id/configType"-->
+<!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
 
                     <!-- Power Mode Spinner -->
                     <TextView
@@ -356,7 +446,7 @@
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/installationPointSpinner"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/configTypeSpinner" />
+                        app:layout_constraintTop_toBottomOf="@id/totalSensorsEditText" />
 
                     <Spinner
                         android:id="@+id/installationPointSpinner"
@@ -368,7 +458,7 @@
                         android:padding="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/installationPoint"
-                        app:layout_constraintTop_toBottomOf="@id/configTypeSpinner" />
+                        app:layout_constraintTop_toBottomOf="@id/totalSensorsEditText" />
 
                     <!-- Distance to Wheel EditText -->
                     <TextView
@@ -383,6 +473,34 @@
                         android:textSize="16sp"
                         app:layout_constraintEnd_toStartOf="@id/stateNumber"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/installationPointSpinner" />
+                    <TextView
+                        android:id="@+id/numberOfSensorsOnAxle"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center_vertical"
+                        android:text="@string/number_of_sensors_per_axis"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toStartOf="@id/numberOfSensorsOnAxleEditText"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/installationPoint" />
+
+                    <EditText
+                        android:id="@+id/numberOfSensorsOnAxleEditText"
+                        android:layout_width="80dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:drawable/edit_text"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:padding="8dp"
+                        android:textColor="#000000"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/totalSensorsLabel"
                         app:layout_constraintTop_toBottomOf="@id/installationPointSpinner" />
 
                     <EditText
@@ -405,7 +523,7 @@
                         android:windowSoftInputMode="adjustResize"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/installationPointSpinner"
+                        app:layout_constraintTop_toBottomOf="@id/numberOfSensorsOnAxle"
                         tools:ignore="TextFields,VisualLintTextFieldSize" />
 
                     <Button
