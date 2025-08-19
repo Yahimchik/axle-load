@@ -26,6 +26,18 @@ public class FragmentNavigator {
         }
     }
 
+    public void addHiddenFragment(Fragment fragment) {
+        String tag = fragment.getClass().getSimpleName();
+        Fragment existingFragment = fragmentManager.findFragmentByTag(tag);
+        if (existingFragment == null) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.nav_host_fragment, fragment, tag);
+            transaction.hide(fragment);
+            transaction.addToBackStack(tag);
+            transaction.commit();
+        }
+    }
+
     private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.nav_host_fragment, fragment, fragment.getClass().getSimpleName());

@@ -11,6 +11,7 @@ import static com.mehatronics.axle_load.utils.ByteUtils.intToFourBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToTwoBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.multiplierToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.stringToBytes;
+import static com.mehatronics.axle_load.utils.ByteUtils.stringToBytesCOM;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToString;
 import static com.mehatronics.axle_load.utils.DataUtils.convertBytesToValue;
 
@@ -18,9 +19,13 @@ import android.bluetooth.BluetoothGatt;
 
 import com.mehatronics.axle_load.data.mapper.DateFormatMapper;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 
 import java.util.List;
 
@@ -33,10 +38,12 @@ import javax.inject.Inject;
 public class GattDataMapperImpl implements GattDataMapper {
 
     private final DateFormatMapper dateFormatMapper;
+    private final DeviceTypeRepository repository;
 
     @Inject
-    public GattDataMapperImpl(DateFormatMapper dateFormatMapper) {
+    public GattDataMapperImpl(DateFormatMapper dateFormatMapper, DeviceTypeRepository repository) {
         this.dateFormatMapper = dateFormatMapper;
+        this.repository = repository;
     }
 
     /**
@@ -52,8 +59,13 @@ public class GattDataMapperImpl implements GattDataMapper {
     @Override
     public DeviceDetails convertToDeviceDetails(BluetoothGatt gatt, List<byte[]> values, List<CalibrationTable> table) {
         if (values.size() < 9) return null;
+        String deviceName;
+        if (repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)) {
+            deviceName = convertBytesToString(values.get(0));
+        } else {
+            deviceName = convertBytesToString(values.get(2));
+        }
 
-        String deviceName = convertBytesToString(values.get(2));
         String dateManufacture = dateFormatMapper.convertToDate(values);
         String manufacturer = convertBytesToString(values.get(4));
         String modelType = convertBytesToString(values.get(5));
@@ -77,6 +89,21 @@ public class GattDataMapperImpl implements GattDataMapper {
                 .setWeight(weight)
                 .setPressure(pressure)
                 .setTable(table).build();
+    }
+
+    @Override
+    public BTCOMMiniDetails convertToBTCOMMiniDetails(BluetoothGatt gatt, List<byte[]> values, List<CalibrationTable> table) {
+        String deviceName = convertBytesToString(values.get(0));
+        String dateManufacture = dateFormatMapper.convertToDate(values);
+        String firmwareVersion = convertBytesToString(values.get(7));
+        String hardwareVersion = convertBytesToString(values.get(8));
+
+        return new BTCOMMiniDetails.Builder()
+                .deviceName(deviceName)
+                .dateManufacture(dateManufacture)
+                .firmwareVersion(firmwareVersion)
+                .hardwareVersion(hardwareVersion)
+                .build();
     }
 
     /**
@@ -105,6 +132,14 @@ public class GattDataMapperImpl implements GattDataMapper {
         intToBytes(buffer, sensorConfig.getInstallationPoint(), 29);
 
         stringToBytes(buffer, sensorConfig.getStateNumber());
+    }
+
+    @Override
+    public void setBTCOMMiniSettings(DeviceInfoToSave save, byte[] buffer) {
+        intToFourBytes(buffer, save.getPassword(), 4);
+        buffer[8] = (byte) save.getType();
+        stringToBytesCOM(buffer, save.getCarNumberFirst(), 9, 19);
+        stringToBytesCOM(buffer, save.getCarNumberSecond(), 20, 30);
     }
 
     /**

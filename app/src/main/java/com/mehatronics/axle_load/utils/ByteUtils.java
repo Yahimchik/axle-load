@@ -153,6 +153,18 @@ public class ByteUtils {
         }
     }
 
+    public static void stringToBytesCOM(byte[] value, String stateNumber, int start, int end) {
+        for (int i = start; i < end; ++i) {
+            value[i] = 0x20;
+        }
+
+        char[] mass = stateNumber.toCharArray();
+
+        for (int i = 0; i < mass.length; i++) {
+            value[start + i] = (byte) mass[i];
+        }
+    }
+
     /**
      * Преобразует байты из устройства в список калибровочных точек.
      *

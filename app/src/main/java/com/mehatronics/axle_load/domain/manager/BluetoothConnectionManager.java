@@ -11,6 +11,8 @@ import android.util.Log;
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
@@ -18,6 +20,8 @@ import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
+
+import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -145,5 +149,22 @@ public class BluetoothConnectionManager implements ConnectionHandler {
 
     public void setListener(GattReadListener listener) {
         gattCallbackHandler.setListener(listener);
+    }
+
+    public boolean isSavedToBTCOMMini() {
+        return gattCallbackHandler.isSavedToBTCOMMini();
+    }
+
+    public void saveToBTCOMMini(){
+        gattCallbackHandler.setSavedToBTCOMMini(true);
+        gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
+    }
+
+    public void setSaveToMiniLive(boolean value) {
+        gattCallbackHandler.setSaveToMiniLive(value);
+    }
+
+    public SingleLiveEvent<Boolean> getSaveToMiniLive() {
+        return gattCallbackHandler.getSaveToMiniLive();
     }
 }

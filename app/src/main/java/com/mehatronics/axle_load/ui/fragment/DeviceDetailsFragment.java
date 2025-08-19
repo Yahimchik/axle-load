@@ -18,6 +18,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +32,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
+import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
@@ -69,6 +74,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     protected PasswordRepository passwordRepository;
     @Inject
     protected SaveToFileService service;
+    @Inject
+    protected DeviceTypeRepository typeRepository;
     private DeviceViewModel vm;
     private LoadingManager loadingManager;
     private View view;
@@ -213,6 +220,20 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     }
 
     private void observeSelectionMode() {
+        vm.getConfigurationSavedLiveData().observe(getViewLifecycleOwner(), config -> {
+            if (config != null && typeRepository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)) {
+                vm.saveToBTCOMMini();
+            }
+        });
+        vm.getSaveToMiniLive().observe(getViewLifecycleOwner(), saved -> {
+            if (saved) {
+                snackbarManager.showMessage(requireActivity(), getString(save_configuration));
+
+                new Handler(Looper.getMainLooper()).postDelayed(this::closeFragment, 1000);
+            }
+        });
+
+
         detailsBinder.finishButtonOnClick(v -> {
             loadingManager.showLoading(true);
             int res = vm.saveTable();
@@ -289,6 +310,10 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 DeviceDetailsFragment.class.getSimpleName(),
                 POP_BACK_STACK_INCLUSIVE
         );
+
+        if (requireActivity() instanceof BaseBluetoothActivity) {
+            ((BaseBluetoothActivity) requireActivity()).loadingManagerShowLoading(false);
+        }
     }
 
     /**

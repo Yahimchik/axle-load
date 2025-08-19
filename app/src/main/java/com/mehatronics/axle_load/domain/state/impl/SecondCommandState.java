@@ -35,6 +35,7 @@ public class SecondCommandState implements CommandStateHandler {
         if (h.getTablePage() > 0) h.setCommandState(new FirstCommandState());
         if (h.isTableSaved() && h.getTablePage() > 0) h.setCommandState(new SaveTableCommand());
         else if (h.isConfigurationSaved()) h.setCommandState(new ConfigureCommandState());
+        else if (h.isSavedToBTCOMMini()) h.setCommandState(new SaveToBTCOMMiniCommandState());
         else h.setCommandState(new FinalCommandState());
     }
 }

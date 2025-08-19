@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -159,4 +160,12 @@ public interface GattReadService {
     boolean isPasswordSet();
 
     void setListener(GattReadListener listener);
+
+    boolean isSavedToBTCOMMini();
+
+    void setSaveToBTCOMMini(boolean value);
+
+    void setSaveToMiniLive(boolean value);
+
+    SingleLiveEvent<Boolean> getSaveToMiniLive();
 }
