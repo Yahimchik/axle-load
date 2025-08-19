@@ -6,6 +6,7 @@ import static com.mehatronics.axle_load.constants.ValueConstants.MAX_DETECTORS;
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_MULTIPLIER;
 
 import android.bluetooth.BluetoothGatt;
+import android.util.Log;
 
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
@@ -229,10 +230,9 @@ public class ByteUtils {
      * Преобразует массив байт в объект конфигурации сенсора.
      *
      * @param bytes Массив байт.
-     * @return Объект {@link SensorConfig}.
      */
     public static SensorConfig convertBytesToConfiguration(BluetoothGatt gatt, byte[] bytes) {
-        return new SensorConfig.Builder()
+        SensorConfig.Builder configBuilder = new SensorConfig.Builder()
                 .setMac(gatt.getDevice().getAddress())
                 .setFlagSystem(parseIntFromBytes(bytes, 7))
                 .setConfigSystem(parseIntFromBytes(bytes, 11))
@@ -246,8 +246,45 @@ public class ByteUtils {
                 .setDistanceToWheel(parseShortFromBytes(bytes, 31, 30))
                 .setConfigType(parseIntFromByte(bytes, 32))
                 .setInstallationPoint(parseIntFromByte(bytes, 33))
-                .setStateNumber(extractStringFromBytes(bytes, 34, 10))
-                .build();
+                .setStateNumber(extractStringFromBytes(bytes, 34, 10));
+
+        parseChassisNumber(parseIntFromByte(bytes, 32), configBuilder);
+        parseSensorNumber(parseIntFromByte(bytes, 33), configBuilder);
+
+        SensorConfig config = configBuilder.build();
+        Log.d("SensorInfo", String.valueOf(config));
+        return config;
+    }
+
+    public static int composeSensorNumber(SensorConfig config) {
+        int number = 0;
+        number |= (config.getNumberOfAxle() & 0b00000111);          // биты 0-2
+        number |= (config.getInstallationPosition() & 0b00000011) << 3; // биты 3-4
+        number |= ((config.getTotalNumberOfSensorsOnAxle() - 1) & 0b1) << 5; // бит 5
+        return number;
+    }
+
+    // Собираем number для шасси
+    public static int composeChassisNumber(SensorConfig config) {
+        int number = 0;
+        number |= (config.getCarType() & 0b00000001);                 // бит 0
+        number |= (config.getTotalNumberOfAxleOnChassis() & 0b00000111) << 1; // биты 1-3
+        number |= (config.getTotalNumberOfSensorsOnChassis() & 0b00001111) << 4; // биты 4-7
+        return number;
+    }
+
+    public static void parseSensorNumber(int number, SensorConfig.Builder config) {
+        config.numberOfAxle(number & 0b00000111);               // биты 0-2
+        config.installationPosition((number >> 3) & 0b00000011); // биты 3-4
+        config.totalNumberOfSensorsOnAxle(((number >> 5) & 0b1) + 1); // бит 5
+        config.build();
+    }
+
+    public static void parseChassisNumber(int number, SensorConfig.Builder config) {
+        config.carType(number & 0b00000001);                      // бит 0
+        config.totalNumberOfAxleOnChassis((number >> 1) & 0b00000111); // биты 1-3
+        config.totalNumberOfSensorsOnChassis((number >> 4) & 0b00001111); // биты 4-7
+        config.build();
     }
 
     /**
@@ -283,6 +320,14 @@ public class ByteUtils {
     public static int parseIntFromBytes(byte[] bytes, int index1, int index2) {
         return ((bytes[index1] & ZERO_COMMAND_BINARY) << 8) |
                 (bytes[index2] & ZERO_COMMAND_BINARY);
+    }
+
+    public static int tryParseInt(String val) {
+        try {
+            return Integer.parseInt(val);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     /**

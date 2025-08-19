@@ -18,8 +18,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +79,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     private View view;
     private boolean wrongPassword = false;
     private boolean isSavingStarted = false;
+    private boolean isSaved = false;
     protected ActivityResultLauncher<Intent> pickFileLauncher;
 
     /**
@@ -221,18 +220,19 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
     private void observeSelectionMode() {
         vm.getConfigurationSavedLiveData().observe(getViewLifecycleOwner(), config -> {
-            if (config != null && typeRepository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)) {
+            if (typeRepository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)) {
                 vm.saveToBTCOMMini();
             }
         });
+
         vm.getSaveToMiniLive().observe(getViewLifecycleOwner(), saved -> {
             if (saved) {
-                snackbarManager.showMessage(requireActivity(), getString(save_configuration));
-
-                new Handler(Looper.getMainLooper()).postDelayed(this::closeFragment, 1000);
+                snackbarManager.showMessage(requireActivity(), getString(save_configuration), this::setIsSaved);
+                if (isSaved) {
+                    closeFragment();
+                }
             }
         });
-
 
         detailsBinder.finishButtonOnClick(v -> {
             loadingManager.showLoading(true);
@@ -268,6 +268,10 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 });
             }
         });
+    }
+
+    private void setIsSaved() {
+        isSaved = true;
     }
 
     private void observePasswordDialogEvent() {

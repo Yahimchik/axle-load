@@ -499,8 +499,6 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         save.type(1)
                 .carNumberFirst("AB1234-567")
                 .carNumberSecond("AB7654-321");
-        gattWriteService.getBuffer()[0] = CommandsConstants.SEVENTY_SEVEN_COMMAND;
-        gattWriteService.getBuffer()[1] = CommandsConstants.FOURTH_COMMAND;
         gattDataMapper.setBTCOMMiniSettings(save.build(), gattWriteService.getBuffer());
         Log.d("MyTag", Arrays.toString(gattWriteService.getBuffer()));
         gattReadService.setSaveToBTCOMMini(false);

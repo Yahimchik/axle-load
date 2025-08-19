@@ -4,6 +4,7 @@ public class StringConstants {
     public static final String AXLE = "AXLE";
     public static final String LEFT = "LEFT";
     public static final String RIGHT = "RIGHT";
+    public static final String CENTER = "CENTER";
     public static final String ZERO = "0";
     public static final String UNKNOWN = "UNKNOWN";
     public static final String FIRST_CODE = "40f97651c07e2bc8b190d3f3ce73a526";

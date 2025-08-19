@@ -1,114 +1,95 @@
 package com.mehatronics.axle_load.ui.adapter.sensor;
 
-import static android.R.layout.simple_spinner_item;
-import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
-import static com.mehatronics.axle_load.constants.StringConstants.LEFT;
-import static com.mehatronics.axle_load.constants.StringConstants.RIGHT;
+import static com.mehatronics.axle_load.R.string.error_measurement_period_range;
+import static com.mehatronics.axle_load.R.string.error_message_period_range;
+import static com.mehatronics.axle_load.R.string.error_sensors_on_axle_range;
+import static com.mehatronics.axle_load.R.string.error_state_number_length;
+import static com.mehatronics.axle_load.R.string.error_total_axles_range;
+import static com.mehatronics.axle_load.R.string.error_total_sensors_range;
+import static com.mehatronics.axle_load.utils.ByteUtils.tryParseInt;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 public class SensorConfigAdapter {
+
     private final EditText messageDeliveryPeriod;
     private final EditText measurementPeriod;
+    private final CheckBox trailerChangeableCheckBox;
+    private final EditText totalAxlesEditText;
+    private final EditText totalSensorsEditText;
+    private final EditText numberOfSensorsOnAxleEditText;
     private final EditText stateNumber;
-    private final Spinner installationPointSpinner;
-    private final Button saveButton;
+    private final Button finishButton;
 
-    private boolean isSpinnerListenerActive = false;
-    private boolean isSpinnerInitialized = false;
-    private Integer pendingSpinnerSelection = null;
-
-    private final CachedValues cache = new CachedValues();
     private final SensorConfigFormatter formatter;
+    private final SensorConfigValidator validator;
+    private final SpinnerHelper spinnerHelper;
+    private final View root;
+    private final boolean isSpinnerInitialized;
 
-    private static void accept(String val) {
-    }
+    public SensorConfigAdapter(View view, SensorConfigFormatter formatter,
+                               SensorConfigValidator validator) {
+        this.root = view;
+        this.formatter = formatter;
+        this.validator = validator;
 
-    private static class CachedValues {
-        String messageDeliveryPeriod;
-        String measurementPeriod;
-        String stateNumber;
-        int installationPoint = -1;
-    }
-
-    public SensorConfigAdapter(View view, SensorConfigFormatter formatter) {
         messageDeliveryPeriod = view.findViewById(R.id.messageDeliveryPeriodEditText);
         measurementPeriod = view.findViewById(R.id.measurementPeriodEditText);
         stateNumber = view.findViewById(R.id.stateNumber);
-        installationPointSpinner = view.findViewById(R.id.installationPointSpinner);
-        saveButton = view.findViewById(R.id.saveConfigurationButton);
-        this.formatter = formatter;
+        finishButton = view.findViewById(R.id.finishButton);
+        trailerChangeableCheckBox = view.findViewById(R.id.trailerChangeableCheckBox);
+        totalAxlesEditText = view.findViewById(R.id.totalAxlesEditText);
+        totalSensorsEditText = view.findViewById(R.id.totalSensorsEditText);
+        numberOfSensorsOnAxleEditText = view.findViewById(R.id.numberOfSensorsOnAxleEditText);
 
-        initSpinner();
+        spinnerHelper = new SpinnerHelper(view.findViewById(R.id.installationPointSpinner));
 
-        addWatcher(messageDeliveryPeriod, SensorConfigAdapter::accept, () -> cache.messageDeliveryPeriod, val -> cache.messageDeliveryPeriod = val);
-        addWatcher(measurementPeriod, SensorConfigAdapter::accept, () -> cache.measurementPeriod, val -> cache.measurementPeriod = val);
-        addWatcher(stateNumber, SensorConfigAdapter::accept, () -> cache.stateNumber, val -> cache.stateNumber = val);
+        spinnerHelper.initSpinner(1, 0);
+        spinnerHelper.setOnItemSelectedListener(this::validateAndToggleSaveButton);
+        isSpinnerInitialized = true;
+
+        initTextWatchers();
+        trailerChangeableCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> validateAndToggleSaveButton());
+    }
+
+    public void finishButtonOnClick(View.OnClickListener listener) {
+        finishButton.setOnClickListener(listener);
     }
 
     private void validateAndToggleSaveButton() {
-        boolean valid = isValidInternal();
-        saveButton.setEnabled(valid);
+        finishButton.setEnabled(isValid());
     }
 
-    private boolean isValidRange(String value) {
-        try {
-            int number = Integer.parseInt(value);
-            return number < 2 || number > 1800;
-        } catch (NumberFormatException e) {
-            return true;
-        }
-    }
-
-    private boolean isValidInternal() {
-        boolean valid = true;
-
-        String messagePeriodText = messageDeliveryPeriod.getText().toString().trim();
-        if (isValidRange(messagePeriodText)) {
-            messageDeliveryPeriod.setError("Value must be between 2 and 1800");
-            valid = false;
-        } else {
-            messageDeliveryPeriod.setError(null);
-        }
-
-        String measurementText = measurementPeriod.getText().toString().trim();
-        if (isValidRange(measurementText)) {
-            measurementPeriod.setError("Value must be between 2 and 1800");
-            valid = false;
-        } else {
-            measurementPeriod.setError(null);
-        }
-
-        String stateNumberText = stateNumber.getText().toString().trim();
-        if (stateNumberText.isEmpty() || stateNumberText.length() > 10) {
-            stateNumber.setError("Max 10 characters required");
-            valid = false;
-        } else {
-            stateNumber.setError(null);
-        }
-
+    private boolean isValid() {
+        boolean valid = validator.validateRange(messageDeliveryPeriod, 2, 1800, error_message_period_range);
+        valid &= validator.validateRange(measurementPeriod, 2, 1800, error_measurement_period_range);
+        valid &= validator.validateLength(stateNumber, 1, 10, error_state_number_length);
+        valid &= validator.validateRange(totalAxlesEditText, 1, 7, error_total_axles_range);
+        valid &= validator.validateRange(totalSensorsEditText, 1, 14, error_total_sensors_range);
+        valid &= validator.validateRange(numberOfSensorsOnAxleEditText, 1, 2, error_sensors_on_axle_range);
+        valid &= validator.validateInstallationPoint(spinnerHelper.spinner(), totalAxlesEditText, root);
         return valid;
     }
 
-    private void addWatcher(EditText editText, Consumer<String> onChange, Supplier<String> cacheGetter, Consumer<String> cacheSetter) {
+    private void initTextWatchers() {
+        addWatcher(messageDeliveryPeriod);
+        addWatcher(measurementPeriod);
+        addWatcher(stateNumber);
+        addWatcher(totalAxlesEditText);
+        addWatcher(totalSensorsEditText);
+        addWatcher(numberOfSensorsOnAxleEditText);
+    }
+
+    private void addWatcher(EditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -117,89 +98,33 @@ public class SensorConfigAdapter {
             }
 
             public void afterTextChanged(Editable s) {
-                String newValue = s.toString();
-                if (!newValue.equals(cacheGetter.get())) {
-                    cacheSetter.accept(newValue);
-                    onChange.accept(newValue);
-                }
                 validateAndToggleSaveButton();
             }
         });
     }
 
-    private void initSpinner() {
-        List<String> pointOptions = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
-            pointOptions.add(getInstallationPointDescription(i));
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                installationPointSpinner.getContext(),
-                simple_spinner_item,
-                pointOptions
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        installationPointSpinner.setAdapter(adapter);
-
-        installationPointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (isSpinnerListenerActive && (position + 1 != cache.installationPoint)) {
-                    cache.installationPoint = position + 1;
-                    validateAndToggleSaveButton();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        isSpinnerInitialized = true;
-        if (pendingSpinnerSelection != null) {
-            updateSpinnerSelectionIfNeeded(pendingSpinnerSelection);
-            pendingSpinnerSelection = null;
-        }
-    }
-
     public void bind(SensorConfig config) {
-        bindField(messageDeliveryPeriod, formatter.formatMessageDeliveryPeriod(config), val -> cache.messageDeliveryPeriod = val);
-        bindField(measurementPeriod, formatter.formatMeasurementPeriod(config), val -> cache.measurementPeriod = val);
-        bindField(stateNumber, formatter.formatStateNumber(config), val -> cache.stateNumber = val);
-        updateSpinnerSelectionIfNeeded(config.getInstallationPoint());
-    }
+        messageDeliveryPeriod.setText(formatter.formatMessageDeliveryPeriod(config));
+        measurementPeriod.setText(formatter.formatMeasurementPeriod(config));
+        stateNumber.setText(formatter.formatStateNumber(config));
+        totalAxlesEditText.setText(String.valueOf(config.getTotalNumberOfAxleOnChassis()));
+        totalSensorsEditText.setText(String.valueOf(config.getTotalNumberOfSensorsOnChassis()));
+        numberOfSensorsOnAxleEditText.setText(String.valueOf(config.getTotalNumberOfSensorsOnAxle()));
+        trailerChangeableCheckBox.setChecked(config.getCarType() == 1);
 
-    private void bindField(EditText field, String newValue, Consumer<String> cacheSetter) {
-        if (!newValue.equals(field.getText().toString())) {
-            field.setText(newValue);
-            cacheSetter.accept(newValue);
-        }
-    }
-
-    private void updateSpinnerSelectionIfNeeded(int newPoint) {
-        if (!isSpinnerInitialized) {
-            pendingSpinnerSelection = newPoint;
-            return;
-        }
-
-        if (newPoint != cache.installationPoint) {
-            isSpinnerListenerActive = false;
-            installationPointSpinner.setSelection(newPoint - 1);
-            cache.installationPoint = newPoint;
-        }
-        isSpinnerListenerActive = true;
+        int spinnerIndex = (config.getNumberOfAxle() - 1) * 3 + config.getInstallationPosition();
+        if (isSpinnerInitialized) spinnerHelper.spinner().setSelection(spinnerIndex);
     }
 
     public void updateConfig(SensorConfig config) {
-        config.setMessageDeliveryPeriod(Integer.parseInt(cache.messageDeliveryPeriod));
-        config.setMeasurementPeriod(Integer.parseInt(cache.measurementPeriod));
-        config.setStateNumber(cache.stateNumber);
-        config.setInstallationPoint(cache.installationPoint);
-    }
-
-    private String getInstallationPointDescription(int installationPoint) {
-        int axle = (installationPoint - 1) / 2 + 1;
-        String position = (installationPoint - 1) % 2 == 0 ? LEFT : RIGHT;
-        return AXLE + " " + axle + " — " + position;
+        config.setMessageDeliveryPeriod(tryParseInt(messageDeliveryPeriod.getText().toString()));
+        config.setMeasurementPeriod(tryParseInt(measurementPeriod.getText().toString()));
+        config.setStateNumber(stateNumber.getText().toString());
+        config.setTotalNumberOfAxleOnChassis(tryParseInt(totalAxlesEditText.getText().toString()));
+        config.setTotalNumberOfSensorsOnChassis(tryParseInt(totalSensorsEditText.getText().toString()));
+        config.setNumberOfAxle(spinnerHelper.getSelectedAxle());
+        config.setInstallationPosition(spinnerHelper.getSelectedPosition());
+        config.setCarType(trailerChangeableCheckBox.isChecked() ? 1 : 0);
+        config.setTotalNumberOfSensorsOnAxle(tryParseInt(numberOfSensorsOnAxleEditText.getText().toString()));
     }
 }
