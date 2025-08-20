@@ -1,8 +1,7 @@
 package com.mehatronics.axle_load.ui.navigation;
 
-import static com.mehatronics.axle_load.constants.ButtonsConstants.DDS_BTN;
+import static com.mehatronics.axle_load.constants.ButtonsConstants.BT_COM_MINI;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.DPS_BTN;
-import static com.mehatronics.axle_load.constants.ButtonsConstants.DSS_BTN;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.SWITCH_LANGUAGE_BTN;
 
 import android.app.Activity;
@@ -63,8 +62,7 @@ public class ActivityNavigator {
     private List<Button> searchButtons(Activity activity) {
         return Arrays.asList(
                 activity.findViewById(DPS_BTN),
-                activity.findViewById(DSS_BTN),
-                activity.findViewById(DDS_BTN)
+                activity.findViewById(BT_COM_MINI)
         );
     }
 }

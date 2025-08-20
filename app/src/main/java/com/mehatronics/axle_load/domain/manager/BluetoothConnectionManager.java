@@ -167,4 +167,12 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     public SingleLiveEvent<Boolean> getSaveToMiniLive() {
         return gattCallbackHandler.getSaveToMiniLive();
     }
+
+    public void setDeviceInfoToSave(DeviceInfoToSave info) {
+        gattCallbackHandler.setDeviceInfoToSave(info);
+    }
+
+    public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
+        return gattCallbackHandler.getDeviceInfoToSave();
+    }
 }

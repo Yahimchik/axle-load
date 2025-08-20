@@ -7,6 +7,8 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
@@ -22,6 +24,7 @@ import com.mehatronics.axle_load.domain.entities.InstalationPoint;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
@@ -30,6 +33,7 @@ import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -113,6 +117,10 @@ public class DeviceViewModel extends ViewModel {
      */
     public LiveData<List<Device>> getScannedDevices() {
         return bluetoothRepository.getScannedDevices();
+    }
+
+    public LiveData<List<Device>> getBtComMiniDevices() {
+        return bluetoothRepository.getBtComMiniDevices();
     }
 
     /**
@@ -656,5 +664,13 @@ public class DeviceViewModel extends ViewModel {
 
     public SingleLiveEvent<Boolean> getSaveToMiniLive() {
         return bluetoothRepository.getSaveToMiniLive();
+    }
+
+    public void setDeviceInfoToSave(DeviceInfoToSave info) {
+        bluetoothRepository.setDeviceInfoToSave(info);
+    }
+
+    public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
+        return bluetoothRepository.getDeviceInfoToSave();
     }
 }

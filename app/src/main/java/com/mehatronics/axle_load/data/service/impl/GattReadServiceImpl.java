@@ -27,6 +27,7 @@ import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
@@ -56,7 +57,7 @@ public class GattReadServiceImpl implements GattReadService {
      * LiveData с данными об устройстве.
      */
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
-    private final MutableLiveData<BTCOMMiniDetails> btcomMiniDetailsMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<DeviceInfoToSave> deviceInfoToSaveLiveData = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> isConfigureBTCOMMiniSaved = new SingleLiveEvent<>();
 
     /**
@@ -231,9 +232,9 @@ public class GattReadServiceImpl implements GattReadService {
         }
 
         if (isConnected && values.size() > 8) {
-            if (repository.getCurrDeviceType().equals(DeviceType.DPS)){
+            if (repository.getCurrDeviceType().equals(DeviceType.DPS)) {
                 deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
-            }else {
+            } else {
 //                btcomMiniDetailsMutableLiveData.postValue(gattDataMapper.convertToBTCOMMiniDetails(gatt, values, table));
                 deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
             }
@@ -360,7 +361,7 @@ public class GattReadServiceImpl implements GattReadService {
     }
 
     @Override
-    public boolean isSavedToBTCOMMini(){
+    public boolean isSavedToBTCOMMini() {
         return isSaveToBTCOMMini;
     }
 
@@ -450,6 +451,16 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public SingleLiveEvent<Boolean> getSaveToMiniLive() {
         return isConfigureBTCOMMiniSaved;
+    }
+
+    @Override
+    public void setDeviceInfoToSave(DeviceInfoToSave info) {
+        deviceInfoToSaveLiveData.postValue(info);
+    }
+
+    @Override
+    public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
+        return deviceInfoToSaveLiveData;
     }
 
     /**

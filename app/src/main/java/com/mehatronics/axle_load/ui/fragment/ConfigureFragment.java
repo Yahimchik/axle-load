@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class ConfigureFragment extends BaseSensorFragment {
-
+    private boolean firstLaunch = true;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_configure, container, false);
@@ -24,25 +24,33 @@ public class ConfigureFragment extends BaseSensorFragment {
     public void onDestroy() {
         super.onDestroy();
         if (isRemoving() || requireActivity().isFinishing()) {
-            viewModel.resetSelectedDevices();
-            viewModel.setLoadedAxisList(new ArrayList<>());
+            vm.resetSelectedDevices();
+            vm.setLoadedAxisList(new ArrayList<>());
         }
     }
 
     @Override
     protected void createBinder(View view) {
-        var binder = new AxisViewBinder(view, saveToFileService, handler, this, provider, navigator, this::openFilePicker);
+        var binder = new AxisViewBinder(view,
+                saveToFileService,
+                handler,
+                this,
+                provider,
+                navigator,
+                this::openFilePicker,
+                repository,
+                firstLaunch);
+        firstLaunch = false;
+        observe(vm.getAxisList(), binder::submitList);
+        observe(vm.getAxisClick(), this::handleAxisClickEvent);
 
-        observe(viewModel.getAxisList(), binder::submitList);
-        observe(viewModel.getAxisClick(), this::handleAxisClickEvent);
+        observe(vm.getSavedStateLiveData(), binder::setSavedState);
+        observe(vm.getFinishedMacs(), binder::addFinishedMac);
 
-        observe(viewModel.getSavedStateLiveData(), binder::setSavedState);
-        observe(viewModel.getFinishedMacs(), binder::addFinishedMac);
-
-        observeDeviceSelection(viewModel::setDeviceToAxis);
-        observe(viewModel.getAxisList(), binder::updateSaveButtonState);
-        observe(viewModel.getAllDevicesSaved(), binder::setFinishButtonVisible);
-
-        viewModel.method(getViewLifecycleOwner());
+        observeDeviceSelection(vm::setDeviceToAxis);
+        observe(vm.getAxisList(), binder::updateSaveButtonState);
+        observe(vm.getAllDevicesSaved(), binder::setFinishButtonVisible);
+        vm.setDeviceInfoToSave(binder.getDeviceInfo());
+        vm.method(getViewLifecycleOwner());
     }
 }

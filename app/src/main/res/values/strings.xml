@@ -1,5 +1,5 @@
 <resources>
-    <string name="DDS" translatable="false">DDS</string>
+    <string name="BT_COM_MINI" translatable="false">BT COM MINI</string>
     <string name="DPS" translatable="false">DPS</string>
     <string name="DSS" translatable="false">DSS</string>
 
@@ -43,9 +43,9 @@
     <string name="disconnect_button">Disconnect</string>
     <string name="disconnect_from">Disconnect from %1$s</string>
 
-    <string name="enter_number_of_axes">Enter number of axes</string>
+    <string name="enter_number_of_axes">Enter number of axes (1 – 7)</string>
     <string name="enter_password">Enter password</string>
-    <string name="error_axis_out_of_range">Please enter a number between 1 and 8</string>
+    <string name="error_axis_out_of_range">Please enter a number between 1 and 7</string>
     <string name="error_empty_axis_count">Please enter the number of axes</string>
     <string name="error_invalid_number">Please enter a valid number</string>
     <string name="error_select_at_least_one_sensor_per_axis">Select at least one sensor per axis</string>
@@ -60,6 +60,7 @@
     <string name="error_sensors_on_axle_range">Value must be 1 or 2</string>
     <string name="error_installation_point_greater_than_total_axles">Installation point cannot be greater than total axles</string>
     <string name="error_sensor_number_greater_than_total_sensors">Sensor number cannot be greater than total sensors</string>
+    <string name="error_total_sensors_greater_than_axles_times_two">The number of sensors cannot exceed %1$s</string>
 
     <string name="firmware_version">Firmware Version: </string>
     <string name="finish_button">FINISH</string>

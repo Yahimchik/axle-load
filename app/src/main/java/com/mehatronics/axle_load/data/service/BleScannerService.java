@@ -10,6 +10,8 @@ import java.util.List;
 public interface BleScannerService {
     LiveData<List<Device>> getScannedDevices();
 
+    LiveData<List<Device>> getBtComMiniDevices();
+
     void clearScannedDevices();
 
     void removeDeviceByAddress(String address);

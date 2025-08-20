@@ -5,6 +5,7 @@ import static com.mehatronics.axle_load.R.string.error_message_period_range;
 import static com.mehatronics.axle_load.R.string.error_sensors_on_axle_range;
 import static com.mehatronics.axle_load.R.string.error_state_number_length;
 import static com.mehatronics.axle_load.R.string.error_total_axles_range;
+import static com.mehatronics.axle_load.R.string.error_total_sensors_greater_than_axles_times_two;
 import static com.mehatronics.axle_load.R.string.error_total_sensors_range;
 import static com.mehatronics.axle_load.utils.ByteUtils.tryParseInt;
 
@@ -77,6 +78,7 @@ public class SensorConfigAdapter {
         valid &= validator.validateRange(totalSensorsEditText, 1, 14, error_total_sensors_range);
         valid &= validator.validateRange(numberOfSensorsOnAxleEditText, 1, 2, error_sensors_on_axle_range);
         valid &= validator.validateInstallationPoint(spinnerHelper.spinner(), totalAxlesEditText, root);
+        valid &= validator.validateSensorCount(totalSensorsEditText, totalAxlesEditText, error_total_sensors_greater_than_axles_times_two);
         return valid;
     }
 

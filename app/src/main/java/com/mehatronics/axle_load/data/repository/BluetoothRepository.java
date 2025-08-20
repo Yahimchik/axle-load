@@ -6,6 +6,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.service.BleScannerService;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
@@ -57,6 +58,10 @@ public class BluetoothRepository {
      */
     public LiveData<List<Device>> getScannedDevices() {
         return bleScannerService.getScannedDevices();
+    }
+
+    public LiveData<List<Device>> getBtComMiniDevices() {
+        return bleScannerService.getBtComMiniDevices();
     }
 
     /**
@@ -261,5 +266,11 @@ public class BluetoothRepository {
     public SingleLiveEvent<Boolean> getSaveToMiniLive() {
         return bluetoothConnectionManager.getSaveToMiniLive();
     }
+    public void setDeviceInfoToSave(DeviceInfoToSave info) {
+        bluetoothConnectionManager.setDeviceInfoToSave(info);
+    }
 
+    public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
+        return bluetoothConnectionManager.getDeviceInfoToSave();
+    }
 }

@@ -49,7 +49,7 @@ public class ApplicationModule {
      */
     @Provides
     public Class<? extends Activity>[] provideActivities() {
-        return new Class[]{DPSActivity.class, DSSActivity.class, DDSActivity.class};
+        return new Class[]{DPSActivity.class, DSSActivity.class};
     }
 
     /**

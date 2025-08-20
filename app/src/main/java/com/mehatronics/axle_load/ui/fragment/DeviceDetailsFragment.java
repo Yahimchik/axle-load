@@ -43,6 +43,7 @@ import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import com.mehatronics.axle_load.ui.binder.DeviceDetailsBinder;
+import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
@@ -74,6 +75,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     protected SaveToFileService service;
     @Inject
     protected DeviceTypeRepository typeRepository;
+    @Inject
+    protected FragmentNavigator navigator;
     private DeviceViewModel vm;
     private LoadingManager loadingManager;
     private View view;
@@ -230,6 +233,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 snackbarManager.showMessage(requireActivity(), getString(save_configuration), this::setIsSaved);
                 if (isSaved) {
                     closeFragment();
+                    navigator.showFragment(new AxleOverviewFragment());
                 }
             }
         });

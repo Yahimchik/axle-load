@@ -2,6 +2,7 @@ package com.mehatronics.axle_load.ui.activity;
 
 import static android.R.id.content;
 import static com.mehatronics.axle_load.R.id.buttonGoToAxes;
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 
 import android.Manifest;
 import android.content.Context;
@@ -68,7 +69,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         super.setContentView(layoutResID);
         manager = new LoadingManager(findViewById(content));
         initializeInterface();
-        setupObservers();
     }
 
     @Override
@@ -84,9 +84,9 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
 
     @Override
     public void showFragment() {
-        if (repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)){
+        if (repository.getCurrDeviceType().equals(BT_COM_MINI)) {
             navigator.addHiddenFragment(new DeviceDetailsFragment());
-        }else {
+        } else {
             navigator.showFragment(new DeviceDetailsFragment());
         }
     }
@@ -150,12 +150,18 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     }
 
     private void setupObservers() {
-        viewModel.getScannedDevices().observe(this, binder::updateDevices);
+        if (repository.getCurrDeviceType().equals(BT_COM_MINI)) {
+            viewModel.getBtComMiniDevices().observe(this, binder::updateDevices);
+        } else {
+            viewModel.getScannedDevices().observe(this, binder::updateDevices);
+        }
         viewModel.getDeviceDetails().observe(this, handler::handleDeviceDetails);
         viewModel.isConnectedLiveData().observe(this, handler::handleConnectionState);
     }
 
     protected void setupBluetooth(DeviceType deviceType) {
+        repository.setDeviceType(deviceType);
         viewModel.startScan(deviceType);
+        setupObservers();
     }
 }

@@ -15,7 +15,6 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.BleScannerService;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
@@ -31,23 +30,27 @@ import javax.inject.Singleton;
 public class BleScannerServiceImpl implements BleScannerService {
     private static final long SCAN_INTERVAL = 30000;
     private final MutableLiveData<List<Device>> scannedDevices = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<Device>> btComMiniDevices = new MutableLiveData<>(new ArrayList<>());
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable restartScanRunnable = this::restartScan;
-    private final DeviceTypeRepository repository;
     private BluetoothLeScanner bleScanner;
     private DeviceType deviceType;
 
     @Inject
-    public BleScannerServiceImpl(BluetoothAdapter bluetoothAdapter, DeviceTypeRepository repository) {
+    public BleScannerServiceImpl(BluetoothAdapter bluetoothAdapter) {
         if (bluetoothAdapter != null) {
             this.bleScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
-        this.repository = repository;
     }
 
     @Override
     public LiveData<List<Device>> getScannedDevices() {
         return scannedDevices;
+    }
+
+    @Override
+    public LiveData<List<Device>> getBtComMiniDevices() {
+        return btComMiniDevices;
     }
 
     @Override
@@ -70,7 +73,6 @@ public class BleScannerServiceImpl implements BleScannerService {
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     public void startScan(DeviceType deviceType) {
         this.deviceType = deviceType;
-
         ScanSettings settings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
@@ -92,48 +94,58 @@ public class BleScannerServiceImpl implements BleScannerService {
         @Override
         @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         public void onScanResult(int callbackType, ScanResult result) {
-            if (result == null || result.getDevice() == null) {
-                return;
-            }
+            if (result == null || result.getDevice() == null) return;
 
             BluetoothDevice device = result.getDevice();
+            if (device.getName() == null) return;
 
-            if (!isDeviceTypeValid(device)) {
-                return;
+            Device newDevice = new Device(device, result);
+
+            if (device.getName().contains(DeviceType.DPS.toString())) {
+                addOrUpdateDeviceDPS(newDevice);
             }
-            repository.setDeviceType(deviceType);
-            addOrUpdateDevice(new Device(device, result));
+
+            if (device.getName().contains(DeviceType.BT_COM_MINI.toString())) {
+                addOrUpdateDeviceBT(newDevice);
+            }
         }
     };
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    private void addOrUpdateDevice(Device newDevice) {
+    private void addOrUpdateDeviceDPS(Device newDevice) {
         List<Device> currentList = new ArrayList<>(Objects.requireNonNull(scannedDevices.getValue()));
         boolean updated = false;
         for (int i = 0; i < currentList.size(); i++) {
             Device device = currentList.get(i);
             if (isDeviceExist(newDevice, device)) {
-                currentList.set(i, newDevice);
+                currentList.set(i, newDevice); // обновляем данные
                 updated = true;
                 break;
             }
         }
-        if (!updated) {
-            currentList.add(newDevice);
-            Log.d("MyTag", newDevice.getDevice().getName());
-        }
-
+        if (!updated) currentList.add(newDevice);
         scannedDevices.postValue(currentList);
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private void addOrUpdateDeviceBT(Device newDevice) {
+        List<Device> btList = new ArrayList<>(Objects.requireNonNull(btComMiniDevices.getValue()));
+        boolean updated = false;
+        for (int i = 0; i < btList.size(); i++) {
+            Device device = btList.get(i);
+            if (isDeviceExist(newDevice, device)) {
+                btList.set(i, newDevice); // обновляем данные
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) btList.add(newDevice);
+        btComMiniDevices.postValue(btList);
     }
 
     private static boolean isDeviceExist(Device newDevice, Device device) {
         return device.getDevice().getAddress()
                 .equals(newDevice.getDevice().getAddress());
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    private boolean isDeviceTypeValid(BluetoothDevice device) {
-        return device.getName() != null && device.getName().contains(deviceType.toString());
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)

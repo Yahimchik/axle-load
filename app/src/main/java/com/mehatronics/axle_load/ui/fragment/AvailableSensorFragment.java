@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.mapper.DeviceMapper;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.ui.binder.AvailableListBinder;
 
 import javax.inject.Inject;
@@ -31,7 +32,11 @@ public class AvailableSensorFragment extends BaseSensorFragment {
     @Override
     protected void createBinder(View view) {
         var binder = new AvailableListBinder(view, mapper, this::onSelected);
-        observe(viewModel.getScannedDevices(), viewModel::updateScannedDevices);
-        observe(viewModel.getScannedDevicesLiveData(), binder::updateDevices);
+        if (repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)){
+            observe(vm.getBtComMiniDevices(), binder::updateDevices);
+        }else {
+            observe(vm.getScannedDevices(), vm::updateScannedDevices);
+            observe(vm.getScannedDevicesLiveData(), binder::updateDevices);
+        }
     }
 }

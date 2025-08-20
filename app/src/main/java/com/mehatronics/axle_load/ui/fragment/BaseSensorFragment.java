@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.ui.fragment;
 import static com.mehatronics.axle_load.R.string.selected;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_NUMBER;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_SIDE;
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 
 import android.Manifest;
 import android.app.Activity;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,6 +25,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
@@ -56,10 +59,12 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     protected SaveToFileService saveToFileService;
     @Inject
     protected ResourceProvider provider;
+    @Inject
+    protected DeviceTypeRepository repository;
     protected LoadingManager loadingManager;
     protected ActivityResultLauncher<Intent> pickFileLauncher;
 
-    protected DeviceViewModel viewModel;
+    protected DeviceViewModel vm;
     protected BluetoothHandler handler;
 
     @Override
@@ -74,7 +79,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                         if (uri != null) {
                             List<AxisModel> loadedList = saveToFileService.loadListFromUri(requireContext(), uri, AxisModel.class);
                             if (loadedList != null && !loadedList.isEmpty()) {
-                                viewModel.setLoadedAxisList(loadedList);
+                                vm.setLoadedAxisList(loadedList);
                                 loadingManager.showLoading(true);
                                 waitUntilDevicesScanned(loadedList);
                             } else {
@@ -84,7 +89,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                     }
                 }
         );
-        viewModel = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
+        vm = new ViewModelProvider(requireActivity()).get(DeviceViewModel.class);
     }
 
     @Override
@@ -99,7 +104,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
         super.onViewCreated(view, savedInstanceState);
         createBinder(view);
         loadingManager = new LoadingManager(view);
-        observe(viewModel.getMessage(), this::showMessage);
+        observe(vm.getMessage(), this::showMessage);
     }
 
     @Override
@@ -132,15 +137,21 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     protected void onSelected(Device device) {
-        viewModel.markMacAsSelected(device);
-        showMessage(getString(selected, device.getDevice().getName()));
-        service.returnSelectedDevice(
-                getParentFragmentManager(),
-                requireActivity(),
-                getAxisNumber(),
-                getAxisSide(),
-                device
-        );
+        Log.d("MyTag", device.getDevice().getName());
+        if (device.getDevice().getName().contains(BT_COM_MINI.toString())) {
+            handler.onDeviceSelected(device);
+//            vm.connectToDevice(device);
+        } else {
+            vm.markMacAsSelected(device);
+            showMessage(getString(selected, device.getDevice().getName()));
+            service.returnSelectedDevice(
+                    getParentFragmentManager(),
+                    requireActivity(),
+                    getAxisNumber(),
+                    getAxisSide(),
+                    device
+            );
+        }
     }
 
     protected abstract void createBinder(View view);
@@ -154,7 +165,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                 .flatMap(model -> model.getSideDeviceMap().values().stream())
                 .collect(Collectors.toSet());
 
-        var liveData = viewModel.getScannedDevices();
+        var liveData = vm.getScannedDevices();
         var observer = new Observer<List<Device>>() {
             @Override
             public void onChanged(List<Device> scannedDevices) {
@@ -168,11 +179,11 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                     for (Device device : scannedDevices) {
                         String mac = device.getDevice().getAddress();
                         if (targetMacs.contains(mac)) {
-                            viewModel.markMacAsSelected(device);
+                            vm.markMacAsSelected(device);
                         }
                     }
 
-                    viewModel.refreshScannedDevices();
+                    vm.refreshScannedDevices();
 
                     loadingManager.showLoading(false);
                     liveData.removeObserver(this);
@@ -182,6 +193,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
 
         liveData.observe(getViewLifecycleOwner(), observer);
     }
+
     public void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("*/*");

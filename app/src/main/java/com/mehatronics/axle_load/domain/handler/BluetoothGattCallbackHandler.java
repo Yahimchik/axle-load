@@ -495,11 +495,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public void saveToBTCOMMini() {
-        var save = new DeviceInfoToSave.Builder();
-        save.type(1)
-                .carNumberFirst("AB1234-567")
-                .carNumberSecond("AB7654-321");
-        gattDataMapper.setBTCOMMiniSettings(save.build(), gattWriteService.getBuffer());
+        var save = getDeviceInfoToSave().getValue();
+        gattDataMapper.setBTCOMMiniSettings(save, gattWriteService.getBuffer());
+        Log.d("MyTag", String.valueOf(save));
+
         Log.d("MyTag", Arrays.toString(gattWriteService.getBuffer()));
         gattReadService.setSaveToBTCOMMini(false);
     }
@@ -510,5 +509,13 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
     public SingleLiveEvent<Boolean> getSaveToMiniLive() {
         return gattReadService.getSaveToMiniLive();
+    }
+
+    public void setDeviceInfoToSave(DeviceInfoToSave info) {
+        gattReadService.setDeviceInfoToSave(info);
+    }
+
+    public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
+        return gattReadService.getDeviceInfoToSave();
     }
 }

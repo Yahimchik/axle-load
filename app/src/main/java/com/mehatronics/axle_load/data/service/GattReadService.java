@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
@@ -168,4 +169,8 @@ public interface GattReadService {
     void setSaveToMiniLive(boolean value);
 
     SingleLiveEvent<Boolean> getSaveToMiniLive();
+
+    void setDeviceInfoToSave(DeviceInfoToSave info);
+
+    LiveData<DeviceInfoToSave> getDeviceInfoToSave();
 }

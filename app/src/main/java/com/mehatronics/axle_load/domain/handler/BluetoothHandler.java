@@ -2,6 +2,7 @@ package com.mehatronics.axle_load.domain.handler;
 
 import static com.mehatronics.axle_load.R.string.connection_failed;
 import static com.mehatronics.axle_load.R.string.selected;
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DPS;
 import static java.lang.Boolean.TRUE;
 
 import android.Manifest;
@@ -52,6 +53,7 @@ public class BluetoothHandler {
 
     public void onReset(int axis) {
         var macsToReset = viewModel.getMacsForAxis(axis);
+        repository.setDeviceType(DPS);
         viewModel.resetDevicesForAxis(axis);
         viewModel.resetSelectedDevicesByMacs(macsToReset);
         viewModel.markAsUnsaved();
@@ -86,7 +88,7 @@ public class BluetoothHandler {
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
-        contract.loadingManagerShowLoading(repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI));
+        contract.loadingManagerShowLoading(repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI) && deviceDetails != null);
         if (deviceDetails != null && isConnected()) {
             viewModel.setDeviceName(deviceDetails.getDeviceName());
 
