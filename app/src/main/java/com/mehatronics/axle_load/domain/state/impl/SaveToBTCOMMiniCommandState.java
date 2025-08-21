@@ -1,8 +1,8 @@
 package com.mehatronics.axle_load.domain.state.impl;
 
-import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.FOURTH_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVENTY_SEVEN_COMMAND;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 
 import android.util.Log;
 
@@ -15,9 +15,9 @@ public class SaveToBTCOMMiniCommandState implements CommandStateHandler {
         handler.setCommand(SEVENTY_SEVEN_COMMAND, FOURTH_COMMAND);
         handler.saveToBTCOMMini();
         Log.d("MyTag", "Configuration sent");
-        Log.d("MyTag", String.valueOf(handler.isSavedToBTCOMMini()));
 
         if (!handler.isSavedToBTCOMMini()) {
+            handler.getRepository().setStatus(WAITING);
             handler.setSaveToMiniLive(true);
             handler.setCommandState(new FinalCommandState());
         }

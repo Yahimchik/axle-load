@@ -60,11 +60,11 @@ public class BleScannerServiceImpl implements BleScannerService {
 
     @Override
     public void removeDeviceByAddress(String address) {
-        List<Device> currentList = new ArrayList<>(Objects.requireNonNull(scannedDevices.getValue()));
-        boolean removed = currentList.removeIf(device ->
-                device.getDevice().getAddress().equals(address));
+        boolean removed = removeFromList(scannedDevices, address);
+        if (!removed) {
+            removed = removeFromList(btComMiniDevices, address);
+        }
         if (removed) {
-            scannedDevices.postValue(currentList);
             Log.d("MyTag", "Device removed from scan list: " + address);
         }
     }
@@ -88,6 +88,16 @@ public class BleScannerServiceImpl implements BleScannerService {
     public void stopScan() {
         bleScanner.stopScan(scanCallback);
         handler.removeCallbacks(restartScanRunnable);
+    }
+
+    private boolean removeFromList(MutableLiveData<List<Device>> liveData, String address) {
+        List<Device> currentList = new ArrayList<>(Objects.requireNonNull(liveData.getValue()));
+        boolean removed = currentList.removeIf(device ->
+                device.getDevice().getAddress().equals(address));
+        if (removed) {
+            liveData.postValue(currentList);
+        }
+        return removed;
     }
 
     private final ScanCallback scanCallback = new ScanCallback() {

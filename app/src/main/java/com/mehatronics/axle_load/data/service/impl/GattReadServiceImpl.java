@@ -207,6 +207,8 @@ public class GattReadServiceImpl implements GattReadService {
             values.set(values.size() - 1, bytes);
         }
 
+        Log.d("MyTag", Arrays.toString(bytes));
+
         if (isReadingAll) {
             readNext(gatt);
             return;

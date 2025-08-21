@@ -1,6 +1,8 @@
 package com.mehatronics.axle_load.domain.manager;
 
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_RECONNECT_ATTEMPTS;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
@@ -11,6 +13,7 @@ import android.util.Log;
 import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
@@ -32,6 +35,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext;
 public class BluetoothConnectionManager implements ConnectionHandler {
     @Inject
     protected BluetoothGattCallbackHandler gattCallbackHandler;
+    @Inject
+    protected DeviceTypeRepository repository;
     private BluetoothGatt bluetoothGatt;
     private final Context context;
     private int reconnectAttempts = 0;
@@ -80,6 +85,7 @@ public class BluetoothConnectionManager implements ConnectionHandler {
             bluetoothGatt.disconnect();
             bluetoothGatt.close();
             bluetoothGatt = null;
+//            repository.setStatus(WAITING);
             Log.d("MyTag", "Disconnected from device");
         }
     }
@@ -155,7 +161,7 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         return gattCallbackHandler.isSavedToBTCOMMini();
     }
 
-    public void saveToBTCOMMini(){
+    public void saveToBTCOMMini() {
         gattCallbackHandler.setSavedToBTCOMMini(true);
         gattCallbackHandler.writeToCharacteristic(bluetoothGatt);
     }

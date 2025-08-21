@@ -9,21 +9,20 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import com.mehatronics.axle_load.constants.CommandsConstants;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
-import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
-import com.mehatronics.axle_load.helper.SingleLiveEvent;
-import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.manager.GattConnectionManager;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 import com.mehatronics.axle_load.domain.state.impl.CommandAfterAuth;
 import com.mehatronics.axle_load.domain.state.impl.FirstAuthCommandState;
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import java.util.Arrays;
@@ -204,6 +203,10 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      */
     public PasswordRepository getPasswordRepository() {
         return passwordRepository;
+    }
+
+    public DeviceTypeRepository getRepository() {
+        return repository;
     }
 
     /**
@@ -486,7 +489,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         gattReadService.setListener(listener);
     }
 
-    public void setSavedToBTCOMMini(boolean value){
+    public void setSavedToBTCOMMini(boolean value) {
         gattReadService.setSaveToBTCOMMini(value);
     }
 

@@ -120,4 +120,8 @@
     <string name="changeable_short">Replaceable</string>
 
     <string name="number_of_sensors_per_axis">Number of sensors per axis</string>
+    <string name="truck">Truck</string>
+    <string name="truck_with_trailer">Truck with trailer</string>
+    <string name="truck_state_number">Truck registration plate</string>
+    <string name="trailer_state_number">Trailer registration plate</string>
 </resources>

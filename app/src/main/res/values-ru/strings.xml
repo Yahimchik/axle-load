@@ -51,8 +51,8 @@
     <string name="error_total_axles_range">Значение должно быть от 1 до 7</string>
     <string name="error_total_sensors_range">Значение должно быть от 1 до 14</string>
     <string name="error_sensors_on_axle_range">Значение должно быть 1 или 2</string>
-    <string name="error_installation_point_greater_than_total_axles_ru">Точка установки не может быть больше общего количества осей</string>
-    <string name="error_sensor_number_greater_than_total_sensors_ru">Номер датчика не может быть больше общего количества датчиков</string>
+    <string name="error_installation_point_greater_than_total_axles">Точка установки не может быть больше общего количества осей</string>
+    <string name="error_sensor_number_greater_than_total_sensors">Номер датчика не может быть больше общего количества датчиков</string>
     <string name="error_total_sensors_greater_than_axles_times_two">Количество датчиков не может превышать %1$s</string>
 
     <string name="firmware_version">Версия прошивки:</string>
@@ -102,6 +102,7 @@
     <string name="total_axles">Общее количество осей</string>
     <string name="total_sensors">Общее количество датчиков</string>
     <string name="trailer_changeable">Шасси бессменный/сменный</string>
+    <string name="truck">Тягач</string>
 
     <string name="calibration">Тарировка</string>
     <string name="changeable_short">Сменный</string>
@@ -115,4 +116,7 @@
     <string name="password_old">Старый пароль</string>
     <string name="configuration">Конфигурация</string>
     <string name="number_of_sensors_per_axis">Количество датчиков на оси</string>
+    <string name="truck_with_trailer">Тягач с прицепом</string>
+    <string name="truck_state_number">Регистрационный знак тягача</string>
+    <string name="trailer_state_number">Регистрационный знак прицепа</string>
 </resources>

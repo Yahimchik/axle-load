@@ -11,6 +11,9 @@ import static com.mehatronics.axle_load.R.string.invalid_password_for;
 import static com.mehatronics.axle_load.R.string.password_reset_for;
 import static com.mehatronics.axle_load.R.string.password_set_for;
 import static com.mehatronics.axle_load.R.string.save_configuration;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
 
 import android.Manifest;
@@ -139,6 +142,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     public void onDestroyView() {
         super.onDestroyView();
         if (!wrongPassword) showMessage(getString(disconnect_from, vm.getDeviceName()));
+        typeRepository.setStatus(WAITING);
+        Log.d("MyTag", typeRepository.getStatus().name());
         cleanUpOnClose();
     }
 
@@ -217,25 +222,26 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     }
 
     private void observeDetails(DeviceDetails deviceDetails) {
+        if (isSaved) {
+            closeFragment();
+            navigator.showFragment(new AxleOverviewFragment());
+        }
         detailsBinder.bindInfo(deviceDetails);
         vm.updateVirtualPoint(deviceDetails);
     }
 
     private void observeSelectionMode() {
         vm.getConfigurationSavedLiveData().observe(getViewLifecycleOwner(), config -> {
-            if (typeRepository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)) {
+            if (typeRepository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)
+                    && typeRepository.getStatus().equals(WHRITE)) {
                 vm.saveToBTCOMMini();
             }
         });
 
         vm.getSaveToMiniLive().observe(getViewLifecycleOwner(), saved -> {
-            if (saved) {
-                snackbarManager.showMessage(requireActivity(), getString(save_configuration), this::setIsSaved);
-                if (isSaved) {
-                    closeFragment();
-                    navigator.showFragment(new AxleOverviewFragment());
-                }
-            }
+            if (saved) snackbarManager.showMessage(requireActivity(),
+                    getString(save_configuration),
+                    this::setIsSaved);
         });
 
         detailsBinder.finishButtonOnClick(v -> {
@@ -318,7 +324,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 DeviceDetailsFragment.class.getSimpleName(),
                 POP_BACK_STACK_INCLUSIVE
         );
-
+        typeRepository.setStatus(WAITING);
         if (requireActivity() instanceof BaseBluetoothActivity) {
             ((BaseBluetoothActivity) requireActivity()).loadingManagerShowLoading(false);
         }

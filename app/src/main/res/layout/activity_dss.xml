@@ -19,6 +19,7 @@
         android:backgroundTint="@color/button_background"
         android:fontFamily="@font/roboto_bold"
         app:strokeWidth="2dp"
+        android:visibility="gone"
         app:strokeColor="@color/white"
         app:cornerRadius="20dp"
         android:layout_marginTop="12dp"

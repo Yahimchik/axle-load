@@ -1,9 +1,10 @@
 package com.mehatronics.axle_load.ui.activity.impl;
 
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
-import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DSS;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
@@ -16,6 +17,9 @@ public class DSSActivity extends BaseBluetoothActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dss);
+        repository.setStatus(READ);
+        Log.d("MyTag", repository.getStatus().name());
+        viewModel.setSaveToMiniLive(false);
         setupBluetooth(BT_COM_MINI);
     }
 }

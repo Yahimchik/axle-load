@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 import static com.mehatronics.axle_load.R.string.axis_config;
 import static com.mehatronics.axle_load.R.string.configuration;
 import static com.mehatronics.axle_load.R.string.error_select_at_least_one_sensor_per_axis;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 
@@ -20,6 +21,7 @@ import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
+import com.mehatronics.axle_load.domain.entities.enums.ConnectStatus;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
@@ -168,9 +170,15 @@ public class AxisViewBinder implements BaseBinder {
         });
 
         finishButton.setOnClickListener(v -> {
-            service.saveToFile(v, v.getContext(), provider.getString(configuration), provider.getString(axis_config), adapter.getCurrentList());
+            service.saveToFile(v,
+                    v.getContext(),
+                    provider.getString(configuration),
+                    provider.getString(axis_config),
+                    adapter.getCurrentList());
             navigator.showFragment(new AvailableSensorFragment());
             repository.setDeviceType(BT_COM_MINI);
+            repository.setStatus(WHRITE);
+            Log.d("MyTag", repository.getStatus().name());
         });
 
         truckButton.setOnClickListener(v -> {

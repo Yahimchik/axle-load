@@ -2,7 +2,10 @@ package com.mehatronics.axle_load.domain.state.impl;
 
 import static com.mehatronics.axle_load.constants.CommandsConstants.SECOND_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
 
+import com.mehatronics.axle_load.domain.entities.enums.ConnectStatus;
 import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.domain.state.CommandStateHandler;
 
@@ -26,9 +29,14 @@ public class FinalCommandState implements CommandStateHandler {
         h.setCommand(SEVEN_COMMAND, SECOND_COMMAND);
 
         if (h.isConfigurationSaved()) h.setCommandState(new ConfigureCommandState());
+        else if (whatStatus(h, READ)) h.setCommandState(new ReadFromBTCOMMiniCommandState());
         else if (h.isTableSaved()) h.setCommandState(new SaveTableCommand());
         else if (h.isResetPassword()) h.setCommandState(new ResetPasswordCommandState());
         else if (h.isPasswordSet()) h.setCommandState(new SetPasswordCommandState());
-        else if (h.isSavedToBTCOMMini()) h.setCommandState(new SaveToBTCOMMiniCommandState());
+        else if (h.isSavedToBTCOMMini() && whatStatus(h,WHRITE)) h.setCommandState(new SaveToBTCOMMiniCommandState());
+    }
+
+    private boolean whatStatus(BluetoothGattCallbackHandler h, ConnectStatus status) {
+        return h.getRepository().getStatus().equals(status);
     }
 }

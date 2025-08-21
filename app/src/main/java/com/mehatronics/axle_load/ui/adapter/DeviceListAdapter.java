@@ -1,5 +1,8 @@
 package com.mehatronics.axle_load.ui.adapter;
 
+import static android.view.View.GONE;
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
+
 import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,8 +53,15 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
             holder.name.setText(device.name());
             holder.mac.setText(device.mac());
             holder.rssi.setText(device.rssi());
-            holder.type.setText(device.weight());
-            holder.status.setText(device.pressure());
+            holder.weightValue.setText(device.weight());
+            holder.pressureValue.setText(device.pressure());
+
+            if(device.name().contains(BT_COM_MINI.toString())){
+                holder.weightValue.setVisibility(GONE);
+                holder.pressureValue.setVisibility(GONE);
+                holder.deviceWeight.setVisibility(GONE);
+                holder.devicePressure.setVisibility(GONE);
+            }
 
             holder.itemView.setOnClickListener(v -> onDeviceClickListener.onDeviceClick(device.originalDevice()));
 
@@ -69,16 +79,20 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         TextView name;
         TextView mac;
         TextView rssi;
-        TextView type;
-        TextView status;
+        TextView weightValue;
+        TextView pressureValue;
+        TextView deviceWeight;
+        TextView devicePressure;
 
         ViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.deviceName);
             mac = itemView.findViewById(R.id.deviceMacValue);
             rssi = itemView.findViewById(R.id.deviceRssiValue);
-            type = itemView.findViewById(R.id.deviceWeightValue);
-            status = itemView.findViewById(R.id.devicePressureValue);
+            weightValue = itemView.findViewById(R.id.deviceWeightValue);
+            pressureValue = itemView.findViewById(R.id.devicePressureValue);
+            deviceWeight = itemView.findViewById(R.id.deviceWeight);
+            devicePressure = itemView.findViewById(R.id.devicePressure);
         }
     }
 }

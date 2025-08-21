@@ -2,6 +2,7 @@ package com.mehatronics.axle_load.ui.activity;
 
 import static android.R.id.content;
 import static com.mehatronics.axle_load.R.id.buttonGoToAxes;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 
 import android.Manifest;
@@ -50,7 +51,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     @Inject
     protected DeviceTypeRepository repository;
 
-    private DeviceViewModel viewModel;
+    protected DeviceViewModel viewModel;
     private BluetoothHandler handler;
     private DeviceListBinder binder;
     private LoadingManager manager;
@@ -80,6 +81,7 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         viewModel.clearDetails();
         viewModel.disconnect();
         repository.setDeviceType(null);
+        repository.setStatus(WAITING);
     }
 
     @Override
