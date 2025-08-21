@@ -56,7 +56,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     @Inject
     protected SnackbarManager manager;
     @Inject
-    protected SaveToFileService saveToFileService;
+    protected SaveToFileService fileService;
     @Inject
     protected ResourceProvider provider;
     @Inject
@@ -77,7 +77,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         Uri uri = result.getData().getData();
                         if (uri != null) {
-                            List<AxisModel> loadedList = saveToFileService.loadListFromUri(requireContext(), uri, AxisModel.class);
+                            List<AxisModel> loadedList = fileService.loadListFromUri(requireContext(), uri, AxisModel.class);
                             if (loadedList != null && !loadedList.isEmpty()) {
                                 vm.setLoadedAxisList(loadedList);
                                 loadingManager.showLoading(true);

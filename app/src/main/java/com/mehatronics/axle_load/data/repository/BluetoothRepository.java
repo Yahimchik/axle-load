@@ -273,4 +273,8 @@ public class BluetoothRepository {
     public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
         return bluetoothConnectionManager.getDeviceInfoToSave();
     }
+
+    public LiveData<String> getUiAxisList() {
+        return bluetoothConnectionManager.getUiAxisList();
+    }
 }

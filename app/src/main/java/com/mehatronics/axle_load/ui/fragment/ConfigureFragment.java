@@ -1,7 +1,5 @@
 package com.mehatronics.axle_load.ui.fragment;
 
-import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +32,7 @@ public class ConfigureFragment extends BaseSensorFragment {
     @Override
     protected void createBinder(View view) {
         var binder = new AxisViewBinder(view,
-                saveToFileService,
+                fileService,
                 handler,
                 this,
                 provider,

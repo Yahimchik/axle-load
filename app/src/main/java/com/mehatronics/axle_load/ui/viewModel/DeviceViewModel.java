@@ -7,8 +7,6 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
@@ -33,7 +31,6 @@ import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -216,7 +213,7 @@ public class DeviceViewModel extends ViewModel {
         return bluetoothRepository.getCalibrationTable();
     }
 
-    public void setCalibrationTable(List<CalibrationTable> table){
+    public void setCalibrationTable(List<CalibrationTable> table) {
         bluetoothRepository.setCalibrationTable(table);
     }
 
@@ -672,5 +669,9 @@ public class DeviceViewModel extends ViewModel {
 
     public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
         return bluetoothRepository.getDeviceInfoToSave();
+    }
+
+    public LiveData<String> getUiAxisList() {
+        return bluetoothRepository.getUiAxisList();
     }
 }

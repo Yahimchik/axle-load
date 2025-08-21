@@ -181,4 +181,8 @@ public class BluetoothConnectionManager implements ConnectionHandler {
     public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
         return gattCallbackHandler.getDeviceInfoToSave();
     }
+
+    public LiveData<String> getUiAxisList() {
+        return gattCallbackHandler.getUiAxisList();
+    }
 }

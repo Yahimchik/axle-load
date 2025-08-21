@@ -178,7 +178,6 @@ public class AxisViewBinder implements BaseBinder {
             navigator.showFragment(new AvailableSensorFragment());
             repository.setDeviceType(BT_COM_MINI);
             repository.setStatus(WHRITE);
-            Log.d("MyTag", repository.getStatus().name());
         });
 
         truckButton.setOnClickListener(v -> {

@@ -173,4 +173,6 @@ public interface GattReadService {
     void setDeviceInfoToSave(DeviceInfoToSave info);
 
     LiveData<DeviceInfoToSave> getDeviceInfoToSave();
+
+    LiveData<String> getUiAxisList();
 }

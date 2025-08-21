@@ -521,4 +521,8 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
         return gattReadService.getDeviceInfoToSave();
     }
+
+    public LiveData<String> getUiAxisList() {
+        return gattReadService.getUiAxisList();
+    }
 }

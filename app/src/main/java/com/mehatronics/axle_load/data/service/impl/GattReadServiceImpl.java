@@ -9,6 +9,7 @@ import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
+import static com.mehatronics.axle_load.utils.ByteUtils.extractStringFromBytes;
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
@@ -22,10 +23,11 @@ import androidx.lifecycle.MutableLiveData;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
+import com.mehatronics.axle_load.domain.entities.AxisUiModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
-import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
@@ -58,6 +60,7 @@ public class GattReadServiceImpl implements GattReadService {
      */
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<DeviceInfoToSave> deviceInfoToSaveLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> axisUiList = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> isConfigureBTCOMMiniSaved = new SingleLiveEvent<>();
 
     /**
@@ -218,6 +221,10 @@ public class GattReadServiceImpl implements GattReadService {
             listener.onWrongPassword();
         }
 
+        if (isMatchingCommand(bytes, 0, SEVEN_COMMAND) && isMatchingCommand(bytes,1,NINE_COMMAND)){
+            axisUiList.postValue(extractStringFromBytes(bytes,4,5));
+        }
+
         if (isReadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
                 && isMatchingCommand(bytes, 1, FIRST_COMMAND)) {
             currentMac = gatt.getDevice().getAddress();
@@ -234,12 +241,7 @@ public class GattReadServiceImpl implements GattReadService {
         }
 
         if (isConnected && values.size() > 8) {
-            if (repository.getCurrDeviceType().equals(DeviceType.DPS)) {
-                deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
-            } else {
-//                btcomMiniDetailsMutableLiveData.postValue(gattDataMapper.convertToBTCOMMiniDetails(gatt, values, table));
-                deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
-            }
+            deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
         }
     }
 
@@ -463,6 +465,11 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public LiveData<DeviceInfoToSave> getDeviceInfoToSave() {
         return deviceInfoToSaveLiveData;
+    }
+
+    @Override
+    public LiveData<String> getUiAxisList() {
+        return axisUiList;
     }
 
     /**

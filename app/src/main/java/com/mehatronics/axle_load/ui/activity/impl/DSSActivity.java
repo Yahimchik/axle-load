@@ -18,7 +18,6 @@ public class DSSActivity extends BaseBluetoothActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dss);
         repository.setStatus(READ);
-        Log.d("MyTag", repository.getStatus().name());
         viewModel.setSaveToMiniLive(false);
         setupBluetooth(BT_COM_MINI);
     }

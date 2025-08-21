@@ -11,7 +11,6 @@ import static com.mehatronics.axle_load.R.string.invalid_password_for;
 import static com.mehatronics.axle_load.R.string.password_reset_for;
 import static com.mehatronics.axle_load.R.string.password_set_for;
 import static com.mehatronics.axle_load.R.string.save_configuration;
-import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
@@ -86,6 +85,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     private boolean wrongPassword = false;
     private boolean isSavingStarted = false;
     private boolean isSaved = false;
+    private boolean isRead = false;
     protected ActivityResultLauncher<Intent> pickFileLauncher;
 
     /**
@@ -143,7 +143,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
         super.onDestroyView();
         if (!wrongPassword) showMessage(getString(disconnect_from, vm.getDeviceName()));
         typeRepository.setStatus(WAITING);
-        Log.d("MyTag", typeRepository.getStatus().name());
         cleanUpOnClose();
     }
 
@@ -190,7 +189,14 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
         vm.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         vm.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
+        vm.getUiAxisList().observe(getViewLifecycleOwner(), a -> {
+            if (a.equals("Hello")){
+                snackbarManager.showMessage(requireActivity(),
+                        a,
+                        this::setIsRead);
 
+            }
+        });
         detailsBinder.readFromFileOnClick(v -> openFilePicker());
 
         observePasswordDialogEvent();
@@ -223,6 +229,10 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
     private void observeDetails(DeviceDetails deviceDetails) {
         if (isSaved) {
+            closeFragment();
+            navigator.showFragment(new AxleOverviewFragment());
+        }
+        if (isRead){
             closeFragment();
             navigator.showFragment(new AxleOverviewFragment());
         }
@@ -282,6 +292,10 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
     private void setIsSaved() {
         isSaved = true;
+    }
+
+    private void setIsRead(){
+        isRead = true;
     }
 
     private void observePasswordDialogEvent() {
