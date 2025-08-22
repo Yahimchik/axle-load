@@ -4,6 +4,7 @@ import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
+import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
 
@@ -101,6 +102,8 @@ public class GattWriteServiceImpl implements GattWriteService {
 
         var characteristic = service.getCharacteristic(uuids[1]);
         if (characteristic == null) return;
+
+        Log.d("MyTag", Arrays.toString(buffer));
 
         characteristic.setValue(buffer);
         gatt.writeCharacteristic(characteristic);

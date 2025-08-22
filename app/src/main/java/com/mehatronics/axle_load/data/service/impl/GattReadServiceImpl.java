@@ -59,7 +59,7 @@ public class GattReadServiceImpl implements GattReadService {
      * LiveData с данными об устройстве.
      */
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
-    private final MutableLiveData<DeviceInfoToSave> deviceInfoToSaveLiveData = new MutableLiveData<>();
+    private final MutableLiveData<DeviceInfoToSave> deviceInfoToSaveLiveData = new MutableLiveData<>(new DeviceInfoToSave());
     private final MutableLiveData<String> axisUiList = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> isConfigureBTCOMMiniSaved = new SingleLiveEvent<>();
 
@@ -210,7 +210,7 @@ public class GattReadServiceImpl implements GattReadService {
             values.set(values.size() - 1, bytes);
         }
 
-        Log.d("MyTag", Arrays.toString(bytes));
+//        Log.d("MyTag", Arrays.toString(bytes));
 
         if (isReadingAll) {
             readNext(gatt);
@@ -459,7 +459,7 @@ public class GattReadServiceImpl implements GattReadService {
 
     @Override
     public void setDeviceInfoToSave(DeviceInfoToSave info) {
-        deviceInfoToSaveLiveData.postValue(info);
+        deviceInfoToSaveLiveData.setValue(info);
     }
 
     @Override

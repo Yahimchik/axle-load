@@ -141,7 +141,7 @@ public class GattDataMapperImpl implements GattDataMapper {
         intToFourBytes(buffer, save.getPassword(), 4);
         buffer[8] = (byte) save.getType();
         stringToBytesCOM(buffer, save.getCarNumberFirst(), 9, 19);
-        stringToBytesCOM(buffer, save.getCarNumberSecond(), 20, 30);
+        stringToBytesCOM(buffer, save.getCarNumberSecond(), 19, 29);
     }
 
     /**

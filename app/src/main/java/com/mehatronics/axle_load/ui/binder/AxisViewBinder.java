@@ -11,7 +11,6 @@ import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerV
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,6 @@ import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.SaveToFileService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
-import com.mehatronics.axle_load.domain.entities.enums.ConnectStatus;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
@@ -53,6 +51,7 @@ public class AxisViewBinder implements BaseBinder {
     private final Runnable onConfigureLoadedClick;
     private final DeviceInfoToSave deviceInfo;
     private final DeviceTypeRepository repository;
+    private final Consumer<DeviceInfoToSave> onDeviceInfoChanged;
 
     public AxisViewBinder(
             View root,
@@ -63,11 +62,13 @@ public class AxisViewBinder implements BaseBinder {
             FragmentNavigator navigator,
             Runnable onConfigureLoadedClick,
             DeviceTypeRepository repository,
-            boolean isFirstLaunch
+            boolean isFirstLaunch,
+            Consumer<DeviceInfoToSave> onDeviceInfoChanged,
+            DeviceInfoToSave deviceInfo
     ) {
         this.service = service;
         this.adapter = new AxisAdapter(handler::onClick, handler::onReset);
-        this.deviceInfo = new DeviceInfoToSave();
+        this.deviceInfo = deviceInfo;
         this.editTextAxisCount = root.findViewById(R.id.editTextAxisCount);
         this.saveButton = root.findViewById(R.id.buttonSave);
         this.finishButton = root.findViewById(R.id.finishButtonConfigure);
@@ -81,6 +82,7 @@ public class AxisViewBinder implements BaseBinder {
         this.navigator = navigator;
         this.onConfigureLoadedClick = onConfigureLoadedClick;
         this.repository = repository;
+        this.onDeviceInfoChanged = onDeviceInfoChanged;
 
         initRecyclerView(root, R.id.recyclerViewAxes, adapter);
 
@@ -143,6 +145,7 @@ public class AxisViewBinder implements BaseBinder {
             @Override
             public void afterTextChanged(Editable editable) {
                 deviceInfo.setCarNumberFirst(editable.toString().trim());
+                onDeviceInfoChanged.accept(deviceInfo);
             }
         });
 
@@ -158,6 +161,7 @@ public class AxisViewBinder implements BaseBinder {
             @Override
             public void afterTextChanged(Editable editable) {
                 deviceInfo.setCarNumberSecond(editable.toString().trim());
+                onDeviceInfoChanged.accept(deviceInfo);
             }
         });
 
@@ -187,8 +191,7 @@ public class AxisViewBinder implements BaseBinder {
             buttonConfigureLoaded.setVisibility(VISIBLE);
             editTextAxisCount.setVisibility(VISIBLE);
             editTextTrailerPlate.setVisibility(GONE);
-            Log.d("MyTag", String.valueOf(deviceInfo));
-
+            onDeviceInfoChanged.accept(deviceInfo);
         });
 
         truckWithTrailer.setOnClickListener(v -> {
@@ -198,16 +201,10 @@ public class AxisViewBinder implements BaseBinder {
             buttonConfigureLoaded.setVisibility(VISIBLE);
             editTextAxisCount.setVisibility(VISIBLE);
             editTextTrailerPlate.setVisibility(VISIBLE);
-            Log.d("MyTag", String.valueOf(deviceInfo));
+            onDeviceInfoChanged.accept(deviceInfo);
         });
 
-        buttonConfigureLoaded.setOnClickListener(v -> {
-            onConfigureLoadedClick.run();
-        });
-    }
-
-    public DeviceInfoToSave getDeviceInfo() {
-        return deviceInfo;
+        buttonConfigureLoaded.setOnClickListener(v -> onConfigureLoadedClick.run());
     }
 
     private boolean isCanSave() {

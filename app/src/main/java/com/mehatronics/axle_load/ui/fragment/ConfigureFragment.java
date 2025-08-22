@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,9 @@ public class ConfigureFragment extends BaseSensorFragment {
                 navigator,
                 this::openFilePicker,
                 repository,
-                firstLaunch);
+                firstLaunch,
+                vm::setDeviceInfoToSave,
+                vm.getDeviceInfoToSave().getValue());
         firstLaunch = false;
         observe(vm.getAxisList(), binder::submitList);
         observe(vm.getAxisClick(), this::handleAxisClickEvent);
@@ -50,7 +53,9 @@ public class ConfigureFragment extends BaseSensorFragment {
         observeDeviceSelection(vm::setDeviceToAxis);
         observe(vm.getAxisList(), binder::updateSaveButtonState);
         observe(vm.getAllDevicesSaved(), binder::setFinishButtonVisible);
-        vm.setDeviceInfoToSave(binder.getDeviceInfo());
+        observe(vm.getDeviceInfoToSave(), info -> {
+            Log.d("MyTag", "Updated: " + info);
+        });
         vm.method(getViewLifecycleOwner());
     }
 }
