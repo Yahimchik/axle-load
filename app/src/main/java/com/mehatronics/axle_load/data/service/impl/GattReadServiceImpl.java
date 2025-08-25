@@ -60,7 +60,7 @@ public class GattReadServiceImpl implements GattReadService {
      */
     private final MutableLiveData<DeviceDetails> deviceDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<DeviceInfoToSave> deviceInfoToSaveLiveData = new MutableLiveData<>(new DeviceInfoToSave());
-    private final MutableLiveData<String> axisUiList = new MutableLiveData<>();
+    private final MutableLiveData<List<AxisModel>> axisUiList = new MutableLiveData<>();
     private final SingleLiveEvent<Boolean> isConfigureBTCOMMiniSaved = new SingleLiveEvent<>();
 
     /**
@@ -98,6 +98,7 @@ public class GattReadServiceImpl implements GattReadService {
      * Флаг: завершено ли чтение калибровочной таблицы.
      */
     private boolean isReadingTableComplete = false;
+    private boolean isReadingConfigFromBtComMiniComplete = false;
 
     /**
      * Флаг: была ли сохранена конфигурация.
@@ -221,8 +222,14 @@ public class GattReadServiceImpl implements GattReadService {
             listener.onWrongPassword();
         }
 
-        if (isMatchingCommand(bytes, 0, SEVEN_COMMAND) && isMatchingCommand(bytes,1,NINE_COMMAND)){
-            axisUiList.postValue(extractStringFromBytes(bytes,4,5));
+        if (isMatchingCommand(bytes, 0, SEVEN_COMMAND) && isMatchingCommand(bytes, 1, NINE_COMMAND)) {
+            if (bytes[2] == 0){
+                isReadingConfigFromBtComMiniComplete = true;
+            }
+            /*else*/ if (bytes[2] > 0 && bytes[3] <= 8){
+                axisUiList.postValue(gattDataMapper.convertToAxisModelList(bytes));
+                isReadingConfigFromBtComMiniComplete = false;
+            }
         }
 
         if (isReadingConfigComplete && isMatchingCommand(bytes, 0, SEVEN_COMMAND)
@@ -468,8 +475,18 @@ public class GattReadServiceImpl implements GattReadService {
     }
 
     @Override
-    public LiveData<String> getUiAxisList() {
+    public LiveData<List<AxisModel>> getUiAxisList() {
         return axisUiList;
+    }
+
+    @Override
+    public void setUiAxisList(List<AxisModel> list) {
+        axisUiList.setValue(list);
+    }
+
+    @Override
+    public boolean getIsComplete() {
+        return isReadingConfigFromBtComMiniComplete;
     }
 
     /**

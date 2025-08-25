@@ -651,10 +651,6 @@ public class DeviceViewModel extends ViewModel {
         bluetoothRepository.saveToBTCOMMini();
     }
 
-    public boolean isSavedToBTCOMMini() {
-        return bluetoothRepository.isSavedToBTCOMMini();
-    }
-
     public void setSaveToMiniLive(boolean value) {
         bluetoothRepository.setSaveToMiniLive(value);
     }
@@ -671,7 +667,11 @@ public class DeviceViewModel extends ViewModel {
         return bluetoothRepository.getDeviceInfoToSave();
     }
 
-    public LiveData<String> getUiAxisList() {
+    public LiveData<List<AxisModel>> getUiAxisList() {
         return bluetoothRepository.getUiAxisList();
+    }
+
+    public void setUiAxisList(List<AxisModel> list) {
+        bluetoothRepository.setUiAxisList(list);
     }
 }

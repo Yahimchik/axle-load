@@ -8,6 +8,8 @@ import static com.mehatronics.axle_load.domain.entities.enums.CharacteristicType
 import static com.mehatronics.axle_load.utils.ByteUtils.composeChassisNumber;
 import static com.mehatronics.axle_load.utils.ByteUtils.composeSensorNumber;
 import static com.mehatronics.axle_load.utils.ByteUtils.detectorToBytes;
+import static com.mehatronics.axle_load.utils.ByteUtils.extractMacFromBytes;
+import static com.mehatronics.axle_load.utils.ByteUtils.extractStringFromBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToFourBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToTwoBytes;
@@ -22,14 +24,21 @@ import android.bluetooth.BluetoothGatt;
 import com.mehatronics.axle_load.data.mapper.DateFormatMapper;
 import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -93,27 +102,12 @@ public class GattDataMapperImpl implements GattDataMapper {
                 .setTable(table).build();
     }
 
-    @Override
-    public BTCOMMiniDetails convertToBTCOMMiniDetails(BluetoothGatt gatt, List<byte[]> values, List<CalibrationTable> table) {
-        String deviceName = convertBytesToString(values.get(0));
-        String dateManufacture = dateFormatMapper.convertToDate(values);
-        String firmwareVersion = convertBytesToString(values.get(7));
-        String hardwareVersion = convertBytesToString(values.get(8));
-
-        return new BTCOMMiniDetails.Builder()
-                .deviceName(deviceName)
-                .dateManufacture(dateManufacture)
-                .firmwareVersion(firmwareVersion)
-                .hardwareVersion(hardwareVersion)
-                .build();
-    }
-
     /**
      * Заполняет буфер байтов конфигурационными данными из объекта {@link SensorConfig}.
      *
-     * @param conf Объект конфигурации датчика.
-     * @param buffer       Буфер байтов, который необходимо заполнить.
-     *                     Предполагается, что он имеет достаточный размер.
+     * @param conf   Объект конфигурации датчика.
+     * @param buffer Буфер байтов, который необходимо заполнить.
+     *               Предполагается, что он имеет достаточный размер.
      */
     @Override
     public void setConfigureSettings(SensorConfig conf, byte[] buffer) {
@@ -168,5 +162,64 @@ public class GattDataMapperImpl implements GattDataMapper {
             }
         }
         return page < 1 ? page + 1 : -1;
+    }
+
+    @Override
+    public List<AxisModel> convertToAxisModelList(byte[] buffer) {
+        int axisCount = buffer[3];
+        List<AxisModel> first = new ArrayList<>();
+        List<AxisModel> second = new ArrayList<>();
+        boolean useSecond = false;
+
+        for (int i = 4; i + 7 < buffer.length; i += 8) {
+            String mac = extractMacFromBytes(buffer, i);
+
+            int localAxis = buffer[i + 6];
+            int sideIndex = buffer[i + 7];
+
+            if (localAxis < 1) continue;
+
+            if (localAxis == 1 && !first.isEmpty()) {
+                useSecond = true;
+            }
+
+            List<AxisModel> target = useSecond ? second : first;
+
+            AxisModel axis;
+            if (localAxis <= target.size()) {
+                axis = target.get(localAxis - 1);
+            } else {
+                axis = new AxisModel(localAxis);
+                target.add(axis);
+            }
+
+            AxisSide side = AxisSide.values()[sideIndex];
+
+            if (side == AxisSide.CENTER) {
+                axis.getSideDeviceMap().clear();
+                axis.setDeviceForSide(AxisSide.CENTER, mac);
+            } else {
+                if (!axis.getSideDeviceMap().containsKey(AxisSide.CENTER)) {
+                    axis.setDeviceForSide(side, mac);
+                }
+            }
+        }
+
+        List<AxisModel> result = new ArrayList<>();
+        result.addAll(first);
+        result.addAll(second);
+
+        for (int i = 0; i < result.size(); i++) {
+            AxisModel old = result.get(i);
+            AxisModel renumbered = new AxisModel(i + 1);
+            renumbered.getSideDeviceMap().putAll(old.getSideDeviceMap());
+            result.set(i, renumbered);
+        }
+
+        if (result.size() > axisCount) {
+            result = result.subList(0, axisCount);
+        }
+
+        return result;
     }
 }

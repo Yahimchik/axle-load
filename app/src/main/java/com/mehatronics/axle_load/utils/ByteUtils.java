@@ -226,6 +226,12 @@ public class ByteUtils {
         return result.toString();
     }
 
+    public static String extractMacFromBytes(byte[] data, int startIndex) {
+       return String.format("%02X:%02X:%02X:%02X:%02X:%02X",
+               data[startIndex], data[startIndex + 1], data[startIndex + 2],
+               data[startIndex + 3], data[startIndex + 4], data[startIndex + 5]);
+    }
+
     /**
      * Преобразует массив байт в объект конфигурации сенсора.
      *

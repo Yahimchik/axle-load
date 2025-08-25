@@ -14,6 +14,7 @@ import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
@@ -26,6 +27,7 @@ import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -502,7 +504,6 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         gattDataMapper.setBTCOMMiniSettings(save, gattWriteService.getBuffer());
         Log.d("MyTag", String.valueOf(save));
 
-        Log.d("MyTag", Arrays.toString(gattWriteService.getBuffer()));
         gattReadService.setSaveToBTCOMMini(false);
     }
 
@@ -522,7 +523,15 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         return gattReadService.getDeviceInfoToSave();
     }
 
-    public LiveData<String> getUiAxisList() {
+    public LiveData<List<AxisModel>> getUiAxisList() {
         return gattReadService.getUiAxisList();
+    }
+
+    public void setUiAxisList(List<AxisModel> list) {
+        gattReadService.setUiAxisList(list);
+    }
+
+    public boolean isComplete() {
+        return gattReadService.getIsComplete();
     }
 }

@@ -14,6 +14,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
@@ -25,6 +26,7 @@ import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -182,7 +184,11 @@ public class BluetoothConnectionManager implements ConnectionHandler {
         return gattCallbackHandler.getDeviceInfoToSave();
     }
 
-    public LiveData<String> getUiAxisList() {
+    public LiveData<List<AxisModel>> getUiAxisList() {
         return gattCallbackHandler.getUiAxisList();
+    }
+
+    public void setUiAxisList(List<AxisModel> list) {
+        gattCallbackHandler.setUiAxisList(list);
     }
 }

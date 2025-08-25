@@ -6,6 +6,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.service.BleScannerService;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
@@ -274,7 +275,11 @@ public class BluetoothRepository {
         return bluetoothConnectionManager.getDeviceInfoToSave();
     }
 
-    public LiveData<String> getUiAxisList() {
+    public LiveData<List<AxisModel>> getUiAxisList() {
         return bluetoothConnectionManager.getUiAxisList();
+    }
+
+    public void setUiAxisList(List<AxisModel> list) {
+        bluetoothConnectionManager.setUiAxisList(list);
     }
 }

@@ -11,6 +11,7 @@ import static com.mehatronics.axle_load.R.string.invalid_password_for;
 import static com.mehatronics.axle_load.R.string.password_reset_for;
 import static com.mehatronics.axle_load.R.string.password_set_for;
 import static com.mehatronics.axle_load.R.string.save_configuration;
+import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
 import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
@@ -35,9 +36,11 @@ import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.service.SaveToFileService;
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
@@ -50,6 +53,7 @@ import com.mehatronics.axle_load.ui.notification.MessageCallback;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -189,10 +193,11 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
         vm.getCalibrationTable().observe(getViewLifecycleOwner(), detailsBinder::bindTable);
         vm.getSensorConfigure().observe(getViewLifecycleOwner(), detailsBinder::bindConfigure);
-        vm.getUiAxisList().observe(getViewLifecycleOwner(), a -> {
-            if (a.equals("Hello")){
+        vm.getUiAxisList().observe(getViewLifecycleOwner(), axes -> {
+            if (!axes.isEmpty()) {
+                vm.setLoadedAxisList(axes);
                 snackbarManager.showMessage(requireActivity(),
-                        a,
+                        axes.get(0).getSideDeviceMap().toString(),
                         this::setIsRead);
 
             }
@@ -232,7 +237,14 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
             closeFragment();
             navigator.showFragment(new AxleOverviewFragment());
         }
-        if (isRead){
+        if (isRead) {
+//            List<AxisModel> axes = new ArrayList<>();
+//
+//            AxisModel axis = new AxisModel(1);
+//            axis.setDeviceForSide(AxisSide.LEFT, "54:0F:57:CE:65:02");
+//            axis.setDeviceForSide(AxisSide.RIGHT, "A4:6D:D4:E2:F8:8D");
+//            axes.add(axis);
+
             closeFragment();
             navigator.showFragment(new AxleOverviewFragment());
         }
@@ -294,7 +306,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
         isSaved = true;
     }
 
-    private void setIsRead(){
+    private void setIsRead() {
         isRead = true;
     }
 
@@ -338,7 +350,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 DeviceDetailsFragment.class.getSimpleName(),
                 POP_BACK_STACK_INCLUSIVE
         );
-        typeRepository.setStatus(WAITING);
+        typeRepository.setStatus(READ);
         if (requireActivity() instanceof BaseBluetoothActivity) {
             ((BaseBluetoothActivity) requireActivity()).loadingManagerShowLoading(false);
         }
@@ -375,6 +387,8 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
 
         vm.markAsSaved();
         vm.setSelectionMode(false);
+
+        vm.setUiAxisList(new ArrayList<>());
 
         closeFragment();
         Log.d("MyTag", "Device details fragment is closed");

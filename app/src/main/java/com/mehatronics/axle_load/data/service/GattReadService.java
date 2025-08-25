@@ -5,11 +5,14 @@ import android.bluetooth.BluetoothGattCharacteristic;
 
 import androidx.lifecycle.LiveData;
 
+import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+
+import java.util.List;
 
 /**
  * Сервис для чтения характеристик BLE-устройства и управления полученными данными.
@@ -174,5 +177,9 @@ public interface GattReadService {
 
     LiveData<DeviceInfoToSave> getDeviceInfoToSave();
 
-    LiveData<String> getUiAxisList();
+    LiveData<List<AxisModel>> getUiAxisList();
+
+    void setUiAxisList(List<AxisModel> list);
+
+    boolean getIsComplete();
 }

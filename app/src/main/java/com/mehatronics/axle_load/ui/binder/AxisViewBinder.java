@@ -87,10 +87,29 @@ public class AxisViewBinder implements BaseBinder {
         initRecyclerView(root, R.id.recyclerViewAxes, adapter);
 
         if (isFirstLaunch) {
+            this.deviceInfo.setType(-1);
             hideInitialViews();
         }
-
+        restoreVehicleTypeState();
         setupClickListeners(handler::onConfigureClick);
+    }
+
+    private void restoreVehicleTypeState() {
+        if (deviceInfo.getType() == 0) {
+            editTextTractorPlate.setVisibility(VISIBLE);
+            editTextTrailerPlate.setVisibility(GONE);
+            saveButton.setVisibility(VISIBLE);
+            buttonConfigureLoaded.setVisibility(VISIBLE);
+            editTextAxisCount.setVisibility(VISIBLE);
+        } else if (deviceInfo.getType() == 1) {
+            editTextTractorPlate.setVisibility(VISIBLE);
+            editTextTrailerPlate.setVisibility(VISIBLE);
+            saveButton.setVisibility(VISIBLE);
+            buttonConfigureLoaded.setVisibility(VISIBLE);
+            editTextAxisCount.setVisibility(VISIBLE);
+        } else {
+            hideInitialViews();
+        }
     }
 
     private void hideInitialViews() {

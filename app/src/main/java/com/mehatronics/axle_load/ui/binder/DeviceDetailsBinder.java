@@ -41,7 +41,6 @@ public class DeviceDetailsBinder {
     private final SensorConfigFormatter configFormatter;
     private final SaveToFileService service;
     private final ResourceProvider provider;
-    private final SnackbarManager snackbarManager;
     private final SensorConfigValidator validator;
     private DeviceViewModel vm;
 
@@ -51,13 +50,11 @@ public class DeviceDetailsBinder {
             DeviceDetailsFormatter formatter,
             SensorConfigFormatter configFormatter,
             ResourceProvider provider,
-            SnackbarManager snackbarManager,
             SensorConfigValidator validator) {
         this.service = service;
         this.configFormatter = configFormatter;
         this.formatter = formatter;
         this.provider = provider;
-        this.snackbarManager = snackbarManager;
         this.validator = validator;
     }
 
