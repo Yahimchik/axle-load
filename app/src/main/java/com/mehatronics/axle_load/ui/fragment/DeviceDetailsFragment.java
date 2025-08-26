@@ -11,6 +11,7 @@ import static com.mehatronics.axle_load.R.string.invalid_password_for;
 import static com.mehatronics.axle_load.R.string.password_reset_for;
 import static com.mehatronics.axle_load.R.string.password_set_for;
 import static com.mehatronics.axle_load.R.string.save_configuration;
+import static com.mehatronics.axle_load.R.string.the_configuration_has_been_read;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
@@ -197,7 +198,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
             if (!axes.isEmpty()) {
                 vm.setLoadedAxisList(axes);
                 snackbarManager.showMessage(requireActivity(),
-                        axes.get(0).getSideDeviceMap().toString(),
+                        provider.getString(the_configuration_has_been_read),
                         this::setIsRead);
 
             }

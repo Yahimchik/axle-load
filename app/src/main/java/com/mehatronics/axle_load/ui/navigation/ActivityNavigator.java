@@ -6,11 +6,18 @@ import static com.mehatronics.axle_load.constants.ButtonsConstants.SWITCH_LANGUA
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
-import com.mehatronics.axle_load.ui.viewModel.LanguageViewModel;
 import com.mehatronics.axle_load.helper.LocaleHelper;
+import com.mehatronics.axle_load.ui.viewModel.LanguageViewModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,11 +53,35 @@ public class ActivityNavigator {
         LocaleHelper.setLocale(activity, lang);
 
         var btnChangeLang = activity.findViewById(SWITCH_LANGUAGE_BTN);
-        if (btnChangeLang != null) {
+        if (btnChangeLang instanceof ImageButton) {
             btnChangeLang.setOnClickListener(v -> {
                 viewModel.toggleLanguage();
                 activity.recreate();
+
+                String newLang = PreferenceManager
+                        .getDefaultSharedPreferences(activity)
+                        .getString("app_lang", "en");
+
+                int color = newLang.equals("en")
+                        ? activity.getResources().getColor(android.R.color.white)
+                        : activity.getResources().getColor(android.R.color.holo_blue_light);
+
+                ((ImageButton) btnChangeLang).setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+
+                String abbrev = newLang.equals("en") ? "EN" : "RU";
+
+                showLangPopup(activity, btnChangeLang, abbrev);
             });
+
+            String currentLang = PreferenceManager
+                    .getDefaultSharedPreferences(activity)
+                    .getString("app_lang", "en");
+
+            int initialColor = currentLang.equals("en")
+                    ? activity.getResources().getColor(android.R.color.white)
+                    : activity.getResources().getColor(android.R.color.holo_blue_light);
+
+            ((ImageButton) btnChangeLang).setColorFilter(initialColor, android.graphics.PorterDuff.Mode.SRC_IN);
         }
     }
 
@@ -65,6 +96,33 @@ public class ActivityNavigator {
                 activity.findViewById(BT_COM_MINI)
         );
     }
+
+    private void showLangPopup(Activity activity, View anchor, String abbrev) {
+        TextView textView = new TextView(activity);
+        textView.setText(abbrev);
+        textView.setTextColor(Color.WHITE);
+        textView.setTextSize(14f);
+        textView.setPadding(24, 12, 24, 12);
+
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(Color.parseColor("#88000000"));
+        bg.setCornerRadius(16f);
+        textView.setBackground(bg);
+
+        PopupWindow popup = new PopupWindow(textView,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(false);
+
+        textView.setAlpha(0f);
+        popup.showAsDropDown(anchor);
+        textView.animate()
+                .alpha(1f)
+                .setDuration(200)
+                .withEndAction(() -> textView.animate()
+                        .alpha(0f)
+                        .setDuration(1500)
+                        .withEndAction(popup::dismiss));
+    }
 }
-
-

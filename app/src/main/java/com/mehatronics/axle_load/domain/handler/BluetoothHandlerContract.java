@@ -13,6 +13,8 @@ public interface BluetoothHandlerContract extends MessageCallback {
 
     void initConfigureButton();
 
+    void showConfirmationDialog(String title, String message, Runnable onConfirm, Runnable onCancel);
+
     @Override
     void showMessage(String message);
 }

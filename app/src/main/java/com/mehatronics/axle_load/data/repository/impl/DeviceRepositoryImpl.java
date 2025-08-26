@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 public class DeviceRepositoryImpl implements DeviceRepository {
     private final AxisService axisService;
     private final SensorService sensorService;
+    private String stateNumber;
 
     @Inject
     public DeviceRepositoryImpl(AxisService axisService, SensorService sensorService) {
@@ -188,4 +189,13 @@ public class DeviceRepositoryImpl implements DeviceRepository {
         sensorService.refreshScannedDevices();
     }
 
+    @Override
+    public void setStateNumber(String stateNumber) {
+        this.stateNumber = stateNumber;
+    }
+
+    @Override
+    public String getStateNumber() {
+        return stateNumber == null ? "" : stateNumber;
+    }
 }

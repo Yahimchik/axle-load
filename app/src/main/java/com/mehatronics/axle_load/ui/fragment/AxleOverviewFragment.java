@@ -14,6 +14,8 @@ import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.ui.binder.ConfiguredAxisViewBinder;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
+import java.util.ArrayList;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -31,5 +33,11 @@ public class AxleOverviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         var binder = new ConfiguredAxisViewBinder(view);
         vm.getUiAxisModels().observe(getViewLifecycleOwner(), binder::submitList);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        vm.setLoadedAxisList(new ArrayList<>());
     }
 }

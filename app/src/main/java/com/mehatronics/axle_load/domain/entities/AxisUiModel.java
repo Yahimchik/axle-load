@@ -29,4 +29,17 @@ public record AxisUiModel(
                 && Objects.equals(weightRight, that.weightRight)
                 && Objects.equals(pressureRight, that.pressureRight);
     }
+
+    public double getTotalWeight() {
+        return parseSafe(weightLeft) + parseSafe(weightRight);
+    }
+
+    private double parseSafe(String value) {
+        if (value == null || value.isEmpty()) return 0.0;
+        try {
+            return Double.parseDouble(value.replaceAll("[^0-9.,]", "").replace(",", "."));
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
 }

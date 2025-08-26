@@ -1,10 +1,6 @@
 package com.mehatronics.axle_load.ui.fragment;
 
-import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
-import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

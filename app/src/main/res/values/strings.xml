@@ -26,9 +26,13 @@
     <string name="configure_sensors">CONFIGURE SENSORS</string>
     <string name="configure_reset">Configure on axle %1$s reset</string>
     <string name="configure_the_settings">Configure The Settings</string>
-    <string name="configure_loaded">Configure Loaded</string>
+    <string name="configure_loaded">Load from file</string>
     <string name="connection_failed">Failed to connect to device</string>
     <string name="configuration">Configuration</string>
+    <string name="calibration">Сalibration</string>
+    <string name="changeable_short">Replaceable</string>
+    <string name="current_values">Current values</string>
+    <string name="change_the_trailer">Change the trailer</string>
 
     <string name="delete" translatable="false">DELETE</string>
     <string name="device_mac" translatable="false">MAC: </string>
@@ -93,6 +97,8 @@
     <string name="read_from_sensor">READ FROM SENSOR</string>
     <string name="reset">Reset</string>
     <string name="reset_password">RESET PASSWORD</string>
+    <string name="reset_devices">Resetting devices</string>
+    <string name="reset_all_devices_on_the_axis">Are you sure you want to reset all devices on the axis %1$s ?</string>
 
     <string name="save_button">SAVE TO SENSOR</string>
     <string name="save_configuration">Configuration sent</string>
@@ -105,8 +111,6 @@
     <string name="save_to_file_not_allowed_at">Saving is not supported on this version of Android</string>
     <string name="saved_in">Saved in: %1$s</string>
 
-    <string name="tar_table">Tar table %1$s</string>
-    <string name="calibration">Сalibration</string>
 
     <string name="weight">Weight: </string>
     <string name="wheel_center">Center of axle %1$d</string>
@@ -114,14 +118,22 @@
     <string name="wheel_right">Right wheel of axle %1$d</string>
 
     <string name="yes">Yes</string>
+
     <string name="total_axles">Total number of axes</string>
     <string name="total_sensors">Total number of sensors</string>
     <string name="trailer_changeable">The chassis is non-replaceable/replaceable</string>
-    <string name="changeable_short">Replaceable</string>
-
-    <string name="number_of_sensors_per_axis">Number of sensors per axis</string>
+    <string name="tar_table">Tar table %1$s</string>
     <string name="truck">Truck</string>
     <string name="truck_with_trailer">Truck with trailer</string>
     <string name="truck_state_number">Truck registration plate</string>
     <string name="trailer_state_number">Trailer registration plate</string>
+    <string name="total_weight">Total weight</string>
+    <string name="the_configuration_has_been_read">The configuration has been read</string>
+    <string name="total_axis">Total axis</string>
+    <string name="total_sensors_in">Total sensors</string>
+
+    <string name="number_of_sensors_per_axis">Number of sensors per axis</string>
+
+    <string name="kg" translatable="false">KG</string>
+    <string name="zero" translatable="false">0</string>
 </resources>

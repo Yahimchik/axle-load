@@ -14,12 +14,12 @@ import com.mehatronics.axle_load.domain.strategy.CommandStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.ConfigurePasswordStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.FirstAuthStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.SecondAuthStrategy;
+import com.mehatronics.axle_load.domain.strategy.impl.StateNumberStrategy;
 import com.mehatronics.axle_load.domain.strategy.impl.UserPasswordStrategy;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.localization.impl.AndroidResourceProvider;
-import com.mehatronics.axle_load.ui.activity.impl.DDSActivity;
 import com.mehatronics.axle_load.ui.activity.impl.DPSActivity;
-import com.mehatronics.axle_load.ui.activity.impl.DSSActivity;
+import com.mehatronics.axle_load.ui.activity.impl.BTCOMMiniActivity;
 import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 
@@ -49,7 +49,7 @@ public class ApplicationModule {
      */
     @Provides
     public Class<? extends Activity>[] provideActivities() {
-        return new Class[]{DPSActivity.class, DSSActivity.class};
+        return new Class[]{DPSActivity.class, BTCOMMiniActivity.class};
     }
 
     /**
@@ -144,6 +144,13 @@ public class ApplicationModule {
         @IntoMap
         @StringKey("80-8")
         public CommandStrategy provideResetPasswordStrategy(ConfigurePasswordStrategy strategy) {
+            return strategy;
+        }
+
+        @Provides
+        @IntoMap
+        @StringKey("119-5")
+        public CommandStrategy provideStateNumberStrategy(StateNumberStrategy strategy) {
             return strategy;
         }
     }

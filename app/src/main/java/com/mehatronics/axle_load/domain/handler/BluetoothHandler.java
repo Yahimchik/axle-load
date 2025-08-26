@@ -1,6 +1,9 @@
 package com.mehatronics.axle_load.domain.handler;
 
+import static com.mehatronics.axle_load.R.string.configure_reset;
 import static com.mehatronics.axle_load.R.string.connection_failed;
+import static com.mehatronics.axle_load.R.string.reset_all_devices_on_the_axis;
+import static com.mehatronics.axle_load.R.string.reset_devices;
 import static com.mehatronics.axle_load.R.string.selected;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DPS;
 import static java.lang.Boolean.TRUE;
@@ -52,13 +55,22 @@ public class BluetoothHandler {
     }
 
     public void onReset(int axis) {
-        var macsToReset = viewModel.getMacsForAxis(axis);
-        repository.setDeviceType(DPS);
-        viewModel.resetDevicesForAxis(axis);
-        viewModel.resetSelectedDevicesByMacs(macsToReset);
-        viewModel.markAsUnsaved();
-        viewModel.clearMacs();
-        contract.showMessage(provider.getString(R.string.configure_reset, axis));
+        contract.showConfirmationDialog(
+                provider.getString(reset_devices),
+                provider.getString(reset_all_devices_on_the_axis, axis),
+                () -> {
+                    var macsToReset = viewModel.getMacsForAxis(axis);
+                    repository.setDeviceType(DPS);
+                    viewModel.resetDevicesForAxis(axis);
+                    viewModel.resetSelectedDevicesByMacs(macsToReset);
+                    viewModel.markAsUnsaved();
+                    viewModel.clearMacs();
+                    contract.showMessage(provider.getString(configure_reset, axis));
+                },
+                () -> {
+                    // Пользователь отменил → ничего не делаем
+                }
+        );
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)

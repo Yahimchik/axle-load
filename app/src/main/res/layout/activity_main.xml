@@ -1,74 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    android:padding="16dp"
     android:fitsSystemWindows="true"
+    android:padding="16dp"
     tools:context=".ui.activity.MainActivity">
 
-    <!-- Кнопка смены языка в верхнем правом углу -->
-    <com.google.android.material.button.MaterialButton
+    <ImageButton
         android:id="@+id/btnChangeLang"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/change_langauge"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:fontFamily="@font/roboto_bold"
-        android:backgroundTint="@android:color/transparent"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/white"
-        app:cornerRadius="12dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/change_langauge"
+        android:src="@drawable/language_svgrepo_com"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="12dp"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
+
+
+    <!-- Кнопка смены языка в верхнем правом углу -->
+    <!--    <com.google.android.material.button.MaterialButton-->
+    <!--        android:id="@+id/btnChangeLang"-->
+    <!--        style="@style/Widget.Material3.Button.OutlinedButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/change_langauge"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        android:textSize="14sp"-->
+    <!--        android:fontFamily="@font/roboto_bold"-->
+    <!--        android:backgroundTint="@android:color/transparent"-->
+    <!--        app:strokeWidth="1dp"-->
+    <!--        app:strokeColor="@color/white"-->
+    <!--        app:cornerRadius="12dp"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        android:layout_margin="12dp"/>-->
 
     <!-- Кнопки выбора сенсоров -->
     <LinearLayout
         android:id="@+id/sensorButtonsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/btnChangeLang"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/btnChangeLang">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDPS"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:layout_marginVertical="12dp"
+            android:backgroundTint="@android:color/transparent"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/DPS"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:fontFamily="@font/roboto_bold"
-            android:backgroundTint="@android:color/transparent"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/white"
             app:cornerRadius="20dp"
-            android:layout_marginVertical="12dp"/>
+            app:strokeColor="@color/white"
+            app:strokeWidth="2dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonBTComMini"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:layout_marginVertical="12dp"
+            android:backgroundTint="@android:color/transparent"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/BT_COM_MINI"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:fontFamily="@font/roboto_bold"
-            android:backgroundTint="@android:color/transparent"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/white"
             app:cornerRadius="20dp"
-            android:layout_marginVertical="12dp"/>
+            app:strokeColor="@color/white"
+            app:strokeWidth="2dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

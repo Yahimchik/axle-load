@@ -8,7 +8,7 @@ import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.mapper.DeviceMapper;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceClickListener;
-import com.mehatronics.axle_load.ui.adapter.sensor.AvailableSensorAdapter;
+import com.mehatronics.axle_load.ui.adapter.AvailableSensorAdapter;
 
 import java.util.List;
 import java.util.stream.Collectors;

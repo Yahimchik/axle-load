@@ -1,77 +1,132 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:layout_margin="12dp"
     android:clickable="true"
-    android:focusable="false"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    app:strokeColor="@android:color/darker_gray"
+    app:strokeWidth="1dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <!-- Название устройства -->
-        <TextView
-            android:id="@+id/deviceName"
-            android:layout_width="0dp"
+        <!-- Заголовок с иконкой устройства -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/device_name"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-        <!-- MAC -->
-        <TextView
-            android:id="@+id/deviceMac"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/deviceIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/device_name"
+                android:src="@drawable/ic_device_dps" />
+
+            <TextView
+                android:id="@+id/deviceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/device_name"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- MAC и RSSI -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/device_mac"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/deviceName" />
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:baselineAligned="false">
 
-        <TextView
-            android:id="@+id/deviceMacValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/roboto_bold"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/deviceMac"
-            app:layout_constraintTop_toBottomOf="@id/deviceName" />
+            <!-- MAC (слева) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:orientation="horizontal">
 
-        <!-- RSSI -->
-        <TextView
-            android:id="@+id/deviceRssi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/device_rssi"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/deviceMac" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/device_mac"
+                    android:src="@drawable/ic_devices" />
 
-        <TextView
-            android:id="@+id/deviceRssiValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/roboto_bold"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/deviceRssi"
-            app:layout_constraintTop_toBottomOf="@id/deviceMac" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/device_mac"
+                        android:textColor="@color/hint_gray"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/deviceMacValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- RSSI (справа) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/device_rssi"
+                    android:src="@drawable/ic_signal_cellular_alt" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/device_rssi"
+                        android:textColor="@color/hint_gray"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/deviceRssiValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:ems="4" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

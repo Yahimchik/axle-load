@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.ui.adapter;
 
 import static android.view.View.GONE;
+import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 
 import android.annotation.SuppressLint;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.mehatronics.axle_load.ui.adapter.diffUtil.DeviceDiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder> {
     private final OnDeviceClickListener onDeviceClickListener;
@@ -50,17 +53,22 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DeviceResponseDTO device = devices.get(position);
         try {
-            holder.name.setText(device.name());
-            holder.mac.setText(device.mac());
-            holder.rssi.setText(device.rssi());
-            holder.weightValue.setText(device.weight());
-            holder.pressureValue.setText(device.pressure());
+            if (!Objects.equals(device.name(), UNKNOWN)) {
+                holder.name.setText(device.name().trim());
+                holder.mac.setText(device.mac());
+                holder.rssi.setText(device.rssi());
+                holder.weightValue.setText(device.weight());
+                holder.pressureValue.setText(device.pressure());
 
-            if(device.name().contains(BT_COM_MINI.toString())){
-                holder.weightValue.setVisibility(GONE);
-                holder.pressureValue.setVisibility(GONE);
-                holder.deviceWeight.setVisibility(GONE);
-                holder.devicePressure.setVisibility(GONE);
+                if (device.name().contains(BT_COM_MINI.toString())) {
+                    holder.deviceIcon.setImageResource(R.drawable.ic_bt_com_mini);
+                    holder.weightValue.setVisibility(GONE);
+                    holder.pressureValue.setVisibility(GONE);
+                    holder.deviceWeight.setVisibility(GONE);
+                    holder.devicePressure.setVisibility(GONE);
+                    holder.weightView.setVisibility(GONE);
+                    holder.pressureView.setVisibility(GONE);
+                }
             }
 
             holder.itemView.setOnClickListener(v -> onDeviceClickListener.onDeviceClick(device.originalDevice()));
@@ -83,6 +91,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         TextView pressureValue;
         TextView deviceWeight;
         TextView devicePressure;
+        ImageView weightView;
+        ImageView pressureView;
+        ImageView deviceIcon;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -93,6 +104,9 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
             pressureValue = itemView.findViewById(R.id.devicePressureValue);
             deviceWeight = itemView.findViewById(R.id.deviceWeight);
             devicePressure = itemView.findViewById(R.id.devicePressure);
+            weightView = itemView.findViewById(R.id.weightImage);
+            pressureView = itemView.findViewById(R.id.pressureImage);
+            deviceIcon = itemView.findViewById(R.id.deviceIcon);
         }
     }
 }

@@ -26,7 +26,6 @@ import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

@@ -22,7 +22,7 @@
     <string name="configure_sensors">Настроить датчики</string>
     <string name="configure_reset">Настройки оси %1$s сброшены</string>
     <string name="configure_the_settings">Настройки</string>
-    <string name="configure_loaded">Настроить груженый</string>
+    <string name="configure_loaded">Загрузить из файла</string>
     <string name="connection_failed">Не удалось подключится к устройству</string>
 
     <string name="device_name">Имя устройства</string>
@@ -86,6 +86,8 @@
     <string name="reset">Сбросить</string>
     <string name="reset_password">СБРОСИТЬ ПАРОЛЬ</string>
 
+    <string name="reset_devices">Сброс устройств</string>
+    <string name="reset_all_devices_on_the_axis">Вы уверены, что хотите сбросить все устройства на оси %1$s</string>
     <string name="save_button">СОХРАНИТЬ В ДАТЧИК</string>
     <string name="save_configuration">Настройки сохранены</string>
     <string name="save_to_file">СОХРАНИТЬ В ФАЙЛ</string>
@@ -115,8 +117,14 @@
     <string name="yes">Да</string>
     <string name="password_old">Старый пароль</string>
     <string name="configuration">Конфигурация</string>
+    <string name="total_weight">Общий вес</string>
+    <string name="the_configuration_has_been_read">Конфигурация прочитана</string>
+    <string name="total_axis">Всего осей</string>
+    <string name="total_sensors_in">Всего датчиков</string>
     <string name="number_of_sensors_per_axis">Количество датчиков на оси</string>
     <string name="truck_with_trailer">Тягач с прицепом</string>
     <string name="truck_state_number">Регистрационный знак тягача</string>
     <string name="trailer_state_number">Регистрационный знак прицепа</string>
+    <string name="current_values">Текущие значения</string>
+    <string name="change_the_trailer">Сменить прицеп</string>
 </resources>

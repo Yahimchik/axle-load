@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.impl.DDSActivity" />
-        <activity android:name=".ui.activity.impl.DSSActivity" />
+        <activity android:name=".ui.activity.impl.BTCOMMiniActivity" />
         <activity android:name=".ui.activity.impl.DPSActivity" />
 
         <meta-data

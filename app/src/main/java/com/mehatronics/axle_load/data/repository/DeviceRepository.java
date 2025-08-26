@@ -68,4 +68,7 @@ public interface DeviceRepository {
 
     void refreshScannedDevices();
 
+    void setStateNumber(String stateNumber);
+
+    String getStateNumber();
 }

@@ -1,5 +1,6 @@
 package com.mehatronics.axle_load.data.mapper.impl;
 
+import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToValue;
 
 import android.bluetooth.BluetoothDevice;
@@ -24,13 +25,13 @@ public class DeviceMapperImpl implements DeviceMapper {
         ScanResult scan = device.getScanResult();
 
         if (bt == null || scan == null || scan.getScanRecord() == null) {
-            return new DeviceResponseDTO("Unknown", "-", "-", "-", "-", device);
+            return new DeviceResponseDTO(UNKNOWN, "-", "-", "-", "-", device);
         }
 
         byte[] bytes = scan.getScanRecord().getBytes();
 
         try {
-            String name = bt.getName() != null ? bt.getName() : "Unknown";
+            String name = bt.getName() != null ? bt.getName() : UNKNOWN;
             String mac = bt.getAddress();
             String rssi = scan.getRssi() + " dBm";
             float weight = convertBytesToValue(bytes, 23, 24);

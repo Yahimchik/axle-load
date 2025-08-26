@@ -89,6 +89,7 @@
                 android:id="@+id/editTextTractorPlate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints=""
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/roboto_bold"
                 android:hint="@string/truck_state_number"
