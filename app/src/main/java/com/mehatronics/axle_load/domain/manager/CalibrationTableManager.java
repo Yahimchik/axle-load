@@ -54,7 +54,7 @@ public class CalibrationTableManager {
 
             originalPoints.clear();
             originalPoints.add(first);
-            originalPoints.addAll(table); // вставляем новые
+            originalPoints.addAll(table);
             originalPoints.add(last);
         } else {
             originalPoints.clear();

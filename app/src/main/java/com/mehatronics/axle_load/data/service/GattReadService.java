@@ -182,4 +182,6 @@ public interface GattReadService {
     void setUiAxisList(List<AxisModel> list);
 
     boolean getIsComplete();
+
+    boolean isSensorsNumberGreaterThenEight();
 }

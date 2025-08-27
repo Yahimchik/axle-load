@@ -1,6 +1,7 @@
 package com.mehatronics.axle_load.constants;
 
 public class ValueConstants {
+    public static final long SCAN_INTERVAL = 30000;
     public static final int MAX_RECONNECT_ATTEMPTS = 10;
     public static final int MAX_DETECTORS = 9;
     public static final int MIN_AXES_COUNT = 1;

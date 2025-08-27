@@ -14,4 +14,3 @@ public class MainApplication extends Application {
         super.attachBaseContext(LocaleHelper.attachBaseContext(base));
     }
 }
-

@@ -273,23 +273,23 @@ public class ByteUtils {
     // Собираем number для шасси
     public static int composeChassisNumber(SensorConfig config) {
         int number = 0;
-        number |= (config.getCarType() & 0b00000001);                 // бит 0
-        number |= (config.getTotalNumberOfAxleOnChassis() & 0b00000111) << 1; // биты 1-3
-        number |= (config.getTotalNumberOfSensorsOnChassis() & 0b00001111) << 4; // биты 4-7
+        number |= (config.getCarType() & 0b00000001);
+        number |= (config.getTotalNumberOfAxleOnChassis() & 0b00000111) << 1;
+        number |= (config.getTotalNumberOfSensorsOnChassis() & 0b00001111) << 4;
         return number;
     }
 
     public static void parseSensorNumber(int number, SensorConfig.Builder config) {
-        config.numberOfAxle(number & 0b00000111);               // биты 0-2
-        config.installationPosition((number >> 3) & 0b00000011); // биты 3-4
-        config.totalNumberOfSensorsOnAxle(((number >> 5) & 0b1) + 1); // бит 5
+        config.numberOfAxle(number & 0b00000111);
+        config.installationPosition((number >> 3) & 0b00000011);
+        config.totalNumberOfSensorsOnAxle(((number >> 5) & 0b1) + 1);
         config.build();
     }
 
     public static void parseChassisNumber(int number, SensorConfig.Builder config) {
-        config.carType(number & 0b00000001);                      // бит 0
-        config.totalNumberOfAxleOnChassis((number >> 1) & 0b00000111); // биты 1-3
-        config.totalNumberOfSensorsOnChassis((number >> 4) & 0b00001111); // биты 4-7
+        config.carType(number & 0b00000001);
+        config.totalNumberOfAxleOnChassis((number >> 1) & 0b00000111);
+        config.totalNumberOfSensorsOnChassis((number >> 4) & 0b00001111);
         config.build();
     }
 

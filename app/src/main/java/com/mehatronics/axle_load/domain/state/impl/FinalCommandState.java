@@ -32,9 +32,13 @@ public class FinalCommandState implements CommandStateHandler {
         else if (h.isTableSaved()) h.setCommandState(new SaveTableCommand());
         else if (h.isResetPassword()) h.setCommandState(new ResetPasswordCommandState());
         else if (h.isPasswordSet()) h.setCommandState(new SetPasswordCommandState());
-        else if (h.isSavedToBTCOMMini() && whatStatus(h,WHRITE)) h.setCommandState(new SaveToBTCOMMiniCommandState());
+        else if (h.isSavedToBTCOMMini() && whatStatus(h, WHRITE))
+            h.setCommandState(new SaveToBTCOMMiniCommandState());
         else if (whatStatus(h, READ)) h.setCommandState(new WhriteToBtComMiniBeforeReadingConfig());
-        else if (h.isComplete()) h.setCommandState(new ReadFromBTCOMMiniCommandState());
+        else if (h.isComplete() && !h.isSensorsNumberGreaterThenEight())
+            h.setCommandState(new ReadFromBTCOMMiniCommandState());
+        else if (h.isSensorsNumberGreaterThenEight())
+            h.setCommandState(new ReadFromBtComMiniSecondPageCommandState());
     }
 
     private boolean whatStatus(BluetoothGattCallbackHandler h, ConnectStatus status) {

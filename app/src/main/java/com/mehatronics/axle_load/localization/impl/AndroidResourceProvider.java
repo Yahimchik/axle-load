@@ -1,5 +1,9 @@
 package com.mehatronics.axle_load.localization.impl;
 
+import static com.mehatronics.axle_load.constants.BundleKeys.APP_LANGUAGE;
+import static com.mehatronics.axle_load.constants.BundleKeys.APP_PREFERENCES;
+import static com.mehatronics.axle_load.domain.entities.enums.AppLanguage.EN;
+
 import android.app.Application;
 import android.content.Context;
 
@@ -31,9 +35,8 @@ public class AndroidResourceProvider implements ResourceProvider {
     }
 
     private String getCurrentLanguage() {
-        return android.preference.PreferenceManager
-                .getDefaultSharedPreferences(application)
-                .getString("app_lang", "en");
+        return application
+                .getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getString(APP_LANGUAGE, EN.getCode());
     }
 }
-

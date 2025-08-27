@@ -3,7 +3,6 @@ package com.mehatronics.axle_load.domain.entities.device;
 import androidx.annotation.NonNull;
 
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
-import com.mehatronics.axle_load.domain.entities.SensorConfig;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,7 +21,6 @@ public class DeviceDetails implements Serializable {
     private final String weight;
     private final String pressure;
     private List<CalibrationTable> table;
-    private final SensorConfig sensorConfig;
 
     private DeviceDetails(Builder builder) {
         this.deviceName = builder.deviceName;
@@ -37,7 +35,6 @@ public class DeviceDetails implements Serializable {
         this.weight = builder.weight;
         this.pressure = builder.pressure;
         this.table = builder.table;
-        this.sensorConfig = builder.sensorConfig;
     }
 
     public String getDeviceName() {
@@ -46,22 +43,6 @@ public class DeviceDetails implements Serializable {
 
     public String getDeviceMac() {
         return deviceMac;
-    }
-
-    public String getDateManufacturer() {
-        return dateManufacturer;
-    }
-
-    public String getManufacturer() {
-        return manufacturer;
-    }
-
-    public String getModelType() {
-        return modelType;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
     }
 
     public String getFirmwareVersion() {
@@ -92,10 +73,6 @@ public class DeviceDetails implements Serializable {
         this.table = table;
     }
 
-    public SensorConfig getSensorConfig() {
-        return sensorConfig;
-    }
-
     @NonNull
     @Override
     public String toString() {
@@ -111,14 +88,12 @@ public class DeviceDetails implements Serializable {
                 ", weight='" + weight + '\'' +
                 ", pressure='" + pressure + '\'' +
                 ", table=" + table +
-                ", sensorConfig=" + sensorConfig +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DeviceDetails)) return false;
-        DeviceDetails details = (DeviceDetails) o;
+        if (!(o instanceof DeviceDetails details)) return false;
         return Objects.equals(deviceName, details.deviceName)
                 && Objects.equals(deviceMac, details.deviceMac)
                 && Objects.equals(dateManufacturer, details.dateManufacturer)
@@ -130,8 +105,7 @@ public class DeviceDetails implements Serializable {
                 && Objects.equals(batteryLevel, details.batteryLevel)
                 && Objects.equals(weight, details.weight)
                 && Objects.equals(pressure, details.pressure)
-                && Objects.equals(table, details.table)
-                && Objects.equals(sensorConfig, details.sensorConfig);
+                && Objects.equals(table, details.table);
     }
 
     @Override
@@ -148,8 +122,7 @@ public class DeviceDetails implements Serializable {
                 batteryLevel,
                 weight,
                 pressure,
-                table,
-                sensorConfig);
+                table);
     }
 
     public static class Builder {
@@ -165,7 +138,6 @@ public class DeviceDetails implements Serializable {
         private String weight;
         private String pressure;
         private List<CalibrationTable> table;
-        private SensorConfig sensorConfig;
 
         public Builder setDeviceName(String deviceName) {
             this.deviceName = deviceName;
@@ -226,12 +198,6 @@ public class DeviceDetails implements Serializable {
             this.table = table;
             return this;
         }
-
-        public Builder setSensorConfig(SensorConfig sensorConfig) {
-            this.sensorConfig = sensorConfig;
-            return this;
-        }
-
         public DeviceDetails build() {
             return new DeviceDetails(this);
         }

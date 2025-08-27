@@ -2,14 +2,12 @@ package com.mehatronics.axle_load.ui.adapter.sensor;
 
 import static com.mehatronics.axle_load.R.string.error_installation_point_greater_than_total_axles;
 import static com.mehatronics.axle_load.R.string.error_sensor_number_greater_than_total_sensors;
-import static com.mehatronics.axle_load.R.string.error_total_sensors_greater_than_axles_times_two;
 import static com.mehatronics.axle_load.utils.ByteUtils.tryParseInt;
 
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 

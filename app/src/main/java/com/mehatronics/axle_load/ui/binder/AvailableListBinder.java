@@ -13,7 +13,7 @@ import com.mehatronics.axle_load.ui.adapter.AvailableSensorAdapter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AvailableListBinder implements BaseBinder {
+public class AvailableListBinder {
     private final AvailableSensorAdapter adapter;
     private final DeviceMapper deviceMapper;
 

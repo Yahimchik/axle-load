@@ -1,8 +1,6 @@
 package com.mehatronics.axle_load.domain.manager;
 
 import static com.mehatronics.axle_load.constants.ValueConstants.MAX_RECONNECT_ATTEMPTS;
-import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
-import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 
 import android.Manifest;
 import android.bluetooth.BluetoothDevice;
@@ -15,17 +13,16 @@ import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
-import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
-import com.mehatronics.axle_load.helper.SingleLiveEvent;
-import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
+import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.handler.BluetoothGattCallbackHandler;
 import com.mehatronics.axle_load.domain.handler.ConnectionHandler;
+import com.mehatronics.axle_load.helper.SingleLiveEvent;
+import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
 import com.mehatronics.axle_load.ui.adapter.listener.PasswordDialogListener;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -157,10 +154,6 @@ public class BluetoothConnectionManager implements ConnectionHandler {
 
     public void setListener(GattReadListener listener) {
         gattCallbackHandler.setListener(listener);
-    }
-
-    public boolean isSavedToBTCOMMini() {
-        return gattCallbackHandler.isSavedToBTCOMMini();
     }
 
     public void saveToBTCOMMini() {

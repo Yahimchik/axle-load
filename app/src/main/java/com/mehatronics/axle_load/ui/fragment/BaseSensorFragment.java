@@ -26,7 +26,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
-import com.mehatronics.axle_load.data.service.SaveToFileService;
+import com.mehatronics.axle_load.data.service.FileService;
 import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.Event;
@@ -56,7 +56,7 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
     @Inject
     protected SnackbarManager manager;
     @Inject
-    protected SaveToFileService fileService;
+    protected FileService fileService;
     @Inject
     protected ResourceProvider provider;
     @Inject
@@ -140,7 +140,6 @@ public abstract class BaseSensorFragment extends Fragment implements MessageCall
         Log.d("MyTag", device.getDevice().getName());
         if (device.getDevice().getName().contains(BT_COM_MINI.toString())) {
             handler.onDeviceSelected(device);
-//            vm.connectToDevice(device);
         } else {
             vm.markMacAsSelected(device);
             showMessage(getString(selected, device.getDevice().getName()));

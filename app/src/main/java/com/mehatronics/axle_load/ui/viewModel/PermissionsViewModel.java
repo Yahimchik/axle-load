@@ -54,4 +54,3 @@ public class PermissionsViewModel extends ViewModel {
         gpsRequired.setValue(!permissionUseCase.isGpsEnabled());
     }
 }
-

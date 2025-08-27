@@ -52,5 +52,4 @@ public class DeviceDiffUtil extends DiffUtil.Callback {
 
         return oldDevice.equals(newDevice);
     }
-
 }

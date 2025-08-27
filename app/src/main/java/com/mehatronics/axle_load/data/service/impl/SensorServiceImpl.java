@@ -29,7 +29,6 @@ public class SensorServiceImpl implements SensorService {
     public SensorServiceImpl() {
     }
 
-
     @Override
     public void setDeviceName(String name) {
         deviceNameLiveData.setValue(name);
@@ -162,7 +161,7 @@ public class SensorServiceImpl implements SensorService {
     public void refreshScannedDevices() {
         List<Device> current = processedDevicesLiveData.getValue();
         if (current != null) {
-            processedDevicesLiveData.setValue(new ArrayList<>(current)); // форс эмиссию
+            processedDevicesLiveData.setValue(new ArrayList<>(current));
         }
     }
 }

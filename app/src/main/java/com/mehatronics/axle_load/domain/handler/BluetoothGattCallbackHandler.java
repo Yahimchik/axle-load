@@ -447,6 +447,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
      * Обновляет внутреннее состояние после успешного подключения.
      */
     private void updateStateAfterConnect() {
+        gattDataMapper.resetAxisData();
         gattReadService.updateState(true);
         Log.d("MyTag", "Connected to device");
     }
@@ -532,5 +533,9 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
 
     public boolean isComplete() {
         return gattReadService.getIsComplete();
+    }
+
+    public boolean isSensorsNumberGreaterThenEight() {
+        return gattReadService.isSensorsNumberGreaterThenEight();
     }
 }

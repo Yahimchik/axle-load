@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-
 public class DateFormatMapperImpl implements DateFormatMapper {
     public static final int DATE_INDEX = 3;
     @Inject

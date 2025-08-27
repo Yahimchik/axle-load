@@ -3,13 +3,13 @@ package com.mehatronics.axle_load.data.service.impl;
 import static com.mehatronics.axle_load.constants.CommandsConstants.FIRST_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.NINE_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.SEVEN_COMMAND;
+import static com.mehatronics.axle_load.constants.CommandsConstants.TENTH_COMMAND;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_BINARY;
 import static com.mehatronics.axle_load.constants.CommandsConstants.ZERO_COMMAND_DECIMAL;
 import static com.mehatronics.axle_load.constants.UuidConstants.UUID_MAP;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToCalibrationTable;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToConfiguration;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertMultiplierToPortion;
-import static com.mehatronics.axle_load.utils.ByteUtils.extractStringFromBytes;
 
 import android.Manifest;
 import android.bluetooth.BluetoothGatt;
@@ -24,7 +24,6 @@ import com.mehatronics.axle_load.data.mapper.GattDataMapper;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
-import com.mehatronics.axle_load.domain.entities.AxisUiModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationParseResult;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
@@ -99,6 +98,7 @@ public class GattReadServiceImpl implements GattReadService {
      */
     private boolean isReadingTableComplete = false;
     private boolean isReadingConfigFromBtComMiniComplete = false;
+    private boolean isSensorsNumberGreaterThenEight = false;
 
     /**
      * Флаг: была ли сохранена конфигурация.
@@ -211,7 +211,7 @@ public class GattReadServiceImpl implements GattReadService {
             values.set(values.size() - 1, bytes);
         }
 
-//        Log.d("MyTag", Arrays.toString(bytes));
+        Log.d("MyTag", Arrays.toString(bytes));
 
         if (isReadingAll) {
             readNext(gatt);
@@ -223,12 +223,26 @@ public class GattReadServiceImpl implements GattReadService {
         }
 
         if (isMatchingCommand(bytes, 0, SEVEN_COMMAND) && isMatchingCommand(bytes, 1, NINE_COMMAND)) {
-            if (bytes[2] == 0){
+            if (bytes[2] == 0) {
                 isReadingConfigFromBtComMiniComplete = true;
-            }
-            /*else*/ if (bytes[2] > 0 && bytes[3] <= 8){
+            } else if (bytes[2] > 0 && bytes[2] <= 8) {
                 axisUiList.postValue(gattDataMapper.convertToAxisModelList(bytes));
                 isReadingConfigFromBtComMiniComplete = false;
+                isSensorsNumberGreaterThenEight = false;
+            } else if (bytes[2] > 8) {
+                axisUiList.postValue(gattDataMapper.convertToAxisModelList(bytes));
+                isReadingConfigFromBtComMiniComplete = true;
+                isSensorsNumberGreaterThenEight = true;
+            }
+        }
+
+        if (isMatchingCommand(bytes, 0, SEVEN_COMMAND) && isMatchingCommand(bytes, 1, TENTH_COMMAND)) {
+            if (bytes[2] == 0) {
+                isReadingConfigFromBtComMiniComplete = true;
+            } else if (bytes[2] > 0) {
+                axisUiList.postValue(gattDataMapper.convertToAxisModelList(bytes));
+                isReadingConfigFromBtComMiniComplete = false;
+                isSensorsNumberGreaterThenEight = false;
             }
         }
 
@@ -487,6 +501,11 @@ public class GattReadServiceImpl implements GattReadService {
     @Override
     public boolean getIsComplete() {
         return isReadingConfigFromBtComMiniComplete;
+    }
+
+    @Override
+    public boolean isSensorsNumberGreaterThenEight() {
+        return isSensorsNumberGreaterThenEight;
     }
 
     /**

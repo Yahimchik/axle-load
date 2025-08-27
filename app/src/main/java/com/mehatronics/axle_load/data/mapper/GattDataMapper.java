@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothGatt;
 
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
-import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
@@ -21,4 +20,6 @@ public interface GattDataMapper {
     int setCalibrationTable(List<CalibrationTable> table, byte[] buffer, int page);
 
     List<AxisModel> convertToAxisModelList(byte[] buffer);
+
+    void resetAxisData();
 }

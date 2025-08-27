@@ -1,5 +1,11 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static com.mehatronics.axle_load.constants.BundleKeys.KEY_CANCELLED;
+import static com.mehatronics.axle_load.constants.BundleKeys.KEY_NEW_PASSWORD;
+import static com.mehatronics.axle_load.constants.BundleKeys.KEY_OLD_PASSWORD;
+import static com.mehatronics.axle_load.constants.BundleKeys.REQUEST_KEY;
+import static com.mehatronics.axle_load.constants.StringConstants.STANDART_PASSWORD;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
@@ -17,11 +23,6 @@ import com.mehatronics.axle_load.localization.ResourceProvider;
 import javax.inject.Inject;
 
 public class ChangePasswordDialogFragment extends DialogFragment {
-    public static final String TAG = "ChangePasswordDialog";
-    public static final String REQUEST_KEY = "change_password_request";
-    public static final String KEY_OLD_PASSWORD = "key_old_password";
-    public static final String KEY_NEW_PASSWORD = "key_new_password";
-    public static final String KEY_CANCELLED = "key_cancelled";
 
     private final ResourceProvider resourceProvider;
     private final PasswordRepository passwordRepository;
@@ -36,8 +37,10 @@ public class ChangePasswordDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.fragment_change_password_dialog, null);
+
         EditText oldPasswordInput = view.findViewById(R.id.old_password_input);
         EditText newPasswordInput = view.findViewById(R.id.new_password_input);
+
         if (passwordRepository.isPasswordStandart()) {
             oldPasswordInput.setVisibility(View.GONE);
             passwordRepository.setPasswordStandart(true);
@@ -61,7 +64,7 @@ public class ChangePasswordDialogFragment extends DialogFragment {
             Button okButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             okButton.setOnClickListener(v -> {
                 String newPassword = newPasswordInput.getText().toString().trim();
-                String oldPassword = passwordRepository.isPasswordStandart() ? "000000000000" : oldPasswordInput.getText().toString().trim();
+                String oldPassword = passwordRepository.isPasswordStandart() ? STANDART_PASSWORD : oldPasswordInput.getText().toString().trim();
 
                 boolean hasError = false;
 

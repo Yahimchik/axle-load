@@ -29,4 +29,3 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         setValue(null);
     }
 }
-

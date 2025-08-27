@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 
 @Singleton
 public class DeviceMapperImpl implements DeviceMapper {
-
     @Inject
     public DeviceMapperImpl() {
     }

@@ -3,19 +3,19 @@ package com.mehatronics.axle_load.domain.entities;
 import androidx.annotation.NonNull;
 
 public class SensorConfig {
-    private String mac;
-    private int flagSystem;
-    private int configSystem;
-    private float multiplier;
-    private float offset;
-    private int batteryMicrovoltsPerStep;
+    private final String mac;
+    private final int flagSystem;
+    private final int configSystem;
+    private final float multiplier;
+    private final float offset;
+    private final int batteryMicrovoltsPerStep;
     private int messageDeliveryPeriod;
     private int measurementPeriod;
-    private int distanceBetweenAxlesOneTwoMm;
-    private int distanceBetweenAxlesTwoThreeMm;
-    private int distanceToWheel;
-    private int configType;
-    private int installationPoint;
+    private final int distanceBetweenAxlesOneTwoMm;
+    private final int distanceBetweenAxlesTwoThreeMm;
+    private final int distanceToWheel;
+    private final int configType;
+    private final int installationPoint;
     private String stateNumber;
     private int carType;
     private int totalNumberOfAxleOnChassis;
@@ -51,25 +51,6 @@ public class SensorConfig {
         return mac;
     }
 
-    public void setFlagSystem(int flagSystem) {
-        this.flagSystem = flagSystem;
-    }
-
-    public void setConfigSystem(int configSystem) {
-        this.configSystem = configSystem;
-    }
-
-    public void setMultiplier(float multiplier) {
-        this.multiplier = multiplier;
-    }
-
-    public void setOffset(float offset) {
-        this.offset = offset;
-    }
-
-    public void setBatteryMicrovoltsPerStep(int batteryMicrovoltsPerStep) {
-        this.batteryMicrovoltsPerStep = batteryMicrovoltsPerStep;
-    }
 
     public void setMessageDeliveryPeriod(int messageDeliveryPeriod) {
         this.messageDeliveryPeriod = messageDeliveryPeriod;
@@ -77,26 +58,6 @@ public class SensorConfig {
 
     public void setMeasurementPeriod(int measurementPeriod) {
         this.measurementPeriod = measurementPeriod;
-    }
-
-    public void setDistanceBetweenAxlesOneTwoMm(int distanceBetweenAxlesOneTwoMm) {
-        this.distanceBetweenAxlesOneTwoMm = distanceBetweenAxlesOneTwoMm;
-    }
-
-    public void setDistanceBetweenAxlesTwoThreeMm(int distanceBetweenAxlesTwoThreeMm) {
-        this.distanceBetweenAxlesTwoThreeMm = distanceBetweenAxlesTwoThreeMm;
-    }
-
-    public void setDistanceToWheel(int distanceToWheel) {
-        this.distanceToWheel = distanceToWheel;
-    }
-
-    public void setConfigType(int configType) {
-        this.configType = configType;
-    }
-
-    public void setInstallationPoint(int installationPoint) {
-        this.installationPoint = installationPoint;
     }
 
     public void setStateNumber(String stateNumber) {
@@ -165,14 +126,6 @@ public class SensorConfig {
 
     public int getDistanceToWheel() {
         return distanceToWheel;
-    }
-
-    public int getConfigType() {
-        return configType;
-    }
-
-    public int getInstallationPoint() {
-        return installationPoint;
     }
 
     public String getStateNumber() {
@@ -343,11 +296,12 @@ public class SensorConfig {
         public Builder installationPosition(int installationPosition){
             this.installationPosition = installationPosition;
             return this;
-        };
+        }
+
         public Builder totalNumberOfSensorsOnAxle(int totalNumberOfSensorsOnAxle){
             this.totalNumberOfSensorsOnAxle = totalNumberOfSensorsOnAxle;
             return this;
-        };
+        }
 
         public SensorConfig build() {
             return new SensorConfig(this);

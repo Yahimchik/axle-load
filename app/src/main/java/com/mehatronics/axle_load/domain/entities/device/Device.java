@@ -67,4 +67,3 @@ public class Device implements Serializable {
         return getDevice().getAddress().hashCode();
     }
 }
-

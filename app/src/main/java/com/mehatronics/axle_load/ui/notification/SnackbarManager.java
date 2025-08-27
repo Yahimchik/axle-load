@@ -33,10 +33,6 @@ public class SnackbarManager {
         }
     }
 
-    public void showMessage(Activity activity, String message) {
-        showMessage(activity, message, null);
-    }
-
     public void showMessage(Activity activity, String message, Runnable onDismiss) {
         if (activity != null && message != null) {
             View rootView = activity.findViewById(android.R.id.content);

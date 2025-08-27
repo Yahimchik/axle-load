@@ -14,9 +14,7 @@ import java.util.Set;
 public interface AxisService {
     LiveData<List<AxisModel>> getAxisList();
 
-    public void setLoadedAxisList(List<AxisModel> list);
-
-    int getAxisCount();
+    void setLoadedAxisList(List<AxisModel> list);
 
     LiveData<String> getMessage();
 

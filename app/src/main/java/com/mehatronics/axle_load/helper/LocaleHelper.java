@@ -1,5 +1,8 @@
 package com.mehatronics.axle_load.helper;
 
+import static com.mehatronics.axle_load.constants.BundleKeys.APP_LANGUAGE;
+import static com.mehatronics.axle_load.constants.BundleKeys.APP_PREFERENCES;
+
 import android.content.Context;
 import android.content.res.Configuration;
 
@@ -22,12 +25,8 @@ public class LocaleHelper {
     }
 
     public static Context attachBaseContext(Context base) {
-        String lang = android.preference.PreferenceManager
-                .getDefaultSharedPreferences(base)
-                .getString("app_lang", AppLanguage.EN.getCode());
+        String lang = base.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+                .getString(APP_LANGUAGE, AppLanguage.EN.getCode());
         return setLocale(base, lang);
     }
 }
-
-
-

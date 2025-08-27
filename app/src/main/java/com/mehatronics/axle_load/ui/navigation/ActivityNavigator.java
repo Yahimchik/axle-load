@@ -1,14 +1,16 @@
 package com.mehatronics.axle_load.ui.navigation;
 
+import static com.mehatronics.axle_load.constants.BundleKeys.APP_LANGUAGE;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.BT_COM_MINI;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.DPS_BTN;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.SWITCH_LANGUAGE_BTN;
+import static com.mehatronics.axle_load.domain.entities.enums.AppLanguage.EN;
+import static com.mehatronics.axle_load.domain.entities.enums.AppLanguage.RU;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
+import com.mehatronics.axle_load.domain.manager.SharedPreferencesManager;
 import com.mehatronics.axle_load.helper.LocaleHelper;
 import com.mehatronics.axle_load.ui.viewModel.LanguageViewModel;
 
@@ -25,6 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class ActivityNavigator {
+    private static final String EN_CODE = EN.getCode();
     private final Class<? extends Activity>[] activities;
 
     @Inject
@@ -45,10 +51,8 @@ public class ActivityNavigator {
         }
     }
 
-    public void registerLanguageSwitcher(Activity activity, LanguageViewModel viewModel) {
-        String lang = PreferenceManager
-                .getDefaultSharedPreferences(activity)
-                .getString("app_lang", "en");
+    public void registerLanguageSwitcher(Activity activity, LanguageViewModel viewModel, SharedPreferencesManager prefsManager) {
+        String lang = prefsManager.get(APP_LANGUAGE, EN_CODE);
 
         LocaleHelper.setLocale(activity, lang);
 
@@ -58,28 +62,24 @@ public class ActivityNavigator {
                 viewModel.toggleLanguage();
                 activity.recreate();
 
-                String newLang = PreferenceManager
-                        .getDefaultSharedPreferences(activity)
-                        .getString("app_lang", "en");
+                String newLang = prefsManager.get(APP_LANGUAGE, EN_CODE);
 
-                int color = newLang.equals("en")
-                        ? activity.getResources().getColor(android.R.color.white)
-                        : activity.getResources().getColor(android.R.color.holo_blue_light);
+                int color = newLang.equals(EN_CODE)
+                        ? ContextCompat.getColor(activity, android.R.color.white)
+                        : ContextCompat.getColor(activity, android.R.color.holo_blue_light);
 
                 ((ImageButton) btnChangeLang).setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
 
-                String abbrev = newLang.equals("en") ? "EN" : "RU";
+                String abbrev = newLang.equals(EN_CODE) ? EN.name() : RU.name();
 
                 showLangPopup(activity, btnChangeLang, abbrev);
             });
 
-            String currentLang = PreferenceManager
-                    .getDefaultSharedPreferences(activity)
-                    .getString("app_lang", "en");
+            String currentLang = prefsManager.get(APP_LANGUAGE, EN_CODE);
 
-            int initialColor = currentLang.equals("en")
-                    ? activity.getResources().getColor(android.R.color.white)
-                    : activity.getResources().getColor(android.R.color.holo_blue_light);
+            int initialColor = currentLang.equals(EN_CODE)
+                    ? ContextCompat.getColor(activity, android.R.color.white)
+                    : ContextCompat.getColor(activity, android.R.color.holo_blue_light);
 
             ((ImageButton) btnChangeLang).setColorFilter(initialColor, android.graphics.PorterDuff.Mode.SRC_IN);
         }

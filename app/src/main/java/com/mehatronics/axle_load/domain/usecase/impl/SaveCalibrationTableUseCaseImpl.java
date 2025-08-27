@@ -1,6 +1,6 @@
 package com.mehatronics.axle_load.domain.usecase.impl;
 
-import com.mehatronics.axle_load.data.repository.BluetoothRepository;
+import com.mehatronics.axle_load.data.repository.impl.BluetoothRepository;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 
 import javax.inject.Inject;

@@ -13,7 +13,7 @@ public class ReadFromBTCOMMiniCommandState implements CommandStateHandler {
     @Override
     public void handle(BluetoothGattCallbackHandler handler) {
         handler.setCommand(SEVEN_COMMAND, NINE_COMMAND);
-        Log.d("MyTag", "Read from BT_COM_MINI");
+        Log.d("MyTag", "Read from BT_COM_MINI page 1");
         handler.getRepository().setStatus(WAITING);
         handler.setCommandState(new FinalCommandState());
     }

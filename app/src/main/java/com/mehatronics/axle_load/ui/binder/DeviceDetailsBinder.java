@@ -13,7 +13,7 @@ import androidx.appcompat.widget.PopupMenu;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.format.DeviceDetailsFormatter;
 import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
-import com.mehatronics.axle_load.data.service.SaveToFileService;
+import com.mehatronics.axle_load.data.service.FileService;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
@@ -22,7 +22,6 @@ import com.mehatronics.axle_load.ui.adapter.TableAdapter;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigAdapter;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigValidator;
 import com.mehatronics.axle_load.ui.adapter.sensor.SensorInfoAdapter;
-import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import java.util.ArrayList;
@@ -39,14 +38,14 @@ public class DeviceDetailsBinder {
     private TableAdapter tableAdapter;
     private final DeviceDetailsFormatter formatter;
     private final SensorConfigFormatter configFormatter;
-    private final SaveToFileService service;
+    private final FileService service;
     private final ResourceProvider provider;
     private final SensorConfigValidator validator;
     private DeviceViewModel vm;
 
     @Inject
     public DeviceDetailsBinder(
-            SaveToFileService service,
+            FileService service,
             DeviceDetailsFormatter formatter,
             SensorConfigFormatter configFormatter,
             ResourceProvider provider,

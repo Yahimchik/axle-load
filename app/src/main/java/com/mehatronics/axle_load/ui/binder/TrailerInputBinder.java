@@ -1,13 +1,11 @@
 package com.mehatronics.axle_load.ui.binder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
-import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mehatronics.axle_load.R;
@@ -25,7 +23,7 @@ public class TrailerInputBinder {
     }
 
     public void bind(Activity activity) {
-        MaterialButton btnChangeTrailer = activity.findViewById(R.id.buttonChangeTrailer);
+        MaterialSwitch switchTrailerInput = activity.findViewById(R.id.switchTrailerInput);
         TextInputLayout trailerNumber = activity.findViewById(R.id.trailerNumberLayout);
         TextInputEditText editText = activity.findViewById(R.id.trailerNumberEditText);
 
@@ -43,21 +41,7 @@ public class TrailerInputBinder {
             public void afterTextChanged(Editable s) {
             }
         });
-
-        changeTrailerOnClick(btnChangeTrailer, trailerNumber, editText);
-    }
-
-    private static void changeTrailerOnClick(MaterialButton btnChangeTrailer, TextInputLayout trailerNumber, TextInputEditText editText) {
-        btnChangeTrailer.setOnClickListener(v -> {
-            trailerNumber.setVisibility(View.VISIBLE);
-            editText.setVisibility(View.VISIBLE);
-
-            editText.requestFocus();
-            InputMethodManager imm = (InputMethodManager) editText.getContext()
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-
-            btnChangeTrailer.setEnabled(false);
-        });
+        switchTrailerInput.setOnCheckedChangeListener((buttonView, isChecked)
+                -> trailerNumber.setVisibility(isChecked ? View.VISIBLE : View.GONE));
     }
 }

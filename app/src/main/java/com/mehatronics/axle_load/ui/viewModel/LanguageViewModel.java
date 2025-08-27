@@ -31,4 +31,3 @@ public class LanguageViewModel extends ViewModel {
         return currentLang;
     }
 }
-

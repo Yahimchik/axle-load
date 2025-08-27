@@ -52,11 +52,6 @@ public class AxisServiceImpl implements AxisService {
     }
 
     @Override
-    public int getAxisCount() {
-        return Objects.requireNonNull(axisList.getValue()).size();
-    }
-
-    @Override
     public LiveData<String> getMessage() {
         return message;
     }

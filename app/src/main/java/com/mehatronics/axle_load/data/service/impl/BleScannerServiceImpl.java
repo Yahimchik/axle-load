@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.data.service.impl;
 
+import static com.mehatronics.axle_load.constants.ValueConstants.SCAN_INTERVAL;
+
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -28,7 +30,6 @@ import javax.inject.Singleton;
 
 @Singleton
 public class BleScannerServiceImpl implements BleScannerService {
-    private static final long SCAN_INTERVAL = 30000;
     private final MutableLiveData<List<Device>> scannedDevices = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<Device>> btComMiniDevices = new MutableLiveData<>(new ArrayList<>());
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -107,7 +108,7 @@ public class BleScannerServiceImpl implements BleScannerService {
             if (result == null || result.getDevice() == null) return;
 
             BluetoothDevice device = result.getDevice();
-            if (device.getName() == null) return;
+            if (device.getName() == null || device.getName().isBlank()) return; // фильтр
 
             Device newDevice = new Device(device, result);
 

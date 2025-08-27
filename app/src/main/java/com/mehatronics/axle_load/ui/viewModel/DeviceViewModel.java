@@ -1,19 +1,17 @@
 package com.mehatronics.axle_load.ui.viewModel;
 
 import android.Manifest;
-import android.util.Log;
 
 import androidx.annotation.RequiresPermission;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
 import com.mehatronics.axle_load.data.mapper.ConfiguredDeviceMapper;
-import com.mehatronics.axle_load.data.repository.BluetoothRepository;
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
+import com.mehatronics.axle_load.data.repository.impl.BluetoothRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.AxisUiModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
@@ -55,14 +53,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
  */
 @HiltViewModel
 public class DeviceViewModel extends ViewModel {
+    private final MediatorLiveData<List<AxisUiModel>> uiAxisModels = new MediatorLiveData<>();
+    private final MediatorLiveData<Boolean> allDevicesSaved = new MediatorLiveData<>();
     private final SubmitPasswordUseCase submitPasswordUseCase;
     private final SaveCalibrationTableUseCase saveUseCase;
     private final BluetoothRepository bluetoothRepository;
     private final PasswordRepository passwordRepository;
     private final DeviceRepository deviceRepository;
     private final ConfiguredDeviceMapper mapper;
-
-    private final MediatorLiveData<Boolean> allDevicesSaved = new MediatorLiveData<>();
 
     /**
      * Конструктор с внедрением зависимостей.
@@ -446,20 +444,6 @@ public class DeviceViewModel extends ViewModel {
     // === UI and Debug Helpers ===
 
     /**
-     * Вспомогательный метод для логирования списка MAC-адресов устройств на осях.
-     *
-     * @param owner LifecycleOwner для привязки наблюдателя
-     */
-    public void method(LifecycleOwner owner) {
-        getAxisList().observe(owner, list ->
-                Log.d("MyTag", String.valueOf(list.stream()
-                        .flatMap(axis -> axis.getSideDeviceMap()
-                                .values()
-                                .stream()
-                        ).collect(Collectors.toList()))));
-    }
-
-    /**
      * Возвращает LiveData режима выбора устройств.
      *
      * @return LiveData<Boolean>
@@ -611,7 +595,6 @@ public class DeviceViewModel extends ViewModel {
         return bluetoothRepository.getConfigurationSavedLiveData();
     }
 
-    private final MediatorLiveData<List<AxisUiModel>> uiAxisModels = new MediatorLiveData<>();
 
     private void combine(List<AxisModel> axisList, List<Device> scannedDevices) {
         if (axisList == null || scannedDevices == null) return;

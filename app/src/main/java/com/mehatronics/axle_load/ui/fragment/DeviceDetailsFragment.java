@@ -12,10 +12,14 @@ import static com.mehatronics.axle_load.R.string.password_reset_for;
 import static com.mehatronics.axle_load.R.string.password_set_for;
 import static com.mehatronics.axle_load.R.string.save_configuration;
 import static com.mehatronics.axle_load.R.string.the_configuration_has_been_read;
+import static com.mehatronics.axle_load.constants.BundleKeys.KEY_CANCELLED;
+import static com.mehatronics.axle_load.constants.BundleKeys.KEY_NEW_PASSWORD;
+import static com.mehatronics.axle_load.constants.BundleKeys.KEY_OLD_PASSWORD;
+import static com.mehatronics.axle_load.constants.BundleKeys.REQUEST_KEY;
+import static com.mehatronics.axle_load.constants.BundleKeys.TAG_INPUT;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.READ;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WAITING;
 import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRITE;
-import static com.mehatronics.axle_load.ui.fragment.PasswordInputDialogFragment.TAG;
 
 import android.Manifest;
 import android.app.Activity;
@@ -36,12 +40,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
-import com.mehatronics.axle_load.data.service.SaveToFileService;
-import com.mehatronics.axle_load.domain.entities.AxisModel;
+import com.mehatronics.axle_load.data.service.FileService;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
-import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.activity.BaseBluetoothActivity;
@@ -79,7 +81,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
     @Inject
     protected PasswordRepository passwordRepository;
     @Inject
-    protected SaveToFileService service;
+    protected FileService service;
     @Inject
     protected DeviceTypeRepository typeRepository;
     @Inject
@@ -212,15 +214,15 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
         var dialogFragment = new ChangePasswordDialogFragment(provider, passwordRepository);
 
         getParentFragmentManager().setFragmentResultListener(
-                ChangePasswordDialogFragment.REQUEST_KEY,
+                REQUEST_KEY,
                 getViewLifecycleOwner(),
                 (requestKey, bundle) -> {
-                    if (bundle.getBoolean(ChangePasswordDialogFragment.KEY_CANCELLED, false)) {
+                    if (bundle.getBoolean(KEY_CANCELLED, false)) {
                         showMessage(getString(R.string.cancel));
                         loadingManager.showLoading(false);
                     } else {
-                        String oldPassword = bundle.getString(ChangePasswordDialogFragment.KEY_OLD_PASSWORD);
-                        String newPassword = bundle.getString(ChangePasswordDialogFragment.KEY_NEW_PASSWORD);
+                        String oldPassword = bundle.getString(KEY_OLD_PASSWORD);
+                        String newPassword = bundle.getString(KEY_NEW_PASSWORD);
 
                         passwordRepository.setPassword(oldPassword);
                         passwordRepository.setNewPassword(newPassword);
@@ -230,7 +232,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                     }
                 });
 
-        dialogFragment.show(getParentFragmentManager(), ChangePasswordDialogFragment.TAG);
+        dialogFragment.show(getParentFragmentManager(), TAG_INPUT);
     }
 
     private void observeDetails(DeviceDetails deviceDetails) {
@@ -239,12 +241,6 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
             navigator.showFragment(new AxleOverviewFragment());
         }
         if (isRead) {
-//            List<AxisModel> axes = new ArrayList<>();
-//
-//            AxisModel axis = new AxisModel(1);
-//            axis.setDeviceForSide(AxisSide.LEFT, "54:0F:57:CE:65:02");
-//            axis.setDeviceForSide(AxisSide.RIGHT, "A4:6D:D4:E2:F8:8D");
-//            axes.add(axis);
 
             closeFragment();
             navigator.showFragment(new AxleOverviewFragment());
@@ -339,7 +335,7 @@ public class DeviceDetailsFragment extends Fragment implements MessageCallback, 
                 closeFragment();
             }
         });
-        dialog.show(getParentFragmentManager(), TAG);
+        dialog.show(getParentFragmentManager(), TAG_INPUT);
     }
 
     private boolean isDialogVisible() {

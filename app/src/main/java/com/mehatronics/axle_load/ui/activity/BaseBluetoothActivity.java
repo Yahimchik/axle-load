@@ -48,6 +48,12 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public abstract class BaseBluetoothActivity extends AppCompatActivity implements BluetoothHandlerContract {
     @Inject
+    protected TrailerInputBinder trailerInputBinder;
+    @Inject
+    protected DeviceRepository deviceRepository;
+    @Inject
+    protected DeviceTypeRepository repository;
+    @Inject
     protected SnackbarManager snackbarManager;
     @Inject
     protected FragmentNavigator navigator;
@@ -55,12 +61,6 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
     protected ResourceProvider provider;
     @Inject
     protected DeviceMapper mapper;
-    @Inject
-    protected DeviceTypeRepository repository;
-    @Inject
-    protected TrailerInputBinder trailerInputBinder;
-    @Inject
-    protected DeviceRepository deviceRepository;
 
     protected DeviceViewModel viewModel;
     private BluetoothHandler handler;

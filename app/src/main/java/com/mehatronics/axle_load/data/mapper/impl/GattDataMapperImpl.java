@@ -9,7 +9,6 @@ import static com.mehatronics.axle_load.utils.ByteUtils.composeChassisNumber;
 import static com.mehatronics.axle_load.utils.ByteUtils.composeSensorNumber;
 import static com.mehatronics.axle_load.utils.ByteUtils.detectorToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.extractMacFromBytes;
-import static com.mehatronics.axle_load.utils.ByteUtils.extractStringFromBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToFourBytes;
 import static com.mehatronics.axle_load.utils.ByteUtils.intToTwoBytes;
@@ -27,18 +26,13 @@ import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.CalibrationTable;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
-import com.mehatronics.axle_load.domain.entities.device.BTCOMMiniDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,6 +44,10 @@ public class GattDataMapperImpl implements GattDataMapper {
 
     private final DateFormatMapper dateFormatMapper;
     private final DeviceTypeRepository repository;
+    private List<AxisModel> result = new ArrayList<>();
+    private final List<AxisModel> first = new ArrayList<>();
+    private final List<AxisModel> second = new ArrayList<>();
+    private boolean useSecond = false;
 
     @Inject
     public GattDataMapperImpl(DateFormatMapper dateFormatMapper, DeviceTypeRepository repository) {
@@ -167,9 +165,6 @@ public class GattDataMapperImpl implements GattDataMapper {
     @Override
     public List<AxisModel> convertToAxisModelList(byte[] buffer) {
         int axisCount = buffer[3];
-        List<AxisModel> first = new ArrayList<>();
-        List<AxisModel> second = new ArrayList<>();
-        boolean useSecond = false;
 
         for (int i = 4; i + 7 < buffer.length; i += 8) {
             String mac = extractMacFromBytes(buffer, i);
@@ -205,7 +200,7 @@ public class GattDataMapperImpl implements GattDataMapper {
             }
         }
 
-        List<AxisModel> result = new ArrayList<>();
+        result.clear();
         result.addAll(first);
         result.addAll(second);
 
@@ -221,5 +216,12 @@ public class GattDataMapperImpl implements GattDataMapper {
         }
 
         return result;
+    }
+
+    public void resetAxisData() {
+        first.clear();
+        second.clear();
+        result.clear();
+        useSecond = false;
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Когда включено и не в фокусе -->
+    <item android:color="@color/white" android:state_enabled="true"/>
+    <!-- Когда поле в фокусе -->
+    <item android:color="@color/white" android:state_focused="true"/>
+    <!-- По умолчанию -->
+    <item android:color="@color/white"/>
+</selector>

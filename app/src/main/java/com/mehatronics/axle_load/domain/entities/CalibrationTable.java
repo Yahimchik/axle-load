@@ -7,8 +7,8 @@ import java.util.UUID;
 
 public class CalibrationTable {
     private UUID id;
-    private  int detector;
-    private  float multiplier;
+    private int detector;
+    private float multiplier;
     private final boolean isLast;
 
     public CalibrationTable(int detector, float multiplier) {
@@ -70,8 +70,7 @@ public class CalibrationTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CalibrationTable that = (CalibrationTable) o;
-        return /*id.equals(that.id) &&*/
-                detector == that.detector &&
+        return detector == that.detector &&
                 Float.compare(that.multiplier, multiplier) == 0 &&
                 isLast == that.isLast;
     }

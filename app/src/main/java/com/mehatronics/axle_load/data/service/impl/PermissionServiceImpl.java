@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.data.service.impl;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -36,9 +37,8 @@ public record PermissionServiceImpl(Context context) implements PermissionServic
 
     @Override
     public boolean isLocationEnabled() {
-        return Settings.Secure
-                .getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, 0)
-                != Settings.Secure.LOCATION_MODE_OFF;
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager == null) return false;
+        return locationManager.isLocationEnabled();
     }
 }
-

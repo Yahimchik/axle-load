@@ -13,4 +13,3 @@ public interface ConnectionHandler {
 
     void disconnect();
 }
-

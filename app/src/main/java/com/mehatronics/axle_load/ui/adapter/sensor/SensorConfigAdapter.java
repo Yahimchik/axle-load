@@ -21,16 +21,14 @@ import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
 
 public class SensorConfigAdapter {
-
-    private final EditText messageDeliveryPeriod;
-    private final EditText measurementPeriod;
-    private final CheckBox trailerChangeableCheckBox;
-    private final EditText totalAxlesEditText;
-    private final EditText totalSensorsEditText;
     private final EditText numberOfSensorsOnAxleEditText;
+    private final EditText messageDeliveryPeriod;
+    private final EditText totalSensorsEditText;
+    private final EditText totalAxlesEditText;
+    private final EditText measurementPeriod;
     private final EditText stateNumber;
     private final Button finishButton;
-
+    private final CheckBox trailerChangeableCheckBox;
     private final SensorConfigFormatter formatter;
     private final SensorConfigValidator validator;
     private final SpinnerHelper spinnerHelper;

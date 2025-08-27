@@ -18,4 +18,3 @@ public class DPSActivity extends BaseBluetoothActivity {
         setupBluetooth(DPS);
     }
 }
-

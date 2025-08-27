@@ -17,7 +17,7 @@ import android.widget.EditText;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
-import com.mehatronics.axle_load.data.service.SaveToFileService;
+import com.mehatronics.axle_load.data.service.FileService;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
@@ -32,9 +32,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class AxisViewBinder implements BaseBinder {
+public class AxisViewBinder {
     private final FragmentNavigator navigator;
-    private final SaveToFileService service;
+    private final FileService service;
     private final EditText editTextAxisCount;
     private final EditText editTextTractorPlate;
     private final EditText editTextTrailerPlate;
@@ -55,7 +55,7 @@ public class AxisViewBinder implements BaseBinder {
 
     public AxisViewBinder(
             View root,
-            SaveToFileService service,
+            FileService service,
             BluetoothHandler handler,
             MessageCallback callback,
             ResourceProvider resourceProvider,
@@ -203,36 +203,10 @@ public class AxisViewBinder implements BaseBinder {
             repository.setStatus(WHRITE);
         });
 
-        truckButton.setOnClickListener(v -> {
-            deviceInfo.setType(0);
-            editTextTractorPlate.setVisibility(VISIBLE);
-            saveButton.setVisibility(VISIBLE);
-            buttonConfigureLoaded.setVisibility(VISIBLE);
-            editTextAxisCount.setVisibility(VISIBLE);
-            editTextTrailerPlate.setVisibility(GONE);
-            onDeviceInfoChanged.accept(deviceInfo);
-        });
-
-        truckWithTrailer.setOnClickListener(v -> {
-            deviceInfo.setType(1);
-            editTextTractorPlate.setVisibility(VISIBLE);
-            saveButton.setVisibility(VISIBLE);
-            buttonConfigureLoaded.setVisibility(VISIBLE);
-            editTextAxisCount.setVisibility(VISIBLE);
-            editTextTrailerPlate.setVisibility(VISIBLE);
-            onDeviceInfoChanged.accept(deviceInfo);
-        });
+        truckButton.setOnClickListener(v -> setConfigType(0, GONE));
+        truckWithTrailer.setOnClickListener(v -> setConfigType(1, VISIBLE));
 
         buttonConfigureLoaded.setOnClickListener(v -> onConfigureLoadedClick.run());
-    }
-
-    private boolean isCanSave() {
-        var axisList = adapter.getCurrentList();
-        return !axisList.isEmpty() && axisList.stream()
-                .allMatch(axis -> axis.getSideDeviceMap()
-                        .values()
-                        .stream()
-                        .anyMatch(Objects::nonNull));
     }
 
     public void addFinishedMac(Set<String> mac) {
@@ -254,5 +228,24 @@ public class AxisViewBinder implements BaseBinder {
     public void updateSaveButtonState(List<AxisModel> axes) {
         submitList(axes);
         saveButton.setEnabled(true);
+    }
+
+    private void setConfigType(int type, int gone) {
+        deviceInfo.setType(type);
+        editTextTractorPlate.setVisibility(VISIBLE);
+        saveButton.setVisibility(VISIBLE);
+        buttonConfigureLoaded.setVisibility(VISIBLE);
+        editTextAxisCount.setVisibility(VISIBLE);
+        editTextTrailerPlate.setVisibility(gone);
+        onDeviceInfoChanged.accept(deviceInfo);
+    }
+
+    private boolean isCanSave() {
+        var axisList = adapter.getCurrentList();
+        return !axisList.isEmpty() && axisList.stream()
+                .allMatch(axis -> axis.getSideDeviceMap()
+                        .values()
+                        .stream()
+                        .anyMatch(Objects::nonNull));
     }
 }

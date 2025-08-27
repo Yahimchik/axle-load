@@ -103,8 +103,6 @@ public class GattWriteServiceImpl implements GattWriteService {
         var characteristic = service.getCharacteristic(uuids[1]);
         if (characteristic == null) return;
 
-        Log.d("MyTag", Arrays.toString(buffer));
-
         characteristic.setValue(buffer);
         gatt.writeCharacteristic(characteristic);
     }

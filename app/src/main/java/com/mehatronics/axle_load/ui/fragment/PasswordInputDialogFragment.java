@@ -21,7 +21,6 @@ import com.mehatronics.axle_load.ui.adapter.listener.PasswordListener;
 import javax.inject.Inject;
 
 public class PasswordInputDialogFragment extends DialogFragment {
-    public static final String TAG = "PasswordInputDialog";
     private PasswordListener listener;
     private final ResourceProvider resourceProvider;
 

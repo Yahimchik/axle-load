@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.data.service.impl;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_NUMBER;
 import static com.mehatronics.axle_load.constants.BundleKeys.AXIS_SIDE;
 import static com.mehatronics.axle_load.constants.BundleKeys.MAC;
+import static com.mehatronics.axle_load.constants.BundleKeys.RESULT_KEY;
 
 import android.os.Bundle;
 
@@ -24,7 +25,6 @@ import javax.inject.Singleton;
 
 @Singleton
 public class SensorSelectionServiceImpl implements SensorSelectionService {
-    private static final String RESULT_KEY = "selected_device_result";
 
     @Inject
     public SensorSelectionServiceImpl() {
@@ -63,8 +63,8 @@ public class SensorSelectionServiceImpl implements SensorSelectionService {
     @Override
     public void openSensorSelection(@NonNull FragmentNavigator navigator, @NonNull InstalationPoint point, @NonNull Fragment fragment) {
         Bundle args = new Bundle();
-        args.putInt(AXIS_NUMBER, point.getAxleNumber());
-        args.putString(AXIS_SIDE, point.getPosition().name());
+        args.putInt(AXIS_NUMBER, point.axleNumber());
+        args.putString(AXIS_SIDE, point.position().name());
         fragment.setArguments(args);
         navigator.showFragment(fragment);
     }

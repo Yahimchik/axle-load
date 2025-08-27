@@ -33,4 +33,3 @@ public class CalibrationDiffUtil extends DiffUtil.ItemCallback<CalibrationTable>
         return o.equals(n);
     }
 }
-

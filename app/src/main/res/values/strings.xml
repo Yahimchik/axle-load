@@ -32,7 +32,7 @@
     <string name="calibration">Сalibration</string>
     <string name="changeable_short">Replaceable</string>
     <string name="current_values">Current values</string>
-    <string name="change_the_trailer">Change the trailer</string>
+    <string name="change_the_trailer">Swap trailer</string>
 
     <string name="delete" translatable="false">DELETE</string>
     <string name="device_mac" translatable="false">MAC: </string>

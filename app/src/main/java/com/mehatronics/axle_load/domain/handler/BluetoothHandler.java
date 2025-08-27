@@ -68,7 +68,6 @@ public class BluetoothHandler {
                     contract.showMessage(provider.getString(configure_reset, axis));
                 },
                 () -> {
-                    // Пользователь отменил → ничего не делаем
                 }
         );
     }

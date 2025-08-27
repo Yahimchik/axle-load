@@ -4,7 +4,6 @@ import static android.view.View.GONE;
 import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mehatronics.axle_load.R;
-import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceClickListener;
 import com.mehatronics.axle_load.data.dto.DeviceResponseDTO;
 import com.mehatronics.axle_load.ui.adapter.diffUtil.DeviceDiffUtil;
+import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,6 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         return new ViewHolder(view);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DeviceResponseDTO device = devices.get(position);

@@ -1,5 +1,6 @@
 package com.mehatronics.axle_load.data.mapper.impl;
 
+import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
 import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToValue;
 
 import android.bluetooth.BluetoothDevice;
@@ -30,7 +31,7 @@ public class ConfiguredDeviceMapperImpl implements ConfiguredDeviceMapper {
         ScanResult scan = device.getScanResult();
 
         if (bt == null || scan == null || scan.getScanRecord() == null) {
-            return new ConfiguredDeviceDTO("Unknown", "-", "-");
+            return new ConfiguredDeviceDTO(UNKNOWN, "-", "-");
         }
 
         byte[] bytes = scan.getScanRecord().getBytes();
