@@ -4,28 +4,29 @@ import static com.mehatronics.axle_load.constants.BundleKeys.APP_LANGUAGE;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.BT_COM_MINI;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.DPS_BTN;
 import static com.mehatronics.axle_load.constants.ButtonsConstants.SWITCH_LANGUAGE_BTN;
+import static com.mehatronics.axle_load.constants.FormatConstants.LANGUAGE_FLAGS;
 import static com.mehatronics.axle_load.domain.entities.enums.AppLanguage.EN;
-import static com.mehatronics.axle_load.domain.entities.enums.AppLanguage.RU;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.domain.entities.enums.AppLanguage;
 import com.mehatronics.axle_load.domain.manager.SharedPreferencesManager;
 import com.mehatronics.axle_load.helper.LocaleHelper;
-import com.mehatronics.axle_load.ui.viewModel.LanguageViewModel;
+import com.mehatronics.axle_load.ui.adapter.LanguageAdapter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -51,38 +52,25 @@ public class ActivityNavigator {
         }
     }
 
-    public void registerLanguageSwitcher(Activity activity, LanguageViewModel viewModel, SharedPreferencesManager prefsManager) {
-        String lang = prefsManager.get(APP_LANGUAGE, EN_CODE);
+    public void registerLanguageSwitcher(Activity activity, SharedPreferencesManager prefsManager) {
+        String langCode = prefsManager.get(APP_LANGUAGE, EN_CODE);
+        AppLanguage currentLang = AppLanguage.fromCode(langCode);
 
-        LocaleHelper.setLocale(activity, lang);
+        LocaleHelper.setLocale(activity, langCode);
 
         var btnChangeLang = activity.findViewById(SWITCH_LANGUAGE_BTN);
-        if (btnChangeLang instanceof ImageButton) {
-            btnChangeLang.setOnClickListener(v -> {
-                viewModel.toggleLanguage();
-                activity.recreate();
 
-                String newLang = prefsManager.get(APP_LANGUAGE, EN_CODE);
+        setLanguage(currentLang, (ImageButton) btnChangeLang);
 
-                int color = newLang.equals(EN_CODE)
-                        ? ContextCompat.getColor(activity, android.R.color.white)
-                        : ContextCompat.getColor(activity, android.R.color.holo_blue_light);
+        btnChangeLang.setOnClickListener(v ->
+                showLanguagePopup(activity, btnChangeLang, selectedLang -> {
+                    prefsManager.put(APP_LANGUAGE, selectedLang.getCode());
+                    LocaleHelper.setLocale(activity, selectedLang);
+                    activity.recreate();
+                    setLanguage(selectedLang, (ImageButton) btnChangeLang);
+                })
+        );
 
-                ((ImageButton) btnChangeLang).setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
-
-                String abbrev = newLang.equals(EN_CODE) ? EN.name() : RU.name();
-
-                showLangPopup(activity, btnChangeLang, abbrev);
-            });
-
-            String currentLang = prefsManager.get(APP_LANGUAGE, EN_CODE);
-
-            int initialColor = currentLang.equals(EN_CODE)
-                    ? ContextCompat.getColor(activity, android.R.color.white)
-                    : ContextCompat.getColor(activity, android.R.color.holo_blue_light);
-
-            ((ImageButton) btnChangeLang).setColorFilter(initialColor, android.graphics.PorterDuff.Mode.SRC_IN);
-        }
     }
 
     private void startActivity(Activity activity, Class<? extends Activity> activityClass) {
@@ -97,32 +85,36 @@ public class ActivityNavigator {
         );
     }
 
-    private void showLangPopup(Activity activity, View anchor, String abbrev) {
-        TextView textView = new TextView(activity);
-        textView.setText(abbrev);
-        textView.setTextColor(Color.WHITE);
-        textView.setTextSize(14f);
-        textView.setPadding(24, 12, 24, 12);
+    private void showLanguagePopup(Activity activity, View anchor, Consumer<AppLanguage> onSelected) {
+        RecyclerView recyclerView = new RecyclerView(activity);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(Color.parseColor("#88000000"));
-        bg.setCornerRadius(16f);
-        textView.setBackground(bg);
-
-        PopupWindow popup = new PopupWindow(textView,
+        final PopupWindow popup = new PopupWindow(recyclerView,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        popup.setOutsideTouchable(true);
-        popup.setFocusable(false);
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
 
-        textView.setAlpha(0f);
+        LanguageAdapter adapter = new LanguageAdapter(
+                Arrays.asList(AppLanguage.values()),
+                LANGUAGE_FLAGS,
+                lang -> {
+                    onSelected.accept(lang);
+                    popup.dismiss();
+                }
+        );
+
+        recyclerView.setAdapter(adapter);
+
+        popup.setOutsideTouchable(true);
+        popup.setFocusable(true);
         popup.showAsDropDown(anchor);
-        textView.animate()
-                .alpha(1f)
-                .setDuration(200)
-                .withEndAction(() -> textView.animate()
-                        .alpha(0f)
-                        .setDuration(1500)
-                        .withEndAction(popup::dismiss));
+    }
+
+    private void setLanguage(AppLanguage selected, ImageButton btnChangeLang) {
+        Integer flag = LANGUAGE_FLAGS.get(selected);
+        if (flag == null) {
+            flag = R.drawable.ic_flag_united_kingdom;
+        }
+        btnChangeLang.setImageResource(flag);
     }
 }

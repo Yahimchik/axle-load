@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">Нагрузка на вось</string>
+    <string name="available_devices">Даступныя прылады:</string>
+    <string name="axle">ВОСЬ</string>
+    <string name="axle_center">ЦЭНТР</string>
+    <string name="axle_left">ЛЕВА</string>
+    <string name="axle_numbered">ВОСЬ %1$d</string>
+    <string name="axle_right">ПРАВА</string>
+    <string name="axles_count">Абярыце колькасць восяў</string>
+
+    <string name="axis_config">Канфігурацыя восі</string>
+
+    <string name="battery">Батарэя:</string>
+
+    <string name="calibration_table">Тарыровачная табліца</string>
+    <string name="cancel">Адмена</string>
+    <string name="change_langauge">Змяніць мову</string>
+    <string name="choose_sensor">Абярыце датчык</string>
+    <string name="choose_sensor_type">Абярыце тып датчыка</string>
+    <string name="config_type">Тып канфігурацыі</string>
+    <string name="configuration_settings">Наладзіць восі</string>
+    <string name="configure_sensors">Наладзіць датчыкі</string>
+    <string name="configure_reset">Налады восі %1$s скінуты</string>
+    <string name="configure_the_settings">Налады</string>
+    <string name="configure_loaded">Загрузіць з файла</string>
+    <string name="connection_failed">Не атрымалася падключыцца да прылады</string>
+
+    <string name="device_name">Назва прылады</string>
+    <string name="device_rssi">Сігнал:</string>
+    <string name="device_status">Статус:</string>
+    <string name="device_type">Тып:</string>
+    <string name="dialog_bluetooth_message">Для выкарыстання праграмы патрабуецца ўключыць Bluetooth.</string>
+    <string name="dialog_bluetooth_title">Уключэнне Bluetooth</string>
+    <string name="dialog_gps_message">Для выкарыстання праграмы патрабуецца ўключыць GPS.</string>
+    <string name="dialog_gps_title">Уключэнне GPS</string>
+    <string name="disconnect_button">Адключыцца</string>
+    <string name="disconnect_from">Адключэнне ад %1$s</string>
+
+    <string name="enter_number_of_axes">Увядзіце колькасць восяў (1 – 7)</string>
+    <string name="enter_password">Увядзіце пароль</string>
+    <string name="error_axis_out_of_range">Увядзіце лік ад 1 да 7</string>
+    <string name="error_empty_axis_count">Увядзіце колькасць восяў</string>
+    <string name="error_invalid_number">Увядзіце карэктны лік</string>
+    <string name="error_select_at_least_one_sensor_per_axis">Абярыце хаця б адзін датчык на кожнай восі</string>
+    <string name="error_sensor_not_selected">Датчык не абраны</string>
+    <string name="error_reading_the_file">Няправільны фармат або файл</string>
+    <string name="error_message_period_range">Значэнне павінна быць ад 2 да 1800</string>
+    <string name="error_measurement_period_range">Значэнне павінна быць ад 2 да 1800</string>
+    <string name="error_state_number_length">Максімум 10 сімвалаў</string>
+    <string name="error_required">Абавязковае поле</string>
+    <string name="error_total_axles_range">Значэнне павінна быць ад 1 да 7</string>
+    <string name="error_total_sensors_range">Значэнне павінна быць ад 1 да 14</string>
+    <string name="error_sensors_on_axle_range">Значэнне павінна быць 1 або 2</string>
+    <string name="error_installation_point_greater_than_total_axles">Пункт усталявання не можа быць больш агульнай колькасці восяў</string>
+    <string name="error_sensor_number_greater_than_total_sensors">Нумар датчыка не можа быць больш агульнай колькасці датчыкаў</string>
+    <string name="error_total_sensors_greater_than_axles_times_two">Колькасць датчыкаў не можа перавышаць %1$s</string>
+
+    <string name="firmware_version">Версія прашыўкі:</string>
+    <string name="finish_button">ЗАВЕРШЫЦЬ</string>
+
+    <string name="hardware_version">Версія абсталявання:</string>
+
+    <string name="installation_point">Пункт усталявання</string>
+    <string name="invalid_detector">Няправільны датчык у радку %1$d</string>
+    <string name="invalid_password_for">Няправільны пароль: %1$s</string>
+
+    <string name="manufacturer">Вытворца:</string>
+    <string name="measurement_period">Перыяд вылічэнняў</string>
+    <string name="message_delivery_period">Перыяд дастаўкі паведамленняў</string>
+    <string name="model_type">Тып датчыка:</string>
+
+    <string name="no">Не</string>
+
+    <string name="ok">ОК</string>
+
+    <string name="pressure">Ціск:</string>
+    <string name="pressure_short">Ціск:</string>
+    <string name="password">Пароль</string>
+
+    <string name="password_cannot_be_empty">Пароль не можа быць пустым</string>
+    <string name="password_new">Новы пароль</string>
+    <string name="password_reset_for">Пароль скінуты: %1$s</string>
+    <string name="password_set_for">Пароль усталяваны: %1$s</string>
+    <string name="read_from_file">ПРАЧЫТАЦЬ З ФАЙЛА</string>
+    <string name="read_from_sensor">ПРАЧЫТАЦЬ З ДАТЧЫКА</string>
+    <string name="reset">Скінуць</string>
+    <string name="reset_password">СКІНУЦЬ ПАРОЛЬ</string>
+
+    <string name="reset_devices">Скінуць прылады</string>
+    <string name="reset_all_devices_on_the_axis">Вы ўпэўненыя, што жадаеце скінуць усе прылады на восі %1$s</string>
+    <string name="save_button">ЗАХАВАЦЬ У ДАТЧЫК</string>
+    <string name="save_configuration">Налады захаваны</string>
+    <string name="save_to_file">ЗАХАВАЦЬ У ФАЙЛ</string>
+    <string name="selected">Абраны %1$s</string>
+    <string name="sensor_list">Спіс прылад</string>
+    <string name="serial_number">Серыйны нумар:</string>
+    <string name="set_new_password">УСТАЛЯВАЦЬ НОВЫ ПАРОЛЬ</string>
+    <string name="stateNumber">Рэгістрацыйны нумар</string>
+
+    <string name="save_to_file_not_allowed_at">Захаванне не падтрымліваецца на гэтай версіі Android</string>
+    <string name="saved_in">Захавана ў: %1$s</string>
+
+    <string name="tar_table">Тар. табліца %1$s</string>
+    <string name="total_axles">Агульная колькасць восяў</string>
+    <string name="total_sensors">Агульная колькасць датчыкаў</string>
+    <string name="trailer_changeable">Шасі несменнае/зменнае</string>
+    <string name="truck">Цягнік</string>
+
+    <string name="calibration">Тарыроўка</string>
+    <string name="changeable_short">Зменны</string>
+
+    <string name="weight">Вага:</string>
+    <string name="wheel_center">Цэнтр восі %1$d</string>
+    <string name="wheel_left">Левае кола восі %1$d</string>
+    <string name="wheel_right">Правае кола восі %1$d</string>
+
+    <string name="yes">Так</string>
+    <string name="password_old">Стары пароль</string>
+    <string name="configuration">Канфігурацыя</string>
+    <string name="total_weight">Агульная вага</string>
+    <string name="the_configuration_has_been_read">Канфігурацыя прачытана</string>
+    <string name="total_axis">Усяго восяў</string>
+    <string name="total_sensors_in">Усяго датчыкаў</string>
+    <string name="number_of_sensors_per_axis">Колькасць датчыкаў на восі</string>
+    <string name="truck_with_trailer">Цягнік з прычэпам</string>
+    <string name="truck_state_number">Рэгістрацыйны знак цягніка</string>
+    <string name="trailer_state_number">Рэгістрацыйны знак прычэпа</string>
+    <string name="current_values">Бягучыя значэнні</string>
+    <string name="change_the_trailer">Змяніць прычэп</string>
+</resources>

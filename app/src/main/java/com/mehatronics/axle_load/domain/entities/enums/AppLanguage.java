@@ -3,7 +3,8 @@ package com.mehatronics.axle_load.domain.entities.enums;
 public enum AppLanguage {
     EN("en"),
     RU("ru"),
-    UZ("uz");
+    BE("be"),
+    FR("fr");
 
     private final String code;
 

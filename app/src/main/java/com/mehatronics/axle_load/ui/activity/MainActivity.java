@@ -6,16 +6,13 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mehatronics.axle_load.data.service.PermissionObserverService;
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.service.PermissionObserverService;
 import com.mehatronics.axle_load.domain.manager.SharedPreferencesManager;
 import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
-
-
-import com.mehatronics.axle_load.ui.viewModel.LanguageViewModel;
-import com.mehatronics.axle_load.ui.viewModel.PermissionsViewModel;
 import com.mehatronics.axle_load.helper.LocaleHelper;
 import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
+import com.mehatronics.axle_load.ui.viewModel.PermissionsViewModel;
 
 import javax.inject.Inject;
 
@@ -37,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     protected ActivityNavigator activityNavigator;
     @Inject
     protected SharedPreferencesManager manager;
-    private LanguageViewModel languageViewModel;
-
 
     /**
      * Вызывается при создании активити.
@@ -51,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        languageViewModel = new ViewModelProvider(this).get(LanguageViewModel.class);
         var permissionsViewModel = new ViewModelProvider(this).get(PermissionsViewModel.class);
 
         permissionObserverService.setActivity(this);
@@ -76,6 +70,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         activityNavigator.registerActivities(this);
-        activityNavigator.registerLanguageSwitcher(this, languageViewModel, manager);
+        activityNavigator.registerLanguageSwitcher(this, manager);
     }
 }
