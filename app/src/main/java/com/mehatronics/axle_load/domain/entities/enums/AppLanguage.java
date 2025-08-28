@@ -5,7 +5,6 @@ public enum AppLanguage {
     RU("ru"),
     BE("be"),
     FR("fr");
-
     private final String code;
 
     AppLanguage(String code) {

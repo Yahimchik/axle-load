@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui.adapter;
 
+import static com.mehatronics.axle_load.constants.FormatConstants.LANGUAGE_FLAGS;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +15,16 @@ import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.enums.AppLanguage;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.LangViewHolder> {
 
     private final List<AppLanguage> languages;
-    private final Map<AppLanguage, Integer> languageFlags;
     private final Consumer<AppLanguage> onLanguageSelected;
 
     public LanguageAdapter(List<AppLanguage> languages,
-                           Map<AppLanguage, Integer> languageFlags,
                            Consumer<AppLanguage> onLanguageSelected) {
         this.languages = languages;
-        this.languageFlags = languageFlags;
         this.onLanguageSelected = onLanguageSelected;
     }
 
@@ -42,8 +40,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.LangVi
     public void onBindViewHolder(@NonNull LangViewHolder holder, int position) {
         AppLanguage lang = languages.get(position);
         holder.name.setText(lang.name());
-        holder.flag.setImageResource(languageFlags.getOrDefault(lang, R.drawable.ic_flag_united_kingdom));
-
+        holder.setLanguage(lang);
         holder.itemView.setOnClickListener(v -> onLanguageSelected.accept(lang));
     }
 
@@ -52,7 +49,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.LangVi
         return languages.size();
     }
 
-    static class LangViewHolder extends RecyclerView.ViewHolder {
+    public static class LangViewHolder extends RecyclerView.ViewHolder {
         ImageView flag;
         TextView name;
 
@@ -60,6 +57,14 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.LangVi
             super(itemView);
             flag = itemView.findViewById(R.id.lang_flag);
             name = itemView.findViewById(R.id.lang_name);
+        }
+
+        private void setLanguage(AppLanguage selected) {
+            Integer flag = LANGUAGE_FLAGS.get(selected);
+            if (flag == null) {
+                flag = R.drawable.ic_flag_united_kingdom;
+            }
+            this.flag.setImageResource(flag);
         }
     }
 }

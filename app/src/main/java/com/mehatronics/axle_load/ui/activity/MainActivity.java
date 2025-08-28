@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.service.PermissionObserverService;
-import com.mehatronics.axle_load.domain.manager.SharedPreferencesManager;
 import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
 import com.mehatronics.axle_load.helper.LocaleHelper;
+import com.mehatronics.axle_load.ui.binder.MainActivityBinder;
 import com.mehatronics.axle_load.ui.navigation.ActivityNavigator;
 import com.mehatronics.axle_load.ui.viewModel.PermissionsViewModel;
 
@@ -29,11 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     @Inject
+    protected MainActivityBinder activityBinder;
+    @Inject
     protected PermissionObserverService permissionObserverService;
-    @Inject
-    protected ActivityNavigator activityNavigator;
-    @Inject
-    protected SharedPreferencesManager manager;
 
     /**
      * Вызывается при создании активити.
@@ -55,21 +53,12 @@ public class MainActivity extends AppCompatActivity {
             permissionObserverService.observePermissionsStatus(this);
             permissionObserverService.startPermissionFlow();
         }
+
+        activityBinder.bind(this);
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(LocaleHelper.attachBaseContext(newBase));
-    }
-
-    /**
-     * Вызывается при запуске активити.
-     * Регистрирует активити в навигаторе.
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        activityNavigator.registerActivities(this);
-        activityNavigator.registerLanguageSwitcher(this, manager);
     }
 }

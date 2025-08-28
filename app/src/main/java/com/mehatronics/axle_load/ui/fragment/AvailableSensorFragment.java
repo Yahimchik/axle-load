@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +34,7 @@ public class AvailableSensorFragment extends BaseSensorFragment {
     @Override
     protected void createBinder(View view) {
         var binder = new AvailableListBinder(view, mapper, this::onSelected);
-        if (repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI)){
+        if (repository.getCurrDeviceType().equals(BT_COM_MINI)){
             observe(vm.getBtComMiniDevices(), binder::updateDevices);
         }else {
             observe(vm.getScannedDevices(), vm::updateScannedDevices);

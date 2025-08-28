@@ -4,36 +4,38 @@ import android.content.Context;
 
 import com.mehatronics.axle_load.data.repository.DeviceRepository;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
+import com.mehatronics.axle_load.data.repository.LanguageRepository;
 import com.mehatronics.axle_load.data.repository.PasswordRepository;
 import com.mehatronics.axle_load.data.repository.impl.DeviceRepositoryImpl;
 import com.mehatronics.axle_load.data.repository.impl.DeviceTypeRepositoryImpl;
 import com.mehatronics.axle_load.data.repository.impl.PasswordRepositoryImpl;
+import com.mehatronics.axle_load.data.repository.impl.LanguageRepositoryImpl;
 import com.mehatronics.axle_load.data.service.AxisService;
 import com.mehatronics.axle_load.data.service.BleScannerService;
+import com.mehatronics.axle_load.data.service.FileService;
 import com.mehatronics.axle_load.data.service.GattReadService;
 import com.mehatronics.axle_load.data.service.GattWriteService;
 import com.mehatronics.axle_load.data.service.PermissionHandlerService;
 import com.mehatronics.axle_load.data.service.PermissionObserverService;
 import com.mehatronics.axle_load.data.service.PermissionService;
-import com.mehatronics.axle_load.data.service.FileService;
 import com.mehatronics.axle_load.data.service.SensorSelectionService;
 import com.mehatronics.axle_load.data.service.SensorService;
 import com.mehatronics.axle_load.data.service.impl.AxisServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.BleScannerServiceImpl;
+import com.mehatronics.axle_load.data.service.impl.FileServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.GattReadServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.GattWriteServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionHandlerServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionObserverServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.PermissionServiceImpl;
-import com.mehatronics.axle_load.data.service.impl.FileServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.SensorSelectionServiceImpl;
 import com.mehatronics.axle_load.data.service.impl.SensorServiceImpl;
-import com.mehatronics.axle_load.domain.usecase.ChangeLanguageUseCase;
+import com.mehatronics.axle_load.domain.usecase.LanguageUseCase;
 import com.mehatronics.axle_load.domain.usecase.PermissionUseCase;
 import com.mehatronics.axle_load.domain.usecase.SaveCalibrationTableUseCase;
 import com.mehatronics.axle_load.domain.usecase.SubmitPasswordUseCase;
 import com.mehatronics.axle_load.domain.usecase.ValidateAxisCountUseCase;
-import com.mehatronics.axle_load.domain.usecase.impl.ChangeLanguageUseCaseImpl;
+import com.mehatronics.axle_load.domain.usecase.impl.LanguageUseCaseImpl;
 import com.mehatronics.axle_load.domain.usecase.impl.PermissionUseCaseImpl;
 import com.mehatronics.axle_load.domain.usecase.impl.SaveCalibrationTableUseCaseImpl;
 import com.mehatronics.axle_load.domain.usecase.impl.SubmitPasswordUseCaseImpl;
@@ -68,10 +70,6 @@ public abstract class ServiceImplModule {
     @Binds
     @Singleton
     public abstract PermissionHandlerService bindPermissionHandler(PermissionHandlerServiceImpl impl);
-
-    @Binds
-    @Singleton
-    public abstract ChangeLanguageUseCase bindChangeLanguageUseCase(ChangeLanguageUseCaseImpl impl);
 
     @Binds
     @Singleton
@@ -128,4 +126,12 @@ public abstract class ServiceImplModule {
     @Binds
     @Singleton
     public abstract DeviceTypeRepository bindDeviceTypeRepository(DeviceTypeRepositoryImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract LanguageRepository bindLanguageRepository(LanguageRepositoryImpl impl);
+
+    @Binds
+    @Singleton
+    public abstract LanguageUseCase bindLanguageUseCase(LanguageUseCaseImpl impl);
 }
