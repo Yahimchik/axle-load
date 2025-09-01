@@ -34,6 +34,7 @@ import com.mehatronics.axle_load.helper.LocaleHelper;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.LoadingManager;
 import com.mehatronics.axle_load.ui.binder.DeviceListBinder;
+import com.mehatronics.axle_load.ui.binder.MainActivityBinder;
 import com.mehatronics.axle_load.ui.binder.TrailerInputBinder;
 import com.mehatronics.axle_load.ui.fragment.ConfigureFragment;
 import com.mehatronics.axle_load.ui.fragment.DeviceDetailsFragment;
@@ -127,7 +128,9 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
 
     @Override
     public void initConfigureButton() {
-        findViewById(buttonGoToAxes).setOnClickListener(v -> navigator.showFragment(new ConfigureFragment()));
+        var butoon = findViewById(buttonGoToAxes);
+        butoon.setOnClickListener(v -> navigator.showFragment(new ConfigureFragment()));
+        butoon.setOnTouchListener(MainActivityBinder::addMotion);
     }
 
     @Override

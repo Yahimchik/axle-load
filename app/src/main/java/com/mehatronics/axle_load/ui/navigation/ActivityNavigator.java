@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.Button;
 
+import com.google.android.material.card.MaterialCardView;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,10 +23,10 @@ public class ActivityNavigator {
     }
 
     public void registerActivities(Activity activity) {
-        List<Button> buttons = searchButtons(activity);
+        List<MaterialCardView> buttons = searchButtons(activity);
         if (buttons.size() == activities.length) {
             for (int i = 0; i < buttons.size(); i++) {
-                Button button = buttons.get(i);
+                MaterialCardView button = buttons.get(i);
                 if (button != null) {
                     final Class<? extends Activity> activityClass = activities[i];
                     button.setOnClickListener(v -> startActivity(activity, activityClass));
@@ -38,7 +40,7 @@ public class ActivityNavigator {
         activity.startActivity(intent);
     }
 
-    private List<Button> searchButtons(Activity activity) {
+    private List<MaterialCardView> searchButtons(Activity activity) {
         return Arrays.asList(
                 activity.findViewById(DPS_BTN),
                 activity.findViewById(BT_COM_MINI)

@@ -1,275 +1,398 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/configureScrollView"
+    android:id="@+id/configureLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    android:fillViewport="true"
+    android:background="#FFF5F3"
+    android:fitsSystemWindows="true"
     tools:context=".ui.fragment.ConfigureFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/configureLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/configureScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Заголовок -->
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/configuration_settings"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Кнопки выбора типа -->
         <LinearLayout
-            android:id="@+id/vehicleButtonsContainer"
-            android:layout_width="0dp"
+            android:id="@+id/rootContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewTitle">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonTractor"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/truck"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                app:cornerRadius="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonTractorWithTrailer"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/truck_with_trailer"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                app:cornerRadius="16dp" />
-        </LinearLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/tractorPlateCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="@color/card_background_color"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/vehicleButtonsContainer">
-
-            <EditText
-                android:id="@+id/editTextTractorPlate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/roboto_bold"
-                android:hint="@string/truck_state_number"
-                android:textAlignment="center"
-                android:maxLength="10"
-                android:inputType="textCapCharacters"
-                android:padding="12dp"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0BEC5"
-                android:textSize="16sp" />
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <!-- Госномер прицепа -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/trailerPlateCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="@color/card_background_color"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tractorPlateCard">
-
-            <EditText
-                android:id="@+id/editTextTrailerPlate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/roboto_bold"
-                android:hint="@string/trailer_state_number"
-                android:inputType="textCapCharacters"
-                android:padding="12dp"
-                android:maxLength="10"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0BEC5"
-                android:textSize="16sp" />
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <!-- Количество осей -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/axisCountCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="@color/card_background_color"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/trailerPlateCard">
-
-            <EditText
-                android:id="@+id/editTextAxisCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:fontFamily="@font/roboto_bold"
-                android:gravity="center"
-                android:hint="@string/enter_number_of_axes"
-                android:inputType="number"
-                android:padding="16dp"
-                android:textColor="@android:color/white"
-                android:textColorHint="#B0BEC5"
-                android:textSize="18sp" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Контейнер для кнопок -->
-        <LinearLayout
-            android:id="@+id/inputButtonsContainer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:weightSum="2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/axisCountCard">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSave"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/configure_sensors"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                app:cornerRadius="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonConfigureLoaded"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_bold"
-                android:text="@string/configure_loaded"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                app:cornerRadius="16dp" />
-        </LinearLayout>
-
-        <!-- Кнопка завершения -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/finishButtonConfigure"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/roboto_bold"
-            android:text="@string/finish_button"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:cornerRadius="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/inputButtonsContainer" /> <!-- Список -->
-
-        <!-- Полупрозрачный слой блокировки (перекрывает весь фрагмент) -->
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAxes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/finishButtonConfigure"
-            app:layout_constraintVertical_bias="0.0" />
+            android:orientation="vertical"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp">
 
-        <View
-            android:id="@+id/overlayView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:alpha="0.5"
-            android:background="@android:color/white"
-            android:clickable="true"
-            android:elevation="20dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" /> <!-- Индикатор загрузки -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:elevation="21dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <!-- Заголовок -->
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/roboto_bold"
+                android:text="@string/configuration_settings"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+            <!-- Контейнер выбора типа транспорта -->
+            <LinearLayout
+                android:id="@+id/vehicleButtonsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:weightSum="2">
+
+                <!-- Кнопка Трактора -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/buttonTractor"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/btn_background"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="8dp"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="@string/truck"
+                            android:src="@drawable/ic_truck" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/roboto_bold"
+                            android:gravity="center"
+                            android:text="@string/truck"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Кнопка Трактора с Прицепом -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/buttonTractorWithTrailer"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/btn_background"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!-- Горизонтальный контейнер для иконок -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginEnd="4dp"
+                                android:contentDescription="@string/truck_with_trailer"
+                                android:src="@drawable/ic_trailer" />
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:contentDescription="@string/truck_with_trailer"
+                                android:src="@drawable/ic_truck" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/roboto_bold"
+                            android:gravity="center"
+                            android:singleLine="false"
+                            android:text="@string/truck_with_trailer"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- Контейнер для ввода номеров -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:divider="?android:attr/dividerHorizontal"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp">
+
+                <!-- Госномер трактора -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/tractorPlateCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp">
+
+                    <EditText
+                        android:id="@+id/editTextTractorPlate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/truck_state_number"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/roboto_bold"
+                        android:hint="@string/truck_state_number"
+                        android:inputType="textCapCharacters"
+                        android:padding="16dp"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#78909C"
+                        android:textSize="16sp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Госномер прицепа -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/trailerPlateCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp">
+
+                    <EditText
+                        android:id="@+id/editTextTrailerPlate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/trailer_state_number"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/roboto_bold"
+                        android:hint="@string/trailer_state_number"
+                        android:inputType="textCapCharacters"
+                        android:padding="16dp"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#78909C"
+                        android:textSize="16sp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Количество осей -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/axisCountCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp">
+
+                    <EditText
+                        android:id="@+id/editTextAxisCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/enter_number_of_axes"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:hint="@string/enter_number_of_axes"
+                        android:inputType="number"
+                        android:padding="16dp"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#78909C"
+                        android:textSize="16sp" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Контейнер для кнопок действий -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="12dp"
+                android:weightSum="2">
+
+                <!-- Настройка сенсоров -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/buttonSave"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/btn_background"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="6dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:gravity="center"
+                            android:text="@string/configure_sensors"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Настройка загруженной -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/buttonConfigureLoaded"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/btn_background"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="6dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:gravity="center"
+                            android:text="@string/configure_loaded"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Кнопка завершения -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/finishButtonConfigure"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/btn_background"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:gravity="center"
+                        android:text="@string/finish_button"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAxes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Overlay поверх всего -->
+    <View
+        android:id="@+id/overlayView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.5"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Прогрессбар по центру -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

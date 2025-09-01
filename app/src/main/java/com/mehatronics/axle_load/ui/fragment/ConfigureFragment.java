@@ -9,6 +9,7 @@ import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -51,7 +52,13 @@ public class ConfigureFragment extends BaseSensorFragment {
         observe(vm.getFinishedMacs(), binder::addFinishedMac);
 
         observeDeviceSelection(vm::setDeviceToAxis);
-        observe(vm.getAxisList(), binder::updateSaveButtonState);
         observe(vm.getAllDevicesSaved(), binder::setFinishButtonVisible);
+
+        observe(vm.getAxisList(), axes -> {
+            binder.submitList(new ArrayList<>(axes));
+            binder.updateSaveButtonState(axes);
+            binder.setAxisCount(axes.size());
+        });
+
     }
 }

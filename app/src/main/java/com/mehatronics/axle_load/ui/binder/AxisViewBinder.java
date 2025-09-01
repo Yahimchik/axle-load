@@ -9,12 +9,13 @@ import static com.mehatronics.axle_load.domain.entities.enums.ConnectStatus.WHRI
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 
+import android.annotation.SuppressLint;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.card.MaterialCardView;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.data.service.FileService;
@@ -27,6 +28,7 @@ import com.mehatronics.axle_load.ui.fragment.AvailableSensorFragment;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -39,11 +41,11 @@ public class AxisViewBinder {
     private final EditText editTextTractorPlate;
     private final EditText editTextTrailerPlate;
 
-    private final Button saveButton;
-    private final Button finishButton;
-    private final Button buttonConfigureLoaded;
-    private final Button truckButton;
-    private final Button truckWithTrailer;
+    private final MaterialCardView saveButton;
+    private final MaterialCardView finishButton;
+    private final MaterialCardView buttonConfigureLoaded;
+    private final MaterialCardView truckButton;
+    private final MaterialCardView truckWithTrailer;
 
     private final AxisAdapter adapter;
     private final MessageCallback callback;
@@ -53,6 +55,7 @@ public class AxisViewBinder {
     private final DeviceTypeRepository repository;
     private final Consumer<DeviceInfoToSave> onDeviceInfoChanged;
 
+    @SuppressLint("ClickableViewAccessibility")
     public AxisViewBinder(
             View root,
             FileService service,
@@ -83,6 +86,12 @@ public class AxisViewBinder {
         this.onConfigureLoadedClick = onConfigureLoadedClick;
         this.repository = repository;
         this.onDeviceInfoChanged = onDeviceInfoChanged;
+
+        saveButton.setOnTouchListener(MainActivityBinder::addMotion);
+        finishButton.setOnTouchListener(MainActivityBinder::addMotion);
+        buttonConfigureLoaded.setOnTouchListener(MainActivityBinder::addMotion);
+        truckButton.setOnTouchListener(MainActivityBinder::addMotion);
+        truckWithTrailer.setOnTouchListener(MainActivityBinder::addMotion);
 
         initRecyclerView(root, R.id.recyclerViewAxes, adapter);
 
@@ -209,6 +218,10 @@ public class AxisViewBinder {
         buttonConfigureLoaded.setOnClickListener(v -> onConfigureLoadedClick.run());
     }
 
+    public void setAxisCount(int count) {
+        editTextAxisCount.setText(String.valueOf(count));
+    }
+
     public void addFinishedMac(Set<String> mac) {
         adapter.setFinishedMacs(mac);
     }
@@ -218,7 +231,7 @@ public class AxisViewBinder {
     }
 
     public void submitList(List<AxisModel> list) {
-        adapter.submitList(list);
+        adapter.submitList(new ArrayList<>(list));
     }
 
     public void setFinishButtonVisible(boolean visible) {

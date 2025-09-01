@@ -119,8 +119,8 @@
     <string name="configuration">Канфігурацыя</string>
     <string name="total_weight">Агульная вага</string>
     <string name="the_configuration_has_been_read">Канфігурацыя прачытана</string>
-    <string name="total_axis">Усяго восяў</string>
-    <string name="total_sensors_in">Усяго датчыкаў</string>
+    <string name="total_axis">Восяў</string>
+    <string name="total_sensors_in">Датчыкаў</string>
     <string name="number_of_sensors_per_axis">Колькасць датчыкаў на восі</string>
     <string name="truck_with_trailer">Цягнік з прычэпам</string>
     <string name="truck_state_number">Рэгістрацыйны знак цягніка</string>

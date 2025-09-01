@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DPS;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +13,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
+import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.ui.binder.ConfiguredAxisViewBinder;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class AxleOverviewFragment extends Fragment {
     private DeviceViewModel vm;
+    @Inject
+    protected DeviceTypeRepository repository;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +46,9 @@ public class AxleOverviewFragment extends Fragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        vm.setLoadedAxisList(new ArrayList<>());
+        if (isRemoving() || requireActivity().isFinishing()) {
+            vm.resetSelectedDevices();
+            repository.setDeviceType(DPS);
+        }
     }
 }

@@ -83,8 +83,6 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
         if (curr.isLast()) {
             holder.addButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setVisibility(View.INVISIBLE);
-            holder.cardView.setCardBackgroundColor(
-                    holder.itemView.getContext().getColor(R.color.bright_sky_blue));
             holder.addButton.setOnClickListener(v -> {
                 var point = new CalibrationTable(curr.getDetector(), curr.getMultiplier());
                 onAddListener.onAdd(point);
@@ -92,8 +90,6 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
         } else {
             holder.addButton.setVisibility(View.INVISIBLE);
             holder.deleteButton.setVisibility(View.VISIBLE);
-            holder.cardView.setCardBackgroundColor(
-                    holder.itemView.getContext().getColor(R.color.card_background_color));
             holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(curr));
         }
     }

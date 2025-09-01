@@ -119,8 +119,8 @@
     <string name="configuration">Конфигурация</string>
     <string name="total_weight">Общий вес</string>
     <string name="the_configuration_has_been_read">Конфигурация прочитана</string>
-    <string name="total_axis">Всего осей</string>
-    <string name="total_sensors_in">Всего датчиков</string>
+    <string name="total_axis">Осей</string>
+    <string name="total_sensors_in">Датчиков</string>
     <string name="number_of_sensors_per_axis">Количество датчиков на оси</string>
     <string name="truck_with_trailer">Тягач с прицепом</string>
     <string name="truck_state_number">Регистрационный знак тягача</string>

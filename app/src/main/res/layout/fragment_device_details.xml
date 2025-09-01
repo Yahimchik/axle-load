@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/background_color">
+    android:background="#EEEEEE">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_color">
+        android:background="#EEEEEE">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -407,31 +407,31 @@
                     <!-- Config Type сдвигаем ниже -->
 
                     <!-- Data Transmission Mode Spinner -->
-<!--                    <TextView-->
-<!--                        android:id="@+id/configType"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="48dp"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:fontFamily="@font/roboto_bold"-->
-<!--                        android:gravity="center_vertical"-->
-<!--                        android:text="@string/config_type"-->
-<!--                        android:textColor="#000000"-->
-<!--                        android:textSize="16sp"-->
-<!--                        app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/configType"-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="48dp"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:fontFamily="@font/roboto_bold"-->
+                    <!--                        android:gravity="center_vertical"-->
+                    <!--                        android:text="@string/config_type"-->
+                    <!--                        android:textColor="#000000"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
 
-<!--                    <Spinner-->
-<!--                        android:id="@+id/configTypeSpinner"-->
-<!--                        style="@style/CustomSpinnerStyle"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="48dp"-->
-<!--                        android:layout_marginTop="8dp"-->
-<!--                        android:fontFamily="@font/roboto_bold"-->
-<!--                        android:padding="8dp"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toEndOf="@id/configType"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
+                    <!--                    <Spinner-->
+                    <!--                        android:id="@+id/configTypeSpinner"-->
+                    <!--                        style="@style/CustomSpinnerStyle"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="48dp"-->
+                    <!--                        android:layout_marginTop="8dp"-->
+                    <!--                        android:fontFamily="@font/roboto_bold"-->
+                    <!--                        android:padding="8dp"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toEndOf="@id/configType"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
 
                     <!-- Power Mode Spinner -->
                     <TextView

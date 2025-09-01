@@ -17,7 +17,6 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +30,7 @@ import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
 import com.mehatronics.axle_load.ui.adapter.diffUtil.AxisDiffUtil;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisClickListener;
 import com.mehatronics.axle_load.ui.adapter.listener.OnAxisResetListener;
+import com.mehatronics.axle_load.ui.binder.MainActivityBinder;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -74,11 +74,12 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
 
     public class AxisViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        Button resetButton;
+        TextView resetButton;
         ImageView axleSensorLeft;
         ImageView axleSensorCenter;
         ImageView axleSensorRight;
 
+        @SuppressLint("ClickableViewAccessibility")
         public AxisViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.axisTitleRight);
@@ -86,6 +87,8 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
             axleSensorLeft = itemView.findViewById(R.id.axleSensorLeft);
             axleSensorCenter = itemView.findViewById(R.id.axleSensorCenter);
             axleSensorRight = itemView.findViewById(R.id.axleSensorRight);
+
+            resetButton.setOnTouchListener(MainActivityBinder::addMotion);
         }
 
         public void bind(AxisModel axis) {
