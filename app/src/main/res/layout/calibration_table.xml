@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="20dp"
         android:paddingVertical="14dp"
         android:background="@android:color/transparent">
 
@@ -28,50 +27,73 @@
             android:text="@string/weight"
             android:imeOptions="actionDone"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="20sp"
             android:inputType="number"
             android:digits="0123456789"
             android:maxLength="5"
-            android:hint="0–99999"
+            android:hint="@string/_0_99999"
             android:textColorHint="@color/hint_gray"
             android:background="@android:color/transparent"
-            android:gravity="start"
+            android:gravity="center"
             android:maxLines="1"
-            android:textAlignment="viewStart"
-            android:fontFamily="@font/roboto_bold"/>
+            android:textAlignment="center" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0"/>
 
         <!-- Column for "Pressure" -->
+
+        <!-- Divider -->
         <EditText
             android:id="@+id/pressureValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:autofillHints=""
-            android:imeOptions="actionDone"
-            android:text="@string/pressure"
+            android:background="@android:color/transparent"
             android:digits="0123456789."
-            android:hint="0.000 – 99.999"
+            android:gravity="center"
+            android:hint="@string/_0_000_99_999"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:text="@string/pressure"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textColorHint="@color/hint_gray"
-            android:textSize="15sp"
-            android:inputType="numberDecimal"
-            android:background="@android:color/transparent"
-            android:gravity="start"
-            android:maxLines="1"
-            android:textAlignment="viewStart"
-            android:fontFamily="@font/roboto_bold"/>
+            android:textSize="20sp" />
 
-        <!-- FrameLayout to hold the buttons -->
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp">
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#E0E0E0"/>
 
-            <!-- Delete icon button -->
+        <!-- Buttons in a column with equal width -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/addButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ripple_green"
+                android:src="@drawable/ic_add"
+                android:contentDescription="@string/add"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="@android:color/holo_green_light" />
+
             <ImageButton
                 android:id="@+id/deleteButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_gravity="center"
                 android:background="@drawable/ripple_green"
                 android:src="@drawable/ic_delete"
                 android:contentDescription="@string/delete"
@@ -80,20 +102,7 @@
                 app:tint="@android:color/holo_red_light"
                 android:visibility="gone" />
 
-            <!-- Add icon button -->
-            <ImageButton
-                android:id="@+id/addButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ripple_green"
-                android:src="@drawable/ic_add"
-                android:contentDescription="@string/add"
-                android:clickable="true"
-                android:focusable="true"
-                app:tint="@android:color/holo_green_light" />
-
-        </FrameLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

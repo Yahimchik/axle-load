@@ -82,13 +82,13 @@ public class TableAdapter extends ListAdapter<CalibrationTable, TableAdapter.Vie
 
         if (curr.isLast()) {
             holder.addButton.setVisibility(View.VISIBLE);
-            holder.deleteButton.setVisibility(View.INVISIBLE);
+            holder.deleteButton.setVisibility(View.GONE);
             holder.addButton.setOnClickListener(v -> {
                 var point = new CalibrationTable(curr.getDetector(), curr.getMultiplier());
                 onAddListener.onAdd(point);
             });
         } else {
-            holder.addButton.setVisibility(View.INVISIBLE);
+            holder.addButton.setVisibility(View.GONE);
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(v -> onDeleteListener.onDelete(curr));
         }

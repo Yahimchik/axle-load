@@ -1,15 +1,17 @@
 package com.mehatronics.axle_load.ui.fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresPermission;
+
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.ui.binder.AxisViewBinder;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -23,9 +25,13 @@ public class ConfigureFragment extends BaseSensorFragment {
     }
 
     @Override
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onDestroy() {
         super.onDestroy();
         if (isRemoving() || requireActivity().isFinishing()) {
+            vm.clearScannedDevices();
+            vm.clearDetails();
+            vm.disconnect();
             vm.resetSelectedDevices();
             vm.setLoadedAxisList(new ArrayList<>());
         }

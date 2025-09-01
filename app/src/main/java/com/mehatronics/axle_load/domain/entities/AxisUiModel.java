@@ -3,6 +3,7 @@ package com.mehatronics.axle_load.domain.entities;
 import java.util.Objects;
 
 public record AxisUiModel(
+        String title,
         String macLeft,
         String macRight,
         String macCenter,

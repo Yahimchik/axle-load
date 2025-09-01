@@ -136,4 +136,6 @@
 
     <string name="kg" translatable="false">KG</string>
     <string name="zero" translatable="false">0</string>
+    <string name="_0_99999">0–99999</string>
+    <string name="_0_000_99_999">0.000 – 99.999</string>
 </resources>

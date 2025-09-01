@@ -6,12 +6,14 @@ import static com.mehatronics.axle_load.utils.ByteUtils.convertBytesToValue;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 
+import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.dto.ConfiguredDeviceDTO;
 import com.mehatronics.axle_load.data.mapper.ConfiguredDeviceMapper;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.AxisUiModel;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 
 import java.util.List;
 
@@ -21,8 +23,11 @@ import javax.inject.Singleton;
 @Singleton
 public class ConfiguredDeviceMapperImpl implements ConfiguredDeviceMapper {
 
+    private final ResourceProvider provider;
+
     @Inject
-    public ConfiguredDeviceMapperImpl() {
+    public ConfiguredDeviceMapperImpl(ResourceProvider provider) {
+        this.provider = provider;
     }
 
     @Override
@@ -45,6 +50,8 @@ public class ConfiguredDeviceMapperImpl implements ConfiguredDeviceMapper {
 
     @Override
     public AxisUiModel toUiModel(AxisModel axis, List<ConfiguredDeviceDTO> devices) {
+        String title = provider.getString(R.string.axle_numbered, axis.getNumber());
+
         String leftMac = axis.getSideDeviceMap().get(AxisSide.LEFT);
         String rightMac = axis.getSideDeviceMap().get(AxisSide.RIGHT);
         String centerMac = axis.getSideDeviceMap().get(AxisSide.CENTER);
@@ -54,7 +61,7 @@ public class ConfiguredDeviceMapperImpl implements ConfiguredDeviceMapper {
         ConfiguredDeviceDTO center = findByMac(devices, centerMac);
 
         return new AxisUiModel(
-                leftMac, rightMac, centerMac,
+                title, leftMac, rightMac, centerMac,
                 left != null ? left.weight() : "", left != null ? left.pressure() : "",
                 center != null ? center.weight() : right != null ? right.weight() : "",
                 center != null ? center.pressure() : right != null ? right.pressure() : "",

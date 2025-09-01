@@ -1,9 +1,9 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/truckScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF5F3"
+    android:background="#EEEEEE"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:paddingHorizontal="16dp"
@@ -151,4 +151,4 @@
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never"/>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

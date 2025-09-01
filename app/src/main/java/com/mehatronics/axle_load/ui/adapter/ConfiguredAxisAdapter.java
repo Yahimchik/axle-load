@@ -41,6 +41,8 @@ public class ConfiguredAxisAdapter extends ListAdapter<AxisUiModel, ConfiguredAx
     }
 
     public static class AxisViewHolder extends RecyclerView.ViewHolder {
+
+        TextView title;
         TextView macLeft;
         TextView macRight;
         TextView weightLeft;
@@ -58,6 +60,7 @@ public class ConfiguredAxisAdapter extends ListAdapter<AxisUiModel, ConfiguredAx
 
         public AxisViewHolder(@NonNull View itemView) {
             super(itemView);
+            title = itemView.findViewById(R.id.title);
             macLeft = itemView.findViewById(R.id.leftInfoMacValue);
             weightLeft = itemView.findViewById(R.id.leftInfoWeightValue);
             pressureLeft = itemView.findViewById(R.id.leftInfoPressureValue);
@@ -75,6 +78,8 @@ public class ConfiguredAxisAdapter extends ListAdapter<AxisUiModel, ConfiguredAx
         }
 
         public void bind(AxisUiModel model) {
+            title.setText(model.title());
+
             macLeft.setText(safeText(model.macLeft()));
             weightLeft.setText(safeText(model.weightLeft()));
             pressureLeft.setText(safeText(model.pressureLeft()));

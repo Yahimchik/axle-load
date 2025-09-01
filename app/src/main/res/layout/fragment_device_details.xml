@@ -3,17 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="#EEEEEE">
+    android:background="#EEEEEE"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:fitsSystemWindows="true">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EEEEEE">
+        android:background="#EEEEEE"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:paddingBottom="16dp">
 
             <androidx.cardview.widget.CardView
@@ -193,17 +199,25 @@
                         app:layout_constraintStart_toEndOf="@id/batteryLevelTextView"
                         app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/finishButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="64dp"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/save_button"
                         android:textAllCaps="true"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        android:backgroundTint="#73B95A"
+                        app:cornerRadius="12dp"
+                        app:icon="@drawable/ic_save_to"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconSize="24dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/batteryLevelTextView" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/batteryLevelTextView"/>
+
 
                     <ImageButton
                         android:id="@+id/overflowButton"
@@ -327,8 +341,8 @@
                         android:text="@string/trailer_changeable"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/trailerChangeableCheckBox"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />
 
                     <CheckBox
@@ -355,8 +369,8 @@
                         android:text="@string/total_axles"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/totalAxlesEditText"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/trailerChangeableCheckBox" />
 
                     <EditText
@@ -385,8 +399,8 @@
                         android:text="@string/total_sensors"
                         android:textColor="#000000"
                         android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/totalSensorsEditText"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/totalAxlesEditText" />
 
                     <EditText
@@ -474,6 +488,7 @@
                         app:layout_constraintEnd_toStartOf="@id/stateNumber"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/installationPointSpinner" />
+
                     <TextView
                         android:id="@+id/numberOfSensorsOnAxle"
                         android:layout_width="0dp"
@@ -540,8 +555,8 @@
                         android:text="@string/save_button"
                         android:textAllCaps="false"
                         android:textColor="@android:color/white"
-                        app:cornerRadius="12dp"
                         android:visibility="gone"
+                        app:cornerRadius="12dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -568,6 +583,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:paddingTop="24dp"
                     android:paddingBottom="24dp">
 
@@ -590,6 +607,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                         android:descendantFocusability="beforeDescendants"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
@@ -619,54 +638,53 @@
                         android:id="@+id/readFromSensorButton"
                         style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="64dp"
                         android:layout_marginTop="16dp"
+                        android:backgroundTint="#0094FF"
                         android:ellipsize="end"
-                        android:maxLines="2"
-                        android:minHeight="56dp"
                         android:text="@string/read_from_sensor"
                         android:textAlignment="center"
                         android:textAllCaps="false"
+                        android:textSize="17sp"
                         app:cornerRadius="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+                        app:layout_constraintTop_toBottomOf="@id/calibrationRecyclerView" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/saveToFileButton"
                         style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="64dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"
+                        android:backgroundTint="#73B95A"
                         android:ellipsize="end"
-                        android:fontFamily="@font/roboto_bold"
-                        android:maxLines="2"
-                        android:minHeight="56dp"
                         android:text="@string/save_to_file"
                         android:textAllCaps="false"
+                        android:textSize="17sp"
                         app:cornerRadius="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton"
+                        app:layout_constraintEnd_toStartOf="@id/readFromFileButton"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                        app:layout_constraintEnd_toStartOf="@id/readFromFileButton" />
+                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/readFromFileButton"
                         style="@style/Widget.MaterialComponents.Button"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_height="64dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="#BCC1CA"
                         android:ellipsize="end"
-                        android:fontFamily="@font/roboto_bold"
                         android:maxLines="2"
-                        android:minHeight="56dp"
                         android:text="@string/read_from_file"
                         android:textAllCaps="false"
+                        android:textSize="17sp"
                         app:cornerRadius="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toEndOf="@id/saveToFileButton"
-                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd" />
+                        app:layout_constraintTop_toBottomOf="@id/readFromSensorButton" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
