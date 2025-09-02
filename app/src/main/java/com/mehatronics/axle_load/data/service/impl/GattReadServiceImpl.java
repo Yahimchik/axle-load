@@ -263,6 +263,7 @@ public class GattReadServiceImpl implements GattReadService {
 
         if (isConnected && values.size() > 8) {
             deviceDetailsLiveData.postValue(gattDataMapper.convertToDeviceDetails(gatt, values, table));
+            gatt.readRemoteRssi();
         }
     }
 
@@ -536,5 +537,15 @@ public class GattReadServiceImpl implements GattReadService {
      */
     private boolean isMatchingCommand(byte[] bytes, int index, int command) {
         return (bytes[index] & ZERO_COMMAND_BINARY) == command;
+    }
+
+    public void rebuildDeviceDetails(BluetoothGatt gatt, int rssi) {
+        DeviceDetails current = deviceDetailsLiveData.getValue();
+        if (current != null) {
+            DeviceDetails updated = new DeviceDetails.Builder(current)
+                    .setRssi(rssi)
+                    .build();
+            deviceDetailsLiveData.postValue(updated);
+        }
     }
 }

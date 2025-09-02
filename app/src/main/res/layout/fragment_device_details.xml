@@ -39,54 +39,156 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="24dp">
+                    android:padding="26dp">
 
-                    <TextView
-                        android:id="@+id/deviceNameTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="@string/device_name"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintEnd_toEndOf="parent"
+                    <!-- ========== Верхний контейнер (сигнал + батарея) ========== -->
+
+                    <ImageView
+                        android:id="@+id/signalPicture"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@string/device_mac"
+                        android:src="@drawable/ic_signal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/signalValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/signalPicture"
+                        app:layout_constraintTop_toTopOf="@id/signalPicture" />
+
+                    <ImageView
+                        android:id="@+id/batteryIcon"
+                        android:layout_marginEnd="52dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="@string/battery"
+                        android:src="@drawable/ic_battery"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/batteryLevelValueTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#73B95A"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toEndOf="@id/batteryIcon"
+                        app:layout_constraintTop_toTopOf="@id/batteryIcon"
+                        />
+
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:background="#E0E0E0"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/signalPicture" />
+
+                    <!-- ========== Второй контейнер (тип датчика, серийный, меню) ========== -->
+
+                    <ImageButton
+                        android:id="@+id/overflowButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/finish_button"
+                        android:src="@drawable/dots"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+                    <TextView
+                        android:id="@+id/deviceTypeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/device_type"
+                        android:textColor="#828282"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+                    <TextView
+                        android:id="@+id/deviceTypeTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@id/deviceTypeLabel"
+                        app:layout_constraintTop_toTopOf="@id/deviceTypeLabel" />
+
+                    <TextView
+                        android:id="@+id/deviceSerialLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/serial_number"
+                        android:textColor="#828282"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/deviceTypeLabel" />
+
+                    <TextView
+                        android:id="@+id/deviceSerialTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toEndOf="@id/deviceSerialLabel"
+                        app:layout_constraintTop_toTopOf="@id/deviceSerialLabel" />
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:background="#E0E0E0"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/deviceSerialTextView" />
+
+                    <!-- ========== Третий контейнер (MAC, версия ПО, версия HW, вес, давление, сохранить) ========== -->
 
                     <TextView
                         android:id="@+id/deviceMac"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
+                        android:layout_marginTop="12dp"
                         android:text="@string/device_mac"
-                        android:textColor="@android:color/black"
+                        android:textColor="#828282"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
+                        app:layout_constraintTop_toBottomOf="@id/divider2" />
 
                     <TextView
                         android:id="@+id/deviceMacTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@android:color/holo_red_light"
+                        android:textColor="@android:color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/deviceMac"
-                        app:layout_constraintTop_toBottomOf="@id/deviceNameTextView" />
+                        app:layout_constraintTop_toTopOf="@id/deviceMac" />
 
                     <TextView
                         android:id="@+id/firmwareVersionTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/firmware_version"
-                        android:textColor="@android:color/black"
+                        android:textColor="#828282"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/deviceMac" />
@@ -96,21 +198,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/firmwareVersionTextView"
-                        app:layout_constraintTop_toBottomOf="@id/deviceMac" />
+                        app:layout_constraintTop_toTopOf="@id/firmwareVersionTextView" />
 
                     <TextView
                         android:id="@+id/hardwareVersionTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/hardware_version"
-                        android:textColor="@android:color/black"
+                        android:textColor="#828282"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/firmwareVersionTextView" />
@@ -120,21 +219,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/hardwareVersionTextView"
-                        app:layout_constraintTop_toBottomOf="@id/firmwareVersionTextView" />
+                        app:layout_constraintTop_toTopOf="@id/hardwareVersionTextView" />
 
                     <TextView
                         android:id="@+id/weightTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/weight"
-                        android:textColor="@android:color/black"
+                        android:textColor="#828282"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/hardwareVersionTextView" />
@@ -144,21 +240,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/weightTextView"
-                        app:layout_constraintTop_toBottomOf="@id/hardwareVersionTextView" />
+                        app:layout_constraintTop_toTopOf="@id/weightTextView" />
 
                     <TextView
                         android:id="@+id/pressureTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:text="@string/pressure"
-                        android:textColor="@android:color/black"
+                        android:textColor="#828282"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/weightTextView" />
@@ -168,68 +261,44 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         app:layout_constraintStart_toEndOf="@id/pressureTextView"
-                        app:layout_constraintTop_toBottomOf="@id/weightTextView" />
-
-                    <TextView
-                        android:id="@+id/batteryLevelTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:text="@string/battery"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
-
-                    <TextView
-                        android:id="@+id/batteryLevelValueTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toEndOf="@id/batteryLevelTextView"
-                        app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
+                        app:layout_constraintTop_toTopOf="@id/pressureTextView" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/finishButton"
                         android:layout_width="0dp"
-                        android:layout_height="64dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="#73B95A"
                         android:text="@string/save_button"
                         android:textAllCaps="true"
                         android:textColor="@android:color/white"
                         android:textSize="17sp"
-                        android:backgroundTint="#73B95A"
                         app:cornerRadius="12dp"
                         app:icon="@drawable/ic_save_to"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
                         app:iconSize="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/batteryLevelTextView"/>
+                        app:layout_constraintTop_toBottomOf="@id/pressureTextView" />
 
-
-                    <ImageButton
-                        android:id="@+id/overflowButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/finish_button"
-                        android:src="@drawable/dots"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="#E0E0E0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mainInfo" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/configurationCardView"
@@ -418,35 +487,6 @@
                         app:layout_constraintStart_toEndOf="@id/totalSensorsLabel"
                         app:layout_constraintTop_toBottomOf="@id/totalAxlesEditText" />
 
-                    <!-- Config Type сдвигаем ниже -->
-
-                    <!-- Data Transmission Mode Spinner -->
-                    <!--                    <TextView-->
-                    <!--                        android:id="@+id/configType"-->
-                    <!--                        android:layout_width="0dp"-->
-                    <!--                        android:layout_height="48dp"-->
-                    <!--                        android:layout_marginTop="8dp"-->
-                    <!--                        android:fontFamily="@font/roboto_bold"-->
-                    <!--                        android:gravity="center_vertical"-->
-                    <!--                        android:text="@string/config_type"-->
-                    <!--                        android:textColor="#000000"-->
-                    <!--                        android:textSize="16sp"-->
-                    <!--                        app:layout_constraintEnd_toStartOf="@id/configTypeSpinner"-->
-                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
-                    <!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
-
-                    <!--                    <Spinner-->
-                    <!--                        android:id="@+id/configTypeSpinner"-->
-                    <!--                        style="@style/CustomSpinnerStyle"-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="48dp"-->
-                    <!--                        android:layout_marginTop="8dp"-->
-                    <!--                        android:fontFamily="@font/roboto_bold"-->
-                    <!--                        android:padding="8dp"-->
-                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--                        app:layout_constraintStart_toEndOf="@id/configType"-->
-                    <!--                        app:layout_constraintTop_toBottomOf="@id/measurementPeriodEditText" />-->
-
                     <!-- Power Mode Spinner -->
                     <TextView
                         android:id="@+id/installationPoint"
@@ -474,20 +514,6 @@
                         app:layout_constraintStart_toEndOf="@id/installationPoint"
                         app:layout_constraintTop_toBottomOf="@id/totalSensorsEditText" />
 
-                    <!-- Distance to Wheel EditText -->
-                    <TextView
-                        android:id="@+id/distanceToWheelLabel"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/roboto_bold"
-                        android:gravity="center_vertical"
-                        android:text="@string/stateNumber"
-                        android:textColor="#000000"
-                        android:textSize="16sp"
-                        app:layout_constraintEnd_toStartOf="@id/stateNumber"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/installationPointSpinner" />
 
                     <TextView
                         android:id="@+id/numberOfSensorsOnAxle"
@@ -566,6 +592,18 @@
 
             </androidx.cardview.widget.CardView>
 
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="#E0E0E0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/configurationCardView" />
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/calibrationTableCardView"
                 android:layout_width="match_parent"
@@ -578,7 +616,7 @@
                 app:cardElevation="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/configurationCardView">
+                app:layout_constraintTop_toBottomOf="@id/divider4">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

@@ -11,4 +11,5 @@ public class ValueConstants {
     public static final float UPPER_MULTIPLIER_EDGE = 1.01F;
     public static final float MAX_MULTIPLIER = 1_000_000.0F;
     public static final float MIN_MULTIPLIER = 0.0F;
+    public static final int DBM_DELAY = 3_000;
 }

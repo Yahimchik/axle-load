@@ -197,6 +197,13 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
         }
     }
 
+    @Override
+    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            gattReadService.rebuildDeviceDetails(gatt, rssi);
+        }
+    }
+
     /**
      * Получить репозиторий паролей.
      *

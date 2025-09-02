@@ -6,11 +6,11 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import androidx.lifecycle.LiveData;
 
 import com.mehatronics.axle_load.domain.entities.AxisModel;
+import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.helper.SingleLiveEvent;
 import com.mehatronics.axle_load.ui.adapter.listener.GattReadListener;
-import com.mehatronics.axle_load.domain.entities.SensorConfig;
-import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 
 import java.util.List;
 
@@ -184,4 +184,6 @@ public interface GattReadService {
     boolean getIsComplete();
 
     boolean isSensorsNumberGreaterThenEight();
+
+    void rebuildDeviceDetails(BluetoothGatt gatt, int rssi);
 }

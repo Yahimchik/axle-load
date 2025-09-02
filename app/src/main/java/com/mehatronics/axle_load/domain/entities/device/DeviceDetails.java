@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DeviceDetails implements Serializable {
+    private int rssi;
     private final String deviceName;
     private final String deviceMac;
     private final String dateManufacturer;
@@ -35,6 +36,16 @@ public class DeviceDetails implements Serializable {
         this.weight = builder.weight;
         this.pressure = builder.pressure;
         this.table = builder.table;
+        this.rssi = builder.rssi;
+    }
+
+
+    public int getRssi() {
+        return rssi;
+    }
+
+    public void setRssi(int rssi) {
+        this.rssi = rssi;
     }
 
     public String getDeviceName() {
@@ -67,6 +78,22 @@ public class DeviceDetails implements Serializable {
 
     public List<CalibrationTable> getTable() {
         return table;
+    }
+
+    public String getDateManufacturer() {
+        return dateManufacturer;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public String getModelType() {
+        return modelType;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
     }
 
     public void setTable(List<CalibrationTable> table) {
@@ -138,6 +165,26 @@ public class DeviceDetails implements Serializable {
         private String weight;
         private String pressure;
         private List<CalibrationTable> table;
+        private int rssi;
+
+        public Builder() {
+        }
+
+        public Builder(DeviceDetails details) {
+            this.deviceName = details.getDeviceName();
+            this.deviceMac = details.getDeviceMac();
+            this.dateManufacturer = details.getDateManufacturer();
+            this.manufacturer = details.getManufacturer();
+            this.modelType = details.getModelType();
+            this.serialNumber = details.getSerialNumber();
+            this.firmwareVersion = details.getFirmwareVersion();
+            this.hardWareVersion = details.getHardWareVersion();
+            this.batteryLevel = details.getBatteryLevel();
+            this.weight = details.getWeight();
+            this.pressure = details.getPressure();
+            this.table = details.getTable();
+            this.rssi = details.getRssi();
+        }
 
         public Builder setDeviceName(String deviceName) {
             this.deviceName = deviceName;
@@ -198,6 +245,14 @@ public class DeviceDetails implements Serializable {
             this.table = table;
             return this;
         }
+
+        public Builder setRssi(int rssi) {
+            if (rssi != 0) {
+                this.rssi = rssi;
+            }
+            return this;
+        }
+
         public DeviceDetails build() {
             return new DeviceDetails(this);
         }

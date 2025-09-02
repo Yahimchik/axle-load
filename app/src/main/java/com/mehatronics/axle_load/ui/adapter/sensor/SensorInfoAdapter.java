@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.ui.adapter.sensor;
 
+import static com.mehatronics.axle_load.constants.ValueConstants.DBM_DELAY;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +19,8 @@ public class SensorInfoAdapter {
     private final TextView hardwareVersionTextView;
     private final TextView batteryLevelTextView;
     private final TextView deviceNameTextView;
+    private final TextView deviceTypeTextView;
+    private final TextView signalValueTextView;
     private final TextView pressureTextView;
     private final TextView weightTextView;
     private final TextView deviceMac;
@@ -32,9 +36,13 @@ public class SensorInfoAdapter {
     private String cachedDeviceMac;
     private String cachedPressure;
     private String cachedWeight;
+    private String cachedType;
+    private String cashedRssi;
 
     public SensorInfoAdapter(View root, DeviceDetailsFormatter formatter) {
-        deviceNameTextView = root.findViewById(R.id.deviceNameTextView);
+        signalValueTextView = root.findViewById(R.id.signalValueTextView);
+        deviceTypeTextView = root.findViewById(R.id.deviceTypeTextView);
+        deviceNameTextView = root.findViewById(R.id.deviceSerialTextView);
         deviceMac = root.findViewById(R.id.deviceMacTextView);
         firmwareVersionTextView = root.findViewById(R.id.firmwareVersionValueTextView);
         hardwareVersionTextView = root.findViewById(R.id.hardwareVersionValueTextView);
@@ -46,7 +54,6 @@ public class SensorInfoAdapter {
         readFromFileButton = root.requireViewById(R.id.readFromFileButton);
         this.formatter = formatter;
     }
-
 
 
     public void saveToFileOnClick(View.OnClickListener listener){
@@ -70,6 +77,9 @@ public class SensorInfoAdapter {
         updateTextIfChanged(weightTextView, formatter.formatWeight(newDetails), cachedWeight, val -> cachedWeight = val);
 
         updateTextIfChanged(pressureTextView, formatter.formatPressure(newDetails), cachedPressure, val -> cachedPressure = val);
+        updateTextIfChanged(deviceTypeTextView, formatter.formatDeviceType(newDetails),cachedType, val -> cachedType = val);
+
+        updateRssiThrottled(signalValueTextView, formatter.formatRssi(newDetails), cashedRssi, val -> cashedRssi = val);
     }
 
     public void setReadFromSensorButtonClickListener(View.OnClickListener listener) {
@@ -80,6 +90,23 @@ public class SensorInfoAdapter {
         if (!newValue.equals(cachedValue)) {
             view.setText(newValue);
             cacheSetter.accept(newValue);
+        }
+    }
+
+    private long lastRssiUpdateTime = 0;
+
+    private void updateRssiThrottled(TextView view, String newValue, String cachedValue, Consumer<String> cacheSetter) {
+        if ("0 dBm".equals(newValue)) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (now - lastRssiUpdateTime < DBM_DELAY) {
+            return;
+        }
+        if (!newValue.equals(cachedValue)) {
+            view.setText(newValue);
+            cacheSetter.accept(newValue);
+            lastRssiUpdateTime = now;
         }
     }
 }
