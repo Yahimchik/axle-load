@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/roboto_bold"
         android:text="@string/select_sensor_type"
+        android:textStyle="bold"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textAllCaps="true"
@@ -117,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:fontFamily="@font/roboto_bold"
+                    android:textStyle="bold"
                     android:text="@string/DPS"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
@@ -159,7 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:fontFamily="@font/roboto_bold"
+                    android:textStyle="bold"
                     android:text="@string/BT_COM_MINI"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />

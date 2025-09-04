@@ -10,7 +10,7 @@ public class RecyclerViewInitializer {
     public static void initRecyclerView(View view, int id, RecyclerView.Adapter<?> adapter) {
         RecyclerView recyclerView = view.findViewById(id);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setItemAnimator(new RemoveOnlyItemAnimator());
+        recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(adapter);
     }
 }
