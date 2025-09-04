@@ -59,10 +59,11 @@
             <ImageView
                 android:id="@+id/axleSensorLeft"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_weight="1"
+                android:scaleType="fitEnd"
                 android:contentDescription="@string/axle_left"
-                android:src="@drawable/axle_left"
+                android:src="@drawable/ic_left"
                 android:padding="8dp" />
 
             <ImageView
@@ -71,27 +72,31 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/axle_center"
-                android:src="@drawable/axle_center"
+                android:src="@drawable/ic_center"
                 />
 
             <ImageView
                 android:id="@+id/axleSensorRight"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:layout_weight="1"
+                android:scaleType="fitStart"
                 android:contentDescription="@string/axle_right"
-                android:src="@drawable/axle_right"
+                android:src="@drawable/ic_right"
                 android:padding="8dp" />
         </LinearLayout>
 
         <!-- Кнопка Reset -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:id="@+id/resetCardView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_gravity="center_horizontal"
-            android:clickable="true"
             app:cardBackgroundColor="@color/alert_color"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
@@ -100,14 +105,14 @@
                 android:id="@+id/buttonReset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_bold"
                 android:gravity="center"
+                android:paddingHorizontal="24dp"
                 android:text="@string/reset"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:fontFamily="@font/roboto_bold"
-                android:layout_gravity="center"/>
+                android:textSize="14sp" />
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>

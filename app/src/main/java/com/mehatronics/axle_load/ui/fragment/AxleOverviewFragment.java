@@ -1,7 +1,5 @@
 package com.mehatronics.axle_load.ui.fragment;
 
-import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DPS;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +12,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
-import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.ui.binder.ConfiguredAxisViewBinder;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -47,8 +42,7 @@ public class AxleOverviewFragment extends Fragment {
     public void onDestroy(){
         super.onDestroy();
         if (isRemoving() || requireActivity().isFinishing()) {
-            vm.resetSelectedDevices();
-            repository.setDeviceType(DPS);
+//            vm.resetSelectedDevices();
         }
     }
 }

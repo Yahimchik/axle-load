@@ -8,6 +8,34 @@
     android:background="#EEEEEE"
     tools:context=".ui.activity.MainActivity">
 
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/sensorTypeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/select_sensor_type"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textAllCaps="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Линия под заголовком -->
+    <View
+        android:id="@+id/dividerTop"
+        android:layout_width="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#E5E7EB"
+        app:layout_constraintTop_toBottomOf="@id/sensorTypeTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Кнопка смены языка -->
     <ImageButton
         android:id="@+id/btnChangeLang"
@@ -21,7 +49,7 @@
         android:contentDescription="@string/change_langauge"
         android:src="@drawable/ic_flag_united_kingdom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/dividerTop" />
 
     <!-- RecyclerView для списка языков -->
     <androidx.recyclerview.widget.RecyclerView
@@ -38,13 +66,14 @@
         app:layout_constraintEnd_toStartOf="@id/btnChangeLang"
         tools:ignore="RtlSymmetry" />
 
+    <!-- Линия под языком -->
 
     <!-- Контейнер для карточек -->
     <LinearLayout
         android:id="@+id/sensorButtonsLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="24dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
@@ -138,6 +167,5 @@
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

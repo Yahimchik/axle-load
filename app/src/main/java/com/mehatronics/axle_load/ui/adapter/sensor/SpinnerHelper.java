@@ -1,13 +1,20 @@
 package com.mehatronics.axle_load.ui.adapter.sensor;
 
 import static android.R.layout.simple_spinner_item;
-import static com.mehatronics.axle_load.constants.StringConstants.*;
+import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
+import static com.mehatronics.axle_load.constants.StringConstants.CENTER;
+import static com.mehatronics.axle_load.constants.StringConstants.LEFT;
+import static com.mehatronics.axle_load.constants.StringConstants.RIGHT;
+import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -29,7 +36,22 @@ public record SpinnerHelper(Spinner spinner) {
                 points.add(getDescription(axle, pos));
             }
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, simple_spinner_item, points);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, simple_spinner_item, points) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                view.setGravity(Gravity.CENTER);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                TextView view = (TextView) super.getDropDownView(position, convertView, parent);
+                view.setGravity(Gravity.CENTER);
+                return view;
+            }
+        };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
     }

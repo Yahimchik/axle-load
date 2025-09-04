@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Charge par essieu</string>
-    <string name="available_devices">Appareils disponibles :</string>
+    <string name="available_devices">Appareils disponibles</string>
     <string name="axle">ESSIEU</string>
     <string name="axle_center">CENTRE</string>
     <string name="axle_left">GAUCHE</string>
@@ -103,7 +103,7 @@
     <string name="tar_table">Table de calibration %1$s</string>
     <string name="total_axles">Nombre total d’essieux</string>
     <string name="total_sensors">Nombre total de capteurs</string>
-    <string name="trailer_changeable">Châssis fixe/amovible</string>
+    <string name="trailer_changeable">Châssis amovible</string>
     <string name="truck">Tracteur</string>
 
     <string name="calibration">Calibration</string>
@@ -127,4 +127,6 @@
     <string name="trailer_state_number">Immatriculation de la remorque</string>
     <string name="current_values">Valeurs actuelles</string>
     <string name="change_the_trailer">Changer de remorque</string>
+    <string name="connect">se brancher</string>
+    <string name="select_sensor_type">Sélectionnez le type de capteur</string>
 </resources>

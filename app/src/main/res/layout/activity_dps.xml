@@ -8,38 +8,63 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.activity.impl.DPSActivity">
 
-    <!-- Контейнер кнопок -->
-    <LinearLayout
-        android:id="@+id/sensorButtonsLayout"
-        android:layout_width="0dp"
+    <!-- Заголовок -->
+    <TextView
+        android:id="@+id/dpsTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/available_devices"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Кнопка GoToAxes -->
+    <View
+        android:id="@+id/bottomDivider1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="#E5E7EB"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dpsTextView" />
+
+    <!-- Кнопка GoToAxes -->
+    <!-- Контейнер для кнопки -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonGoToAxesContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottomDivider1">
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/buttonGoToAxes"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
             android:clickable="true"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             app:cardBackgroundColor="@color/btn_background"
             app:cardCornerRadius="24dp"
-            app:cardElevation="16dp">
+            app:cardElevation="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
+                android:id="@+id/buttonContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
@@ -53,17 +78,14 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:contentDescription="@string/DPS"
-                    android:paddingEnd="8dp"
-                    android:paddingStart="8dp"
                     android:src="@drawable/ic_configure"
                     app:tint="@null" />
 
                 <TextView
-                    android:paddingStart="8dp"
-                    android:paddingEnd="2dp"
                     android:id="@+id/textDPS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="@string/configuration_settings"
                     android:textAllCaps="true"
@@ -71,52 +93,44 @@
                     android:textSize="18sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
 
-    <!-- Заголовок -->
-    <TextView
-        android:id="@+id/dpsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/roboto_bold"
-        android:text="@string/available_devices"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sensorButtonsLayout" />
+        <View
+            android:id="@+id/bottomDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="#D1D5DB"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonGoToAxes" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Список устройств -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dpsTextView" />
+        app:layout_constraintTop_toBottomOf="@id/buttonGoToAxesContainer" />
 
-    <!-- Контейнер для фрагментов -->
+    <!-- Контейнер для фрагментов (если используешь навигацию) -->
+
+    <!-- Затемнение при загрузке -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- Затемнение при загрузке -->
     <View
         android:id="@+id/overlayView"
         android:layout_width="0dp"
@@ -125,7 +139,6 @@
         android:background="@android:color/white"
         android:clickable="true"
         android:focusable="true"
-        android:focusableInTouchMode="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

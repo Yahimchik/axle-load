@@ -1,154 +1,164 @@
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/truckScrollView"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EEEEEE"
-    android:fillViewport="true"
-    android:fitsSystemWindows="true"
-    android:paddingHorizontal="16dp"
-    android:paddingTop="24dp"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingBottom="16dp">
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/truckScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:background="#EEEEEE"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="vertical">
+        android:fillViewport="true"
+        android:fitsSystemWindows="true"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp">
 
-        <!-- Заголовок -->
-        <TextView
-            android:id="@+id/headerTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:letterSpacing="0.05"
-            android:text="@string/current_values"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            android:fontFamily="@font/roboto_bold"/>
-
-        <!-- Общая информация: вес + оси + датчики -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/totalInfoCard"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="#A7E6E0"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
             android:clipChildren="false"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <!-- Заголовок -->
+            <TextView
+                android:id="@+id/headerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/roboto_bold"
+                android:letterSpacing="0.05"
+                android:text="@string/current_values"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+            <!-- Общая информация: вес + оси + датчики -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/totalInfoCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
+                android:layout_marginBottom="24dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center"
-                android:weightSum="3">
+                app:cardBackgroundColor="#A7E6E0"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="8dp">
 
-                <!-- Общий вес -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
+                    android:baselineAligned="false"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:weightSum="3">
 
-                    <TextView
-                        android:id="@+id/totalWeightLabel"
-                        android:layout_width="wrap_content"
+                    <!-- Общий вес -->
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/total_weight"
-                        android:textAllCaps="true"
-                        android:textSize="14sp"
-                        android:textColor="@android:color/black"
-                        android:letterSpacing="0.02" />
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/totalWeightValue"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/totalWeightLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.02"
+                            android:text="@string/total_weight"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/totalWeightValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/zero"
+                            android:textColor="@android:color/black"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Количество осей -->
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/zero"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp"/>
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/axisCountLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_axis"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/axisCountValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/zero"
+                            android:textColor="@android:color/black"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Количество датчиков -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/sensorCountLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/total_sensors_in"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/sensorCountValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/zero"
+                            android:textColor="@android:color/black"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <!-- Количество осей -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
-
-                    <TextView
-                        android:id="@+id/axisCountLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/total_axis"
-                        android:textSize="14sp"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/black"/>
-
-                    <TextView
-                        android:id="@+id/axisCountValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/zero"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-
-                <!-- Количество датчиков -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
-
-                    <TextView
-                        android:id="@+id/sensorCountLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/total_sensors_in"
-                        android:gravity="center"
-                        android:textSize="14sp"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/black"/>
-
-                    <TextView
-                        android:id="@+id/sensorCountValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/zero"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_marginTop="4dp"/>
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Контейнер для осей -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"/>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <!-- Контейнер для осей -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

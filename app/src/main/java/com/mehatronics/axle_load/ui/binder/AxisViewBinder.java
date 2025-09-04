@@ -11,9 +11,11 @@ import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerV
 
 import android.annotation.SuppressLint;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.google.android.material.card.MaterialCardView;
 import com.mehatronics.axle_load.R;
@@ -24,6 +26,7 @@ import com.mehatronics.axle_load.domain.entities.device.DeviceInfoToSave;
 import com.mehatronics.axle_load.domain.handler.BluetoothHandler;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.adapter.AxisAdapter;
+import com.mehatronics.axle_load.ui.adapter.sensor.SensorConfigAdapter;
 import com.mehatronics.axle_load.ui.fragment.AvailableSensorFragment;
 import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.MessageCallback;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class AxisViewBinder {
     private final FragmentNavigator navigator;
@@ -46,6 +50,14 @@ public class AxisViewBinder {
     private final MaterialCardView buttonConfigureLoaded;
     private final MaterialCardView truckButton;
     private final MaterialCardView truckWithTrailer;
+    private final MaterialCardView tractorPlateCard;
+    private final MaterialCardView trailerPlateCard;
+    private final MaterialCardView axisCountCard;
+
+    private final ImageButton axisCountMinus;
+    private final ImageButton axisCountPlus;
+    private final View divider;
+    private final View divider2;
 
     private final AxisAdapter adapter;
     private final MessageCallback callback;
@@ -54,6 +66,7 @@ public class AxisViewBinder {
     private final DeviceInfoToSave deviceInfo;
     private final DeviceTypeRepository repository;
     private final Consumer<DeviceInfoToSave> onDeviceInfoChanged;
+    private final BluetoothHandler handler;
 
     @SuppressLint("ClickableViewAccessibility")
     public AxisViewBinder(
@@ -72,7 +85,7 @@ public class AxisViewBinder {
         this.service = service;
         this.adapter = new AxisAdapter(handler::onClick, handler::onReset);
         this.deviceInfo = deviceInfo;
-        this.editTextAxisCount = root.findViewById(R.id.editTextAxisCount);
+        this.editTextAxisCount = root.findViewById(R.id.axisCountEditText);
         this.saveButton = root.findViewById(R.id.buttonSave);
         this.finishButton = root.findViewById(R.id.finishButtonConfigure);
         this.buttonConfigureLoaded = root.findViewById(R.id.buttonConfigureLoaded);
@@ -80,6 +93,18 @@ public class AxisViewBinder {
         this.truckWithTrailer = root.findViewById(R.id.buttonTractorWithTrailer);
         this.editTextTractorPlate = root.findViewById(R.id.editTextTractorPlate);
         this.editTextTrailerPlate = root.findViewById(R.id.editTextTrailerPlate);
+        this.handler = handler;
+
+        this.tractorPlateCard = root.findViewById(R.id.tractorPlateCard);
+        this.trailerPlateCard = root.findViewById(R.id.trailerPlateCard);
+        this.axisCountCard = root.findViewById(R.id.axisCountCard);
+
+        this.axisCountMinus = root.findViewById(R.id.axisCountMinus);
+        this.axisCountPlus = root.findViewById(R.id.axisCountPlus);
+
+        this.divider = root.findViewById(R.id.divider1);
+        this.divider2 = root.findViewById(R.id.divider2);
+
         this.callback = callback;
         this.provider = resourceProvider;
         this.navigator = navigator;
@@ -101,33 +126,65 @@ public class AxisViewBinder {
         }
         restoreVehicleTypeState();
         setupClickListeners(handler::onConfigureClick);
+        setupIncrementDecrement();
     }
 
     private void restoreVehicleTypeState() {
         if (deviceInfo.getType() == 0) {
-            editTextTractorPlate.setVisibility(VISIBLE);
-            editTextTrailerPlate.setVisibility(GONE);
+            tractorPlateCard.setVisibility(VISIBLE);
+            trailerPlateCard.setVisibility(GONE);
             saveButton.setVisibility(VISIBLE);
             buttonConfigureLoaded.setVisibility(VISIBLE);
-            editTextAxisCount.setVisibility(VISIBLE);
+            axisCountCard.setVisibility(VISIBLE);
+            divider.setVisibility(VISIBLE);
+            divider2.setVisibility(VISIBLE);
         } else if (deviceInfo.getType() == 1) {
-            editTextTractorPlate.setVisibility(VISIBLE);
-            editTextTrailerPlate.setVisibility(VISIBLE);
+            tractorPlateCard.setVisibility(VISIBLE);
+            trailerPlateCard.setVisibility(VISIBLE);
             saveButton.setVisibility(VISIBLE);
             buttonConfigureLoaded.setVisibility(VISIBLE);
-            editTextAxisCount.setVisibility(VISIBLE);
+            axisCountCard.setVisibility(VISIBLE);
+            divider.setVisibility(VISIBLE);
+            divider2.setVisibility(VISIBLE);
         } else {
             hideInitialViews();
         }
     }
 
+    /**
+     * Освобождает датчики, которые были назначены на оси,
+     * выходящие за пределы нового количества
+     */
+    private void releaseDevicesFromRemovedAxes(int newAxisCount) {
+        List<AxisModel> currentList = adapter.getCurrentList();
+        if (currentList.size() <= newAxisCount) return; // нечего удалять
+
+        List<AxisModel> removedAxes = currentList.subList(newAxisCount, currentList.size());
+
+        Set<String> freedMacs = new java.util.HashSet<>();
+        for (AxisModel axis : removedAxes) {
+            axis.getSideDeviceMap().values().stream()
+                    .filter(Objects::nonNull)
+                    .forEach(freedMacs::add);
+
+            // очистка датчиков у оси
+            axis.getSideDeviceMap().replaceAll((side, device) -> null);
+        }
+
+        if (!freedMacs.isEmpty()) {
+            adapter.setFinishedMacs(freedMacs); // 🔑 освободить MAC'и
+        }
+    }
+
     private void hideInitialViews() {
-        editTextTractorPlate.setVisibility(GONE);
-        editTextTrailerPlate.setVisibility(GONE);
+        tractorPlateCard.setVisibility(GONE);
+        trailerPlateCard.setVisibility(GONE);
         finishButton.setVisibility(GONE);
         saveButton.setVisibility(GONE);
         buttonConfigureLoaded.setVisibility(GONE);
-        editTextAxisCount.setVisibility(GONE);
+        axisCountCard.setVisibility(GONE);
+        divider.setVisibility(GONE);
+        divider2.setVisibility(GONE);
     }
 
     private void setupClickListeners(Consumer<String> onConfigureClicked) {
@@ -245,12 +302,15 @@ public class AxisViewBinder {
 
     private void setConfigType(int type, int gone) {
         deviceInfo.setType(type);
-        editTextTractorPlate.setVisibility(VISIBLE);
+        tractorPlateCard.setVisibility(VISIBLE);
         saveButton.setVisibility(VISIBLE);
         buttonConfigureLoaded.setVisibility(VISIBLE);
-        editTextAxisCount.setVisibility(VISIBLE);
-        editTextTrailerPlate.setVisibility(gone);
+        axisCountCard.setVisibility(VISIBLE);
+        editTextAxisCount.setText("1");
+        trailerPlateCard.setVisibility(gone);
         onDeviceInfoChanged.accept(deviceInfo);
+        divider.setVisibility(VISIBLE);
+        divider2.setVisibility(VISIBLE);
     }
 
     private boolean isCanSave() {
@@ -260,5 +320,30 @@ public class AxisViewBinder {
                         .values()
                         .stream()
                         .anyMatch(Objects::nonNull));
+    }
+
+    private void setupIncrementDecrement() {
+        setupButton(axisCountMinus, axisCountPlus, editTextAxisCount, 1, 7);
+    }
+
+    private void setupButton(ImageButton minus, ImageButton plus, EditText editText, int min, int max) {
+        minus.setOnClickListener(v -> {
+            int val = Integer.parseInt(editText.getText().toString());
+            if (val > min) {
+                handler.onReset(val, () -> {
+                    int newVal = val - 1;
+                    editText.setText(String.valueOf(newVal));
+                });
+            }
+        });
+
+        plus.setOnClickListener(v -> {
+            int val = Integer.parseInt(editText.getText().toString());
+            if (val < max) {
+                editText.setText(String.valueOf(val + 1));
+            }
+        });
+
+        editText.setFilters(new InputFilter[]{new SensorConfigAdapter.InputFilterMinMax(min, max)});
     }
 }

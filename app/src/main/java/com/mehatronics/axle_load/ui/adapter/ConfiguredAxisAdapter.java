@@ -1,12 +1,7 @@
 package com.mehatronics.axle_load.ui.adapter;
 
 import static android.view.LayoutInflater.from;
-import static com.mehatronics.axle_load.R.drawable.axle_center;
-import static com.mehatronics.axle_load.R.drawable.axle_center_configured;
-import static com.mehatronics.axle_load.R.drawable.axle_left;
-import static com.mehatronics.axle_load.R.drawable.axle_left_configured;
-import static com.mehatronics.axle_load.R.drawable.axle_right;
-import static com.mehatronics.axle_load.R.drawable.axle_right_configured;
+import static com.mehatronics.axle_load.R.drawable.*;
 import static com.mehatronics.axle_load.R.layout.axis_configured;
 
 import android.view.View;
@@ -86,18 +81,18 @@ public class ConfiguredAxisAdapter extends ListAdapter<AxisUiModel, ConfiguredAx
 
             if (model.macCenter() != null) {
                 macRight.setText(safeText(model.macCenter()));
-                rightIcon.setImageResource(axle_right);
-                centerIcon.setImageResource(axle_center_configured);
+                rightIcon.setImageResource(ic_right);
+                centerIcon.setImageResource(ic_center_saved);
             } else {
                 macRight.setText(safeText(model.macRight()));
-                rightIcon.setImageResource(model.macRight() != null ? axle_right_configured : axle_right);
-                centerIcon.setImageResource(axle_center);
+                rightIcon.setImageResource(model.macRight() != null ? ic_right_saved : ic_right);
+                centerIcon.setImageResource(ic_center);
             }
 
             weightRight.setText(safeText(model.weightRight()));
             pressureRight.setText(safeText(model.pressureRight()));
 
-            leftIcon.setImageResource(model.macLeft() != null ? axle_left_configured : axle_left);
+            leftIcon.setImageResource(model.macLeft() != null ? ic_left_saved : ic_left);
 
             leftInfoContainer.setVisibility(model.macLeft() != null ? View.VISIBLE : View.INVISIBLE);
             rightInfoContainer.setVisibility((model.macRight() != null || model.macCenter() != null) ? View.VISIBLE : View.INVISIBLE);

@@ -42,6 +42,8 @@ import com.mehatronics.axle_load.ui.navigation.FragmentNavigator;
 import com.mehatronics.axle_load.ui.notification.SnackbarManager;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -92,8 +94,8 @@ public abstract class BaseBluetoothActivity extends AppCompatActivity implements
         viewModel.stopScan();
         viewModel.clearDetails();
         viewModel.disconnect();
-        repository.setDeviceType(null);
         repository.setStatus(WAITING);
+        viewModel.setLoadedAxisList(new ArrayList<>());
         deviceRepository.setStateNumber(null);
     }
 

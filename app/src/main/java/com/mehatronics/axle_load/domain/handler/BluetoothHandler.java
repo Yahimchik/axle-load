@@ -5,6 +5,7 @@ import static com.mehatronics.axle_load.R.string.connection_failed;
 import static com.mehatronics.axle_load.R.string.reset_all_devices_on_the_axis;
 import static com.mehatronics.axle_load.R.string.reset_devices;
 import static com.mehatronics.axle_load.R.string.selected;
+import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.DPS;
 import static java.lang.Boolean.TRUE;
 
@@ -17,6 +18,7 @@ import com.mehatronics.axle_load.data.repository.DeviceTypeRepository;
 import com.mehatronics.axle_load.domain.entities.device.Device;
 import com.mehatronics.axle_load.domain.entities.device.DeviceDetails;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
+import com.mehatronics.axle_load.domain.entities.enums.ConnectStatus;
 import com.mehatronics.axle_load.domain.entities.enums.DeviceType;
 import com.mehatronics.axle_load.localization.ResourceProvider;
 import com.mehatronics.axle_load.ui.viewModel.DeviceViewModel;
@@ -55,22 +57,35 @@ public class BluetoothHandler {
     }
 
     public void onReset(int axis) {
+        onReset(axis, null);
+    }
+
+    public void onReset(int axis, Runnable onConfirmed) {
+        var macsToReset = viewModel.getMacsForAxis(axis);
+
+        if (macsToReset == null || macsToReset.isEmpty()) {
+            if (onConfirmed != null) onConfirmed.run();
+            return;
+        }
+
+        // Если устройства есть — спрашиваем подтверждение
         contract.showConfirmationDialog(
                 provider.getString(reset_devices),
                 provider.getString(reset_all_devices_on_the_axis, axis),
                 () -> {
-                    var macsToReset = viewModel.getMacsForAxis(axis);
                     repository.setDeviceType(DPS);
                     viewModel.resetDevicesForAxis(axis);
                     viewModel.resetSelectedDevicesByMacs(macsToReset);
                     viewModel.markAsUnsaved();
                     viewModel.clearMacs();
                     contract.showMessage(provider.getString(configure_reset, axis));
+
+                    if (onConfirmed != null) onConfirmed.run();
                 },
-                () -> {
-                }
+                () -> {}
         );
     }
+
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     public void onConnect(int axis, AxisSide side) {
@@ -99,7 +114,15 @@ public class BluetoothHandler {
     }
 
     public void handleDeviceDetails(DeviceDetails deviceDetails) {
-        contract.loadingManagerShowLoading(repository.getCurrDeviceType().equals(DeviceType.BT_COM_MINI) && deviceDetails != null);
+        if (repository.getCurrDeviceType().equals(BT_COM_MINI)) {
+            if (deviceDetails == null) {
+                contract.loadingManagerShowLoading(false);
+            } else if (repository.getStatus().equals(ConnectStatus.WAITING)){
+                contract.loadingManagerShowLoading(true);
+            }
+        } else {
+            contract.loadingManagerShowLoading(false);
+        }
         if (deviceDetails != null && isConnected()) {
             viewModel.setDeviceName(deviceDetails.getDeviceName());
 
@@ -128,7 +151,7 @@ public class BluetoothHandler {
             contract.setIsAttemptingToConnect(false);
         }
 
-        if (Boolean.TRUE.equals(isConnected)) {
+        if (isConnected) {
             contract.setIsAttemptingToConnect(false);
             shouldOpenFragmentAfterConnect = true;
         }

@@ -1,14 +1,14 @@
 package com.mehatronics.axle_load.ui.adapter;
 
-import static com.mehatronics.axle_load.R.drawable.axle_center;
-import static com.mehatronics.axle_load.R.drawable.axle_center_configured;
-import static com.mehatronics.axle_load.R.drawable.axle_left;
-import static com.mehatronics.axle_load.R.drawable.axle_left_configured;
-import static com.mehatronics.axle_load.R.drawable.axle_right;
-import static com.mehatronics.axle_load.R.drawable.axle_right_configured;
-import static com.mehatronics.axle_load.R.drawable.axle_sensor_center;
-import static com.mehatronics.axle_load.R.drawable.axle_sensor_left;
-import static com.mehatronics.axle_load.R.drawable.axle_sensor_right;
+import static com.mehatronics.axle_load.R.drawable.ic_center;
+import static com.mehatronics.axle_load.R.drawable.ic_center_saved;
+import static com.mehatronics.axle_load.R.drawable.ic_center_selected;
+import static com.mehatronics.axle_load.R.drawable.ic_left;
+import static com.mehatronics.axle_load.R.drawable.ic_left_saved;
+import static com.mehatronics.axle_load.R.drawable.ic_legt_selected;
+import static com.mehatronics.axle_load.R.drawable.ic_right;
+import static com.mehatronics.axle_load.R.drawable.ic_right_saved;
+import static com.mehatronics.axle_load.R.drawable.ic_right_selected;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.CENTER;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.LEFT;
 import static com.mehatronics.axle_load.domain.entities.enums.AxisSide.RIGHT;
@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.domain.entities.AxisModel;
 import com.mehatronics.axle_load.domain.entities.enums.AxisSide;
@@ -74,7 +75,7 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
 
     public class AxisViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        TextView resetButton;
+        MaterialCardView resetButton;
         ImageView axleSensorLeft;
         ImageView axleSensorCenter;
         ImageView axleSensorRight;
@@ -83,7 +84,7 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
         public AxisViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.axisTitleRight);
-            resetButton = itemView.findViewById(R.id.buttonReset);
+            resetButton = itemView.findViewById(R.id.resetCardView);
             axleSensorLeft = itemView.findViewById(R.id.axleSensorLeft);
             axleSensorCenter = itemView.findViewById(R.id.axleSensorCenter);
             axleSensorRight = itemView.findViewById(R.id.axleSensorRight);
@@ -131,26 +132,34 @@ public class AxisAdapter extends ListAdapter<AxisModel, AxisAdapter.AxisViewHold
 
         private int getDefaultIcon(AxisSide side) {
             return switch (side) {
-                case LEFT -> axle_left;
-                case CENTER -> axle_center;
-                case RIGHT -> axle_right;
+                case LEFT -> ic_left;
+                case CENTER -> ic_center;
+                case RIGHT -> ic_right;
             };
         }
 
         private int getSensorIcon(AxisSide side) {
             return switch (side) {
-                case LEFT -> axle_sensor_left;
-                case CENTER -> axle_sensor_center;
-                case RIGHT -> axle_sensor_right;
+                case LEFT -> ic_legt_selected;
+                case CENTER -> ic_center_selected;
+                case RIGHT -> ic_right_selected;
             };
         }
 
         private int getConnfiguredIcon(AxisSide side) {
             return switch (side) {
-                case LEFT -> axle_left_configured;
-                case CENTER -> axle_center_configured;
-                case RIGHT -> axle_right_configured;
+                case LEFT -> ic_left_saved;
+                case CENTER -> ic_center_saved;
+                case RIGHT -> ic_right_saved;
             };
         }
     }
+
+    public void removeFinishedMacs(Set<String> freedMacs) {
+        if (finishedMacs != null) {
+            finishedMacs.removeAll(freedMacs);
+            notifyDataSetChanged();
+        }
+    }
+
 }

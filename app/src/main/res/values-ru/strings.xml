@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Нагрузка на ось</string>
-    <string name="available_devices">Доступные устройства:</string>
+    <string name="available_devices">Доступные устройства</string>
     <string name="axle">ОСЬ</string>
     <string name="axle_center">ЦЕНТР</string>
     <string name="axle_left">ЛЕВО</string>
@@ -103,7 +103,7 @@
     <string name="tar_table">Тар таблица %1$s</string>
     <string name="total_axles">Общее количество осей</string>
     <string name="total_sensors">Общее количество датчиков</string>
-    <string name="trailer_changeable">Шасси бессменный/сменный</string>
+    <string name="trailer_changeable">Шасси сменный</string>
     <string name="truck">Тягач</string>
 
     <string name="calibration">Тарировка</string>
@@ -127,4 +127,6 @@
     <string name="trailer_state_number">Регистрационный знак прицепа</string>
     <string name="current_values">Текущие значения</string>
     <string name="change_the_trailer">Сменить прицеп</string>
+    <string name="connect">подключиться</string>
+    <string name="select_sensor_type">Выберите тип датчика</string>
 </resources>

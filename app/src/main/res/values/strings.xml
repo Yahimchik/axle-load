@@ -5,7 +5,7 @@
 
     <string name="add" translatable="false">ADD POINT</string>
     <string name="app_name">Axle Load</string>
-    <string name="available_devices">Available devices: </string>
+    <string name="available_devices">Available devices </string>
     <string name="axle">AXLE</string>
     <string name="axle_center">Axle center</string>
     <string name="axle_left">Axle left</string>
@@ -121,7 +121,7 @@
 
     <string name="total_axles">Total number of axes</string>
     <string name="total_sensors">Total number of sensors</string>
-    <string name="trailer_changeable">The chassis is non-replaceable/replaceable</string>
+    <string name="trailer_changeable">The chassis is replaceable</string>
     <string name="tar_table">Tar table %1$s</string>
     <string name="truck">Truck</string>
     <string name="truck_with_trailer">Truck with trailer</string>
@@ -136,6 +136,9 @@
 
     <string name="kg" translatable="false">KG</string>
     <string name="zero" translatable="false">0</string>
-    <string name="_0_99999">0–99999</string>
-    <string name="_0_000_99_999">0.000 – 99.999</string>
+    <string name="_0_99999" translatable="false">0–99999</string>
+    <string name="_0_000_99_999" translatable="false">0.000 – 99.999</string>
+    <string name="S_N" translatable="false">S/N:</string>
+    <string name="connect">connect</string>
+    <string name="select_sensor_type">Select sensor type</string>
 </resources>

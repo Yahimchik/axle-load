@@ -24,7 +24,7 @@ public class DeviceMapperImpl implements DeviceMapper {
         ScanResult scan = device.getScanResult();
 
         if (bt == null || scan == null || scan.getScanRecord() == null) {
-            return new DeviceResponseDTO(UNKNOWN, "-", "-", "-", "-", device);
+            return new DeviceResponseDTO(UNKNOWN, "-", "-", "-", "-", device, 0 + " %");
         }
 
         byte[] bytes = scan.getScanRecord().getBytes();
@@ -35,11 +35,12 @@ public class DeviceMapperImpl implements DeviceMapper {
             String rssi = scan.getRssi() + " dBm";
             float weight = convertBytesToValue(bytes, 23, 24);
             float pressure = convertBytesToValue(bytes, 21, 22) / 10f;
+            int battery = bytes[30];
 
-            return new DeviceResponseDTO(name, mac, rssi, weight + " Kg", pressure + " kPa", device);
+            return new DeviceResponseDTO(name, mac, rssi, weight + " Kg", pressure + " kPa", device, battery + " %");
 
         } catch (SecurityException e) {
-            return new DeviceResponseDTO("Security error", "-", "-", "-", "-", device);
+            return new DeviceResponseDTO("Security error", "-", "-", "-", "-", device, 0 + " %");
         }
     }
 }

@@ -8,11 +8,9 @@ import static com.mehatronics.axle_load.R.color.button_selected_color;
 import static com.mehatronics.axle_load.R.color.card_background_color;
 import static com.mehatronics.axle_load.R.layout.item_sensor;
 import static com.mehatronics.axle_load.constants.StringConstants.UNKNOWN;
-import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_MINI;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -57,13 +55,10 @@ public class AvailableSensorAdapter extends RecyclerView.Adapter<AvailableSensor
         if (!Objects.equals(device.name(), UNKNOWN)) {
             boolean isSelected = device.originalDevice().isSelected();
 
-            holder.name.setText(device.name().trim());
+            holder.deviceType.setText(typerAndSerialNumber(device.name())[0].trim());
+            holder.serialNumber.setText(typerAndSerialNumber(device.name())[1].trim());
             holder.mac.setText(device.mac());
             holder.rssi.setText(device.rssi());
-
-            if(device.name().contains(BT_COM_MINI.toString())){
-                holder.deviceIcon.setImageResource(R.drawable.ic_bt_com_mini);
-            }
 
             updateViewState(holder, isSelected);
 
@@ -75,6 +70,19 @@ public class AvailableSensorAdapter extends RecyclerView.Adapter<AvailableSensor
         }
     }
 
+    private String[] typerAndSerialNumber(String input) {
+        if (input == null || !input.contains("SN:")) {
+            return null;
+        }
+
+        String[] parts = input.split("SN:");
+        if (parts.length < 2) {
+            return null;
+        }
+
+        return parts;
+    }
+
     private void updateViewState(ViewHolder holder, boolean isSelected) {
         holder.itemView.setAlpha(isSelected ? 0.5f : 1f);
         holder.itemView.setEnabled(!isSelected);
@@ -83,10 +91,12 @@ public class AvailableSensorAdapter extends RecyclerView.Adapter<AvailableSensor
         var context = holder.itemView.getContext();
 
         int name = getColor(context, isSelected ? button_selected_color : black);
+        int sn = getColor(context, isSelected ? button_selected_color : black);
         int mac = getColor(context, isSelected ? button_selected_color : button_background);
         int rssi = getColor(context, isSelected ? button_selected_color : card_background_color);
 
-        holder.name.setTextColor(name);
+        holder.deviceType.setTextColor(name);
+        holder.serialNumber.setTextColor(sn);
         holder.mac.setTextColor(mac);
         holder.rssi.setTextColor(rssi);
     }
@@ -97,18 +107,17 @@ public class AvailableSensorAdapter extends RecyclerView.Adapter<AvailableSensor
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
+        TextView deviceType;
+        TextView serialNumber;
         TextView mac;
         TextView rssi;
 
-        ImageView deviceIcon;
-
         public ViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.deviceName);
-            mac = itemView.findViewById(R.id.deviceMacValue);
+            deviceType = itemView.findViewById(R.id.deviceType);
+            serialNumber = itemView.findViewById(R.id.snValue);
+            mac = itemView.findViewById(R.id.macValue);
             rssi = itemView.findViewById(R.id.deviceRssiValue);
-            deviceIcon = itemView.findViewById(R.id.deviceIcon);
         }
     }
 }

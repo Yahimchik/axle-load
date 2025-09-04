@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Нагрузка на вось</string>
-    <string name="available_devices">Даступныя прылады:</string>
+    <string name="available_devices">Даступныя прылады</string>
     <string name="axle">ВОСЬ</string>
     <string name="axle_center">ЦЭНТР</string>
     <string name="axle_left">ЛЕВА</string>
@@ -103,7 +103,7 @@
     <string name="tar_table">Тар. табліца %1$s</string>
     <string name="total_axles">Агульная колькасць восяў</string>
     <string name="total_sensors">Агульная колькасць датчыкаў</string>
-    <string name="trailer_changeable">Шасі несменнае/зменнае</string>
+    <string name="trailer_changeable">Шасі зменнае</string>
     <string name="truck">Цягнік</string>
 
     <string name="calibration">Тарыроўка</string>
@@ -127,4 +127,6 @@
     <string name="trailer_state_number">Рэгістрацыйны знак прычэпа</string>
     <string name="current_values">Бягучыя значэнні</string>
     <string name="change_the_trailer">Змяніць прычэп</string>
+    <string name="connect">падключыцца</string>
+    <string name="select_sensor_type">Абярыце тып датчыка</string>
 </resources>

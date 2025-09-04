@@ -1,225 +1,256 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:clickable="true"
-    android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/btn_background"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="8dp"
-    app:strokeWidth="1dp">
+    android:background="#EEEEEE">
 
+    <!-- Контейнер: Сигнал + RSSI -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/containerSignal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Заголовок с иконкой устройства -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/deviceSignalIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/device_rssi"
+            android:src="@drawable/ic_signal" />
+
+        <TextView
+            android:id="@+id/deviceRssiValue"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+             />
+    </LinearLayout>
 
-            <ImageView
-                android:id="@+id/deviceIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="@string/device_name"
-                android:src="@drawable/ic_device_dps" />
+    <!-- Контейнер: Батарея -->
+    <LinearLayout
+        android:id="@+id/containerBattery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/deviceBatteryIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/battery"
+            android:src="@drawable/ic_battery" />
+
+        <TextView
+            android:id="@+id/deviceBatteryValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="#73B95A"
+            android:textSize="15sp"
+             />
+    </LinearLayout>
+
+    <!-- Линия -->
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="100dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/containerSignal"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <!-- Контейнер: Тип устройства + MAC -->
+    <LinearLayout
+        android:id="@+id/containerTypeMacWithButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/dividerLine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Контейнер: Тип устройства + MAC -->
+        <LinearLayout
+            android:id="@+id/containerTypeMac"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/deviceName"
+                android:id="@+id/deviceType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/device_name"
-                android:textColor="@color/black"
+                android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:textStyle="bold"
+                 />
 
-        <!-- Первый ряд: MAC и RSSI -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <!-- MAC (слева) -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start|center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/device_mac"
-                    android:src="@drawable/ic_devices" />
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/deviceSerial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:text="@string/S_N"
+                    android:textColor="#828282"
+                    android:textSize="15sp"
+                    />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/device_mac"
-                        android:textColor="@color/hint_gray"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/deviceMacValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@android:color/holo_red_dark"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- RSSI (справа) -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end|center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/device_rssi"
-                    android:src="@drawable/ic_signal_cellular_alt" />
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/deviceSerialValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/device_rssi"
-                        android:textColor="@color/hint_gray"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/deviceRssiValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:ems="4" />
-                </LinearLayout>
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                   />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Второй ряд: Вес и Давление -->
+        <!-- Кнопка -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonConnect"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:backgroundTint="#0094FF"
+            android:paddingStart="12dp"
+            app:cornerRadius="16dp"
+            android:paddingEnd="12dp"
+            android:textAllCaps="true"
+            android:text="@string/connect"
+            android:textSize="15sp"
+             />
+    </LinearLayout>
+
+
+    <!-- Контейнер: Serial + Вес + Давление -->
+    <LinearLayout
+        android:id="@+id/containerInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/containerTypeMacWithButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- MAC -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="horizontal">
 
-            <!-- Вес -->
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/deviceMac"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start|center_vertical"
-                android:orientation="horizontal">
+                android:text="@string/device_mac"
+                android:textColor="#828282"
+                android:textSize="15sp"
+                />
 
-                <ImageView
-                    android:id="@+id/weightImage"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/weight"
-                    android:src="@drawable/ic_monitor_weight" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/deviceWeight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/weight"
-                        android:textColor="@color/hint_gray"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/deviceWeightValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Давление -->
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/deviceMacValue"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end|center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="15sp"
+                 />
+        </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/pressureImage"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/pressure"
-                    android:src="@drawable/ic_pressure" />
+        <!-- Вес -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:orientation="vertical">
+            <TextView
+                android:id="@+id/deviceWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/weight"
+                android:textColor="#828282"
+                android:textSize="15sp"
+               />
 
-                    <TextView
-                        android:id="@+id/devicePressure"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/pressure"
-                        android:textColor="@color/hint_gray"
-                        android:textSize="12sp" />
+            <TextView
+                android:id="@+id/deviceWeightValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                />
+        </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/devicePressureValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:ems="4" />
-                </LinearLayout>
-            </LinearLayout>
+        <!-- Давление -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/devicePressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pressure"
+                android:textColor="#828282"
+                android:textSize="15sp"
+               />
+
+            <TextView
+                android:id="@+id/devicePressureValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                 />
         </LinearLayout>
     </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+
+    <!-- Нижняя разделительная линия -->
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#D1D5DB"
+        app:layout_constraintTop_toBottomOf="@id/containerInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

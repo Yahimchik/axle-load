@@ -494,7 +494,7 @@ public class BluetoothGattCallbackHandler extends BluetoothGattCallback {
     }
 
     public void setListener(GattReadListener listener) {
-        stateHandler = new FirstAuthCommandState();
+//        stateHandler = new FirstAuthCommandState();
         gattReadService.setListener(listener);
     }
 
