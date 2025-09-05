@@ -92,7 +92,7 @@
                     android:layout_marginStart="12dp"
                     android:text="@string/change_the_trailer"
                     android:textAllCaps="true"
-                    android:textColor="@color/black"
+                    android:textColor="#0094FF"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/trailerIcon"
@@ -109,7 +109,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/trailerIcon"
                     app:thumbTint="#FF7F7F"
-                    app:trackTint="#FFD8E4" />
+                    app:trackTint="#0094FF" />
 
                 <!-- Поле для ввода гос. номера снизу -->
                 <com.google.android.material.textfield.TextInputLayout

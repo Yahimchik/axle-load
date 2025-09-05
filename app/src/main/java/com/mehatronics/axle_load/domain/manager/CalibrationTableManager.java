@@ -29,7 +29,6 @@ import javax.inject.Inject;
 public class CalibrationTableManager {
     private final MutableLiveData<List<CalibrationTable>> tableLiveData = new MutableLiveData<>();
     private List<CalibrationTable> originalPoints = new ArrayList<>();
-    private List<CalibrationTable> initialPoints = new ArrayList<>();
 
     /**
      * Конструктор с внедрением зависимостей.
@@ -61,20 +60,7 @@ public class CalibrationTableManager {
             originalPoints.addAll(table);
         }
 
-        if (initialPoints.size() >= 2) {
-            CalibrationTable first = initialPoints.get(0);
-            CalibrationTable last = initialPoints.get(initialPoints.size() - 1);
-
-            initialPoints.clear();
-            initialPoints.add(first);
-            initialPoints.addAll(table);
-            initialPoints.add(last);
-        } else {
-            initialPoints.clear();
-            initialPoints.addAll(table);
-        }
-
-        tableLiveData.setValue(new ArrayList<>(originalPoints));
+        updateTable(originalPoints);
     }
 
     /**
@@ -84,11 +70,6 @@ public class CalibrationTableManager {
      */
     public void updateVirtualPoint(DeviceDetails deviceDetails) {
         originalPoints = deviceDetails.getTable();
-
-        if (initialPoints.isEmpty()) {
-            initialPoints = new ArrayList<>(originalPoints);
-        }
-
         aupdateVirtualPoint(deviceDetails);
     }
 
