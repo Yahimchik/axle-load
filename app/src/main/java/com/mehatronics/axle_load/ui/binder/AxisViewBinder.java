@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class AxisViewBinder {
     private final FragmentNavigator navigator;
@@ -148,31 +147,6 @@ public class AxisViewBinder {
             divider2.setVisibility(VISIBLE);
         } else {
             hideInitialViews();
-        }
-    }
-
-    /**
-     * Освобождает датчики, которые были назначены на оси,
-     * выходящие за пределы нового количества
-     */
-    private void releaseDevicesFromRemovedAxes(int newAxisCount) {
-        List<AxisModel> currentList = adapter.getCurrentList();
-        if (currentList.size() <= newAxisCount) return; // нечего удалять
-
-        List<AxisModel> removedAxes = currentList.subList(newAxisCount, currentList.size());
-
-        Set<String> freedMacs = new java.util.HashSet<>();
-        for (AxisModel axis : removedAxes) {
-            axis.getSideDeviceMap().values().stream()
-                    .filter(Objects::nonNull)
-                    .forEach(freedMacs::add);
-
-            // очистка датчиков у оси
-            axis.getSideDeviceMap().replaceAll((side, device) -> null);
-        }
-
-        if (!freedMacs.isEmpty()) {
-            adapter.setFinishedMacs(freedMacs); // 🔑 освободить MAC'и
         }
     }
 
@@ -306,11 +280,14 @@ public class AxisViewBinder {
         saveButton.setVisibility(VISIBLE);
         buttonConfigureLoaded.setVisibility(VISIBLE);
         axisCountCard.setVisibility(VISIBLE);
-        editTextAxisCount.setText("1");
         trailerPlateCard.setVisibility(gone);
         onDeviceInfoChanged.accept(deviceInfo);
         divider.setVisibility(VISIBLE);
         divider2.setVisibility(VISIBLE);
+        if (gone == GONE) {
+            editTextTrailerPlate.setText("");
+            deviceInfo.setCarNumberSecond("");
+        }
     }
 
     private boolean isCanSave() {

@@ -286,7 +286,7 @@
                                 android:textStyle="bold"
                                 android:hint="@string/enter_number_of_axes"
                                 android:inputType="number"
-                                android:text="@string/zero"
+                                android:text="@string/one"
                                 android:textColor="#78909C"
                                 android:textSize="16sp" />
 

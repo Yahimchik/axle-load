@@ -141,4 +141,5 @@
     <string name="S_N" translatable="false">S/N:</string>
     <string name="connect">connect</string>
     <string name="select_sensor_type">Select sensor type</string>
+    <string name="one" translatable="false">1</string>
 </resources>
