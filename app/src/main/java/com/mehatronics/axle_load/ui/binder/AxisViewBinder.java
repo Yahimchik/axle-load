@@ -10,12 +10,15 @@ import static com.mehatronics.axle_load.domain.entities.enums.DeviceType.BT_COM_
 import static com.mehatronics.axle_load.ui.RecyclerViewInitializer.initRecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.card.MaterialCardView;
 import com.mehatronics.axle_load.R;
@@ -205,6 +208,7 @@ public class AxisViewBinder {
             public void afterTextChanged(Editable editable) {
                 deviceInfo.setCarNumberFirst(editable.toString().trim());
                 onDeviceInfoChanged.accept(deviceInfo);
+                updateFinishButtonState();
             }
         });
 
@@ -221,6 +225,7 @@ public class AxisViewBinder {
             public void afterTextChanged(Editable editable) {
                 deviceInfo.setCarNumberSecond(editable.toString().trim());
                 onDeviceInfoChanged.accept(deviceInfo);
+                updateFinishButtonState();
             }
         });
 
@@ -275,6 +280,7 @@ public class AxisViewBinder {
     }
 
     private void setConfigType(int type, int gone) {
+        editTextAxisCount.setText("1");
         deviceInfo.setType(type);
         tractorPlateCard.setVisibility(VISIBLE);
         saveButton.setVisibility(VISIBLE);
@@ -288,6 +294,7 @@ public class AxisViewBinder {
             editTextTrailerPlate.setText("");
             deviceInfo.setCarNumberSecond("");
         }
+        updateFinishButtonState();
     }
 
     private boolean isCanSave() {
@@ -302,6 +309,29 @@ public class AxisViewBinder {
     private void setupIncrementDecrement() {
         setupButton(axisCountMinus, axisCountPlus, editTextAxisCount, 1, 7);
     }
+
+    private void updateFinishButtonState() {
+        boolean enabled = false;
+        if (deviceInfo.getType() == 0) {
+            enabled = !editTextTractorPlate.getText().toString().trim().isEmpty();
+        } else if (deviceInfo.getType() == 1) {
+            enabled = !editTextTractorPlate.getText().toString().trim().isEmpty()
+                    && !editTextTrailerPlate.getText().toString().trim().isEmpty();
+        }
+
+        finishButton.setEnabled(enabled);
+
+        if (enabled) {
+            finishButton.setCardBackgroundColor(
+                    ColorStateList.valueOf(ContextCompat.getColor(finishButton.getContext(), R.color.btn_background))
+            );
+        } else {
+            finishButton.setCardBackgroundColor(
+                    ColorStateList.valueOf(ContextCompat.getColor(finishButton.getContext(), R.color.alert_color))
+            );
+        }
+    }
+
 
     private void setupButton(ImageButton minus, ImageButton plus, EditText editText, int min, int max) {
         minus.setOnClickListener(v -> {
