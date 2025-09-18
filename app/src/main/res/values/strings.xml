@@ -107,7 +107,7 @@
     <string name="sensor_list">Sensors list</string>
     <string name="serial_number">Serial Number: </string>
     <string name="set_new_password">SET NEW PASSWORD</string>
-    <string name="stateNumber">State Number</string>
+    <string name="stateNumber">State Number:</string>
     <string name="save_to_file_not_allowed_at">Saving is not supported on this version of Android</string>
     <string name="saved_in">Saved in: %1$s</string>
 

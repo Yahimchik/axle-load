@@ -95,7 +95,7 @@
     <string name="sensor_list">Список устройств</string>
     <string name="serial_number">Серийный номер:</string>
     <string name="set_new_password">УТАНОВИТЬ НОВЫЙ ПАРОЛЬ</string>
-    <string name="stateNumber">Гос. номер</string>
+    <string name="stateNumber">Гос. номер:</string>
 
     <string name="save_to_file_not_allowed_at">Сохранение не поддерживается на этой версии Android</string>
     <string name="saved_in">Сохранено в: %1$s</string>

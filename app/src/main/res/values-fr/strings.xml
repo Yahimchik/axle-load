@@ -95,7 +95,7 @@
     <string name="sensor_list">Liste des appareils</string>
     <string name="serial_number">Numéro de série :</string>
     <string name="set_new_password">DÉFINIR UN NOUVEAU MOT DE PASSE</string>
-    <string name="stateNumber">Numéro d’immatriculation</string>
+    <string name="stateNumber">Numéro d’immatriculation:</string>
 
     <string name="save_to_file_not_allowed_at">L’enregistrement n’est pas pris en charge sur cette version d’Android</string>
     <string name="saved_in">Enregistré dans : %1$s</string>

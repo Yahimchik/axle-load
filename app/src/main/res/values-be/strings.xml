@@ -95,7 +95,7 @@
     <string name="sensor_list">Спіс прылад</string>
     <string name="serial_number">Серыйны нумар:</string>
     <string name="set_new_password">УСТАЛЯВАЦЬ НОВЫ ПАРОЛЬ</string>
-    <string name="stateNumber">Рэгістрацыйны нумар</string>
+    <string name="stateNumber">Рэгістрацыйны нумар:</string>
 
     <string name="save_to_file_not_allowed_at">Захаванне не падтрымліваецца на гэтай версіі Android</string>
     <string name="saved_in">Захавана ў: %1$s</string>

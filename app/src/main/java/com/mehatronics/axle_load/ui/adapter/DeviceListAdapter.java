@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,6 +58,7 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         DeviceResponseDTO device = devices.get(position);
         try {
             if (!Objects.equals(device.name(), UNKNOWN)) {
+
                 holder.type.setText(typerAndSerialNumber(device.name())[0].trim());
                 holder.serialNumber.setText(typerAndSerialNumber(device.name())[1].trim());
                 holder.mac.setText(device.mac());
@@ -68,12 +68,16 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
                 holder.deviceBatteryValue.setText(device.battery());
 
                 if (device.name().contains(BT_COM_MINI.toString())) {
+                    holder.deviceStateNumberValue.setText(device.stateNumber());
                     holder.weightValue.setVisibility(GONE);
                     holder.pressureValue.setVisibility(GONE);
                     holder.deviceWeight.setVisibility(GONE);
                     holder.devicePressure.setVisibility(GONE);
                     holder.infoContainer.setVisibility(GONE);
                     holder.containerBattery.setVisibility(GONE);
+                }else {
+                    holder.deviceStateNumber.setVisibility(GONE);
+                    holder.deviceStateNumberValue.setVisibility(GONE);
                 }
             }
 
@@ -124,6 +128,8 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         TextView deviceWeight;
         TextView devicePressure;
         TextView deviceBatteryValue;
+        TextView deviceStateNumberValue;
+        TextView deviceStateNumber;
         MaterialButton connect;
         LinearLayout infoContainer;
         LinearLayout containerBattery;
@@ -142,6 +148,8 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
             infoContainer = itemView.findViewById(R.id.containerInfo);
             deviceBatteryValue = itemView.findViewById(R.id.deviceBatteryValue);
             containerBattery = itemView.findViewById(R.id.containerBattery);
+            deviceStateNumberValue = itemView.findViewById(R.id.deviceStateNumberValue);
+            deviceStateNumber = itemView.findViewById(R.id.deviceStateNumber);
         }
     }
 }

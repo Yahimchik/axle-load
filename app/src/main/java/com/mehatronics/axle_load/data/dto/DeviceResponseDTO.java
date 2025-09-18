@@ -11,7 +11,8 @@ public record DeviceResponseDTO(
         String weight,
         String pressure,
         Device originalDevice,
-        String battery
+        String battery,
+        String stateNumber
 ) {
 
     @Override
