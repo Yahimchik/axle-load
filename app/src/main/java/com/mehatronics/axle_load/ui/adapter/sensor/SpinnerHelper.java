@@ -1,6 +1,9 @@
 package com.mehatronics.axle_load.ui.adapter.sensor;
 
 import static android.R.layout.simple_spinner_item;
+import static com.mehatronics.axle_load.R.string.axle_center;
+import static com.mehatronics.axle_load.R.string.axle_left;
+import static com.mehatronics.axle_load.R.string.axle_right;
 import static com.mehatronics.axle_load.constants.StringConstants.AXLE;
 import static com.mehatronics.axle_load.constants.StringConstants.CENTER;
 import static com.mehatronics.axle_load.constants.StringConstants.LEFT;
@@ -18,10 +21,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.mehatronics.axle_load.R;
+import com.mehatronics.axle_load.localization.ResourceProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public record SpinnerHelper(Spinner spinner) {
+import javax.inject.Inject;
+
+public record SpinnerHelper(Spinner spinner, ResourceProvider provider) {
+
+
     public void initSpinner(int selectedAxle, int selectedPosition) {
         spinner.setAdapter(createAdapter(spinner.getContext()));
         int index = (selectedAxle - 1) * 3 + selectedPosition;
@@ -58,12 +68,12 @@ public record SpinnerHelper(Spinner spinner) {
 
     private String getDescription(int axle, int position) {
         String pos = switch (position) {
-            case 0 -> CENTER;
-            case 1 -> LEFT;
-            case 2 -> RIGHT;
+            case 0 -> provider.getString(axle_center);
+            case 1 -> provider.getString(axle_left);
+            case 2 -> provider.getString(axle_right);
             default -> UNKNOWN;
         };
-        return AXLE + " " + axle + " — " + pos;
+        return provider.getString(R.string.axle_numbered, axle) + " — " + pos;
     }
 
     public int getSelectedAxle() {

@@ -59,7 +59,7 @@ public class DeviceDetailsBinder {
 
     public void init(View view, DeviceViewModel vm) {
         this.vm = vm;
-        sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter,  validator);
+        sensorConfigAdapter = new SensorConfigAdapter(view, configFormatter,  validator, provider);
         sensorInfoAdapter = new SensorInfoAdapter(view, formatter);
         tableAdapter = new TableAdapter(vm::addPoint, vm::deletePoint);
         initRecyclerView(view, R.id.calibrationRecyclerView, tableAdapter);

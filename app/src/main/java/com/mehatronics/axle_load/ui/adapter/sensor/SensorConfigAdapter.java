@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.mehatronics.axle_load.R;
 import com.mehatronics.axle_load.data.format.SensorConfigFormatter;
 import com.mehatronics.axle_load.domain.entities.SensorConfig;
+import com.mehatronics.axle_load.localization.ResourceProvider;
 
 public class SensorConfigAdapter {
     private final EditText numberOfSensorsOnAxleEditText;
@@ -60,7 +61,7 @@ public class SensorConfigAdapter {
     private final int selectedTextColor;
     private final int unselectedTextColor;
     public SensorConfigAdapter(View view, SensorConfigFormatter formatter,
-                               SensorConfigValidator validator) {
+                               SensorConfigValidator validator, ResourceProvider provider) {
         this.root = view;
         this.formatter = formatter;
         this.validator = validator;
@@ -88,7 +89,7 @@ public class SensorConfigAdapter {
         choiceYes = view.findViewById(R.id.choiceYes);
         choiceNo = view.findViewById(R.id.choiceNo);
 
-        spinnerHelper = new SpinnerHelper(view.findViewById(R.id.installationPointSpinner));
+        spinnerHelper = new SpinnerHelper(view.findViewById(R.id.installationPointSpinner), provider);
 
         spinnerHelper.initSpinner(1, 0);
         spinnerHelper.setOnItemSelectedListener(this::validateAndToggleSaveButton);

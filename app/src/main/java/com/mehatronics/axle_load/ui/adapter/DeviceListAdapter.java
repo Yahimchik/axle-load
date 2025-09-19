@@ -22,6 +22,8 @@ import com.mehatronics.axle_load.data.dto.DeviceResponseDTO;
 import com.mehatronics.axle_load.ui.adapter.diffUtil.DeviceDiffUtil;
 import com.mehatronics.axle_load.ui.adapter.listener.OnDeviceClickListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -66,18 +68,18 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
                 holder.weightValue.setText(device.weight());
                 holder.pressureValue.setText(device.pressure());
                 holder.deviceBatteryValue.setText(device.battery());
+                holder.deviceStateNumberValue.setText(device.stateNumber());
+                holder.devicedeviceInstallationPointValue.setText(device.installationPoint());
 
                 if (device.name().contains(BT_COM_MINI.toString())) {
-                    holder.deviceStateNumberValue.setText(device.stateNumber());
                     holder.weightValue.setVisibility(GONE);
                     holder.pressureValue.setVisibility(GONE);
                     holder.deviceWeight.setVisibility(GONE);
                     holder.devicePressure.setVisibility(GONE);
                     holder.infoContainer.setVisibility(GONE);
                     holder.containerBattery.setVisibility(GONE);
-                }else {
-                    holder.deviceStateNumber.setVisibility(GONE);
-                    holder.deviceStateNumberValue.setVisibility(GONE);
+                    holder.deviceInstallationPoint.setVisibility(GONE);
+                    holder.devicedeviceInstallationPointValue.setVisibility(GONE);
                 }
             }
 
@@ -130,6 +132,8 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
         TextView deviceBatteryValue;
         TextView deviceStateNumberValue;
         TextView deviceStateNumber;
+        TextView devicedeviceInstallationPointValue;
+        TextView deviceInstallationPoint;
         MaterialButton connect;
         LinearLayout infoContainer;
         LinearLayout containerBattery;
@@ -150,6 +154,8 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
             containerBattery = itemView.findViewById(R.id.containerBattery);
             deviceStateNumberValue = itemView.findViewById(R.id.deviceStateNumberValue);
             deviceStateNumber = itemView.findViewById(R.id.deviceStateNumber);
+            devicedeviceInstallationPointValue = itemView.findViewById(R.id.devicedeviceInstallationPointValue);
+            deviceInstallationPoint = itemView.findViewById(R.id.deviceInstallationPoint);
         }
     }
 }

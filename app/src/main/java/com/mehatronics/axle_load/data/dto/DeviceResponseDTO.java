@@ -1,5 +1,7 @@
 package com.mehatronics.axle_load.data.dto;
 
+import androidx.annotation.NonNull;
+
 import com.mehatronics.axle_load.domain.entities.device.Device;
 
 import java.util.Objects;
@@ -12,8 +14,13 @@ public record DeviceResponseDTO(
         String pressure,
         Device originalDevice,
         String battery,
-        String stateNumber
+        String stateNumber,
+        String installationPoint
 ) {
+
+    public DeviceResponseDTO() {
+        this("", "", "", "", "", null, "", "", "");
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -26,4 +33,18 @@ public record DeviceResponseDTO(
                 && Objects.equals(originalDevice, that.originalDevice);
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "DeviceResponseDTO[" +
+                "name=" + name + ", " +
+                "mac=" + mac + ", " +
+                "rssi=" + rssi + ", " +
+                "weight=" + weight + ", " +
+                "pressure=" + pressure + ", " +
+                "originalDevice=" + originalDevice + ", " +
+                "battery=" + battery + ", " +
+                "stateNumber=" + stateNumber + ", " +
+                "installationPoint=" + installationPoint + ']';
+    }
 }

@@ -7,10 +7,10 @@
     <string name="app_name">Axle Load</string>
     <string name="available_devices">Available devices </string>
     <string name="axle">AXLE</string>
-    <string name="axle_center">Axle center</string>
-    <string name="axle_left">Axle left</string>
+    <string name="axle_center">CENTER</string>
+    <string name="axle_left">LEFT</string>
     <string name="axle_numbered">AXLE %1$d</string>
-    <string name="axle_right">Axle right</string>
+    <string name="axle_right">RIGHT</string>
     <string name="axles_count">Choose the axles count</string>
     <string name="axis_config">Конфиг_осей</string>
 
@@ -72,6 +72,7 @@
     <string name="hardware_version">Hardware Version: </string>
 
     <string name="installation_point">Installation Point</string>
+    <string name="point">Installation Point:</string>
     <string name="invalid_detector">Invalid detector at line %1$d</string>
     <string name="invalid_password_for">Invalid password: %1$s</string>
 
@@ -142,4 +143,5 @@
     <string name="connect">connect</string>
     <string name="select_sensor_type">Select sensor type</string>
     <string name="one" translatable="false">1</string>
+    <string name="search">Search</string>
 </resources>

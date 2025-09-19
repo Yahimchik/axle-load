@@ -61,6 +61,7 @@
     <string name="hardware_version">Version matérielle :</string>
 
     <string name="installation_point">Point d’installation</string>
+    <string name="point">Point d’installation:</string>
     <string name="invalid_detector">Détecteur invalide à la ligne %1$d</string>
     <string name="invalid_password_for">Mot de passe incorrect : %1$s</string>
 
@@ -129,4 +130,5 @@
     <string name="change_the_trailer">Changer de remorque</string>
     <string name="connect">se brancher</string>
     <string name="select_sensor_type">Sélectionnez le type de capteur</string>
+    <string name="search">Chercher</string>
 </resources>

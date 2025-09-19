@@ -61,6 +61,7 @@
     <string name="hardware_version">Версия железа:</string>
 
     <string name="installation_point">Точка установки</string>
+    <string name="point">Точка установки:</string>
     <string name="invalid_detector">Неверный детектор в строгке %1$d</string>
     <string name="invalid_password_for">Неверный пароль: %1$s</string>
 
@@ -129,4 +130,5 @@
     <string name="change_the_trailer">Сменить прицеп</string>
     <string name="connect">подключиться</string>
     <string name="select_sensor_type">Выберите тип датчика</string>
+    <string name="search">Поиск</string>
 </resources>

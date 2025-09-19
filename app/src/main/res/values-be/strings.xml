@@ -61,6 +61,7 @@
     <string name="hardware_version">Версія абсталявання:</string>
 
     <string name="installation_point">Пункт усталявання</string>
+    <string name="point">Пункт усталявання:</string>
     <string name="invalid_detector">Няправільны датчык у радку %1$d</string>
     <string name="invalid_password_for">Няправільны пароль: %1$s</string>
 
@@ -129,4 +130,5 @@
     <string name="change_the_trailer">Змяніць прычэп</string>
     <string name="connect">падключыцца</string>
     <string name="select_sensor_type">Абярыце тып датчыка</string>
+    <string name="search">Пошук</string>
 </resources>
