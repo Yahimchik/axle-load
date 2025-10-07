@@ -66,7 +66,7 @@ public class DeviceMapperImpl implements DeviceMapper {
         String installPlace = provider.getString(search);
 
         if (repository.getCurrDeviceType().equals(BT_COM_MINI)) {
-            stateNumber = extractStringFromBytes(bytes, 33, 10);
+            stateNumber = extractStringFromBytes(bytes, 36, 10);
         }
 
         if (repository.getCurrDeviceType().equals(DPS)) {

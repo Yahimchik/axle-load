@@ -30,8 +30,9 @@ public class ByteUtils {
     public static void convertMultiplierToPortion(List<CalibrationTable> table) {
         List<CalibrationTable> result = new ArrayList<>();
         result.add(table.get(0));
-        for (int i = 0; i < table.size() - 1; ++i) {
-            if (i > 0) {
+        result.add(table.get(1));
+        for (int i = 1; i < table.size() - 1; ++i) {
+            if (i > 1) {
                 CalibrationTable curr = table.get(i);
                 CalibrationTable prev = table.get(i - 1);
 
